@@ -73,7 +73,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     if Provider::Delete.new(@provider.id).call
       redirect_to backoffice_providers_path, notice: "Provider removed successfully"
     else
-      redirect_to backoffice_providers_path,
+      redirect_to backoffice_provider_path(@provider),
                   alert: "This Provider has services connected to it, therefore is not possible to remove it."
     end
   end
