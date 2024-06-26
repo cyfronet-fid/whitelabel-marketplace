@@ -68,7 +68,7 @@ class Backoffice::ServicePolicy < Backoffice::ApplicationPolicy
   end
 
   def destroy?
-    can_edit? && project_items&.count&.zero? && record.draft?
+    can_edit? && !record.deleted?
   end
 
   def permitted_attributes
