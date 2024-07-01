@@ -51,10 +51,6 @@ class Backoffice::ServicePolicy < Backoffice::ApplicationPolicy
     can_edit? && !record.published? && !record.deleted?
   end
 
-  def publish_unverified?
-    can_edit? && !record.unverified? && !record.deleted?
-  end
-
   def suspend?
     can_edit? && !record.suspended? && !record.deleted?
   end
@@ -72,7 +68,7 @@ class Backoffice::ServicePolicy < Backoffice::ApplicationPolicy
   end
 
   def destroy?
-    can_edit? && project_items&.count&.zero? && record.draft?
+    can_edit? && !record.deleted?
   end
 
   def permitted_attributes

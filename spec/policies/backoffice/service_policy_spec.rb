@@ -236,11 +236,11 @@ RSpec.describe Backoffice::ServicePolicy, backend: true do
         expect(subject).to_not permit(service_owner, build(:service, status: :draft))
       end
 
-      it "denies when service has project_items attached" do
+      it "allows when service has project_items attached" do
         service = create(:service, status: :draft)
         create(:project_item, offer: create(:offer, service: service))
 
-        expect(subject).to_not permit(service_portfolio_manager, service)
+        expect(subject).to permit(service_portfolio_manager, service)
       end
     end
   end
@@ -281,19 +281,19 @@ RSpec.describe Backoffice::ServicePolicy, backend: true do
     end
 
     permissions :destroy? do
-      it "denies access for service portfolio manager" do
-        expect(subject).to_not permit(service_portfolio_manager, build(:service))
+      it "allows access for service portfolio manager" do
+        expect(subject).to permit(service_portfolio_manager, build(:service))
       end
 
       it "denies access for service owner" do
         expect(subject).to_not permit(service_owner, build(:service))
       end
 
-      it "denies when service has project_items attached" do
+      it "allows when service has project_items attached" do
         service = create(:service)
         create(:project_item, offer: create(:offer, service: service))
 
-        expect(subject).to_not permit(service_portfolio_manager, service)
+        expect(subject).to permit(service_portfolio_manager, service)
       end
     end
   end
@@ -327,7 +327,7 @@ RSpec.describe Backoffice::ServicePolicy, backend: true do
   permissions :publish? do
     it "grants access for service portfolio manager and not published services" do
       expect(subject).to permit(service_portfolio_manager, build(:service, status: :draft))
-      expect(subject).to permit(service_portfolio_manager, build(:service, status: :unverified))
+      expect(subject).to permit(service_portfolio_manager, build(:service, status: :suspended))
     end
 
     it "denies access for other users" do
@@ -339,25 +339,10 @@ RSpec.describe Backoffice::ServicePolicy, backend: true do
     end
   end
 
-  permissions :publish_unverified? do
-    it "grants access for service portfolio manager and not published unverified services" do
-      expect(subject).to permit(service_portfolio_manager, build(:service, status: :draft))
-      expect(subject).to permit(service_portfolio_manager, build(:service, status: :published))
-    end
-
-    it "denies access for other users" do
-      expect(subject).to_not permit(service_owner, build(:service, status: :draft))
-    end
-
-    it "denies access for already published unverified service" do
-      expect(subject).to_not permit(service_portfolio_manager, build(:service, status: :unverified))
-    end
-  end
-
   permissions :draft? do
     it "grants access for service portfolio manager and not draft services" do
       expect(subject).to permit(service_portfolio_manager, build(:service, status: :published))
-      expect(subject).to permit(service_portfolio_manager, build(:service, status: :unverified))
+      expect(subject).to permit(service_portfolio_manager, build(:service, status: :errored))
     end
 
     it "denies access for other users" do
@@ -372,7 +357,7 @@ RSpec.describe Backoffice::ServicePolicy, backend: true do
   context "When offer is draft and service is deleted" do
     let(:service) { create(:service, owners: [service_owner], status: :deleted) }
 
-    permissions :edit?, :update?, :destroy?, :publish?, :draft?, :publish_unverified? do
+    permissions :edit?, :update?, :destroy?, :publish?, :draft? do
       it "danies access to service portfolio manager" do
         expect(subject).to_not permit(service_portfolio_manager, service)
       end
