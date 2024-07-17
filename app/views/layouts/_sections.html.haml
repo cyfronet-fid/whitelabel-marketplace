@@ -1,4 +1,3 @@
-
 %nav
   .commons-header
     .eosc-common.top.white-label
@@ -43,7 +42,7 @@
                       %a.dropdown-item.dropdown-profile{ href: executive_path }
                         = _("Executive")
             %li
-              %strong= link_to _("Logout"), destroy_user_session_path, id: "logout-btn",
+              %strong= link_to _("Logout"), destroy_user_session_path, method: :delete,
               data: { turbo_method: :delete, e2e: "logout" }
           - else
             %li

@@ -7719,6 +7719,10 @@ abbr[title] {
 }
 
 .eosc-common {
+  &.top {
+    background: var(--Linear, linear-gradient(180deg, $palette-white 2.04%, $alert-bg 97.59%)) !important;
+  }
+
   &.white-label {
     .container {
       padding-left: 45px !important;
@@ -8397,4 +8401,42 @@ footer {
   }
 
   // scss-lint:enable all
+}
+
+/* WHITELABEL BACKOOFICE MODS */
+
+.breadcrumbs-backoffice-wrapper {
+  background: $alert-bg !important;
+  padding-bottom: 15px;
+}
+
+.commons-header .menu {
+  background: none !important;
+}
+
+.backoffice-nav {
+  border-radius: 8px;
+  margin-top: 30px;
+  padding: 0;
+  border: 1px solid $custom-17;
+
+  .navbar-nav {
+    width: 100%;
+    justify-content: center;
+
+    .nav-item {
+      border-right: 1px solid $custom-17;
+      align-items: center;
+      gap: 10px;
+      flex: 1 0 0;
+
+      .nav-link {
+        color: $landing-01;
+        font-size: 18px;
+        font-weight: 500;
+        padding: 10px 4px;
+        text-align: center;
+      }
+    }
+  }
 }
