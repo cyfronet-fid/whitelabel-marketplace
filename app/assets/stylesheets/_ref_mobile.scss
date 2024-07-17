@@ -112,7 +112,7 @@
   }
 
   .backoffice-menu {
-    margin-top: 15px;
+    margin: 7px 0;
     border: none;
   }
 
@@ -549,6 +549,54 @@
     }
   }
   // scss-lint:enable all
+
+  .become-provider {
+    padding: 30px 20px 25px;
+
+    .backoffice-arrow {
+      display: none;
+    }
+
+    h1 {
+      font-size: 30px;
+    }
+
+    h2 {
+      font-size: 27px;
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      font-size: 17px;
+    }
+
+    .become-provider h4 {
+      font-size: 19px;
+      margin: 0 0 16px;
+    }
+
+    .backoffice-item {
+      padding: 20px 25px;
+      gap: 15px;
+
+      .backoffice-image {
+        img {
+          max-width: 70px;
+          height: auto;
+        }
+      }
+
+      .backoffice-item-txt {
+        .backoffice-item-title {
+          font-size: 22px;
+        }
+
+        .backoffice-item-desc {
+          font-size: 16px;
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 576px) {
