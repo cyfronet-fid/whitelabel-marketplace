@@ -8501,6 +8501,25 @@ footer {
   }
 }
 
+.backoffice {
+  h1 {
+    color: $custom-16;
+    font-size: 29px;
+    font-weight: 600;
+    margin-bottom: 35px;
+    line-height: 100%; /* 50px */
+  }
+
+  .btn-primary {
+    font-size: 14px;
+    padding: 0.62rem 1.3rem;
+  }
+
+  .category-separator {
+    display: none;
+  }
+}
+
 .become-provider {
   border-radius: 8px;
   background: $alert-bg;
@@ -8603,21 +8622,38 @@ footer {
   }
 }
 
-.backoffice {
-  h1 {
-    color: $custom-16;
-    font-size: 29px;
+.empty-information {
+  background: url("backoffice-item-bg.jpg");
+  background-size: cover;
+  color: $palette-white;
+  padding: 32px;
+  border-radius: 8px;
+
+  h2 {
+    color: $landing-03;
+    font-size: 32px;
     font-weight: 600;
-    margin-bottom: 35px;
-    line-height: 100%; /* 50px */
+    margin: 0 0 18px;
+    line-height: 100%;
   }
 
-  .btn-primary {
-    font-size: 14px;
-    padding: 0.62rem 1.3rem;
+  .details-intro {
+    color: $landing-03;
+    font-size: 24px;
+    font-weight: 300;
+    max-width: 90%;
+    line-height: 140%; /* 33.6px */
   }
 
-  .category-separator {
-    display: none;
+  .btn {
+    background: $landing-03;
+    color: $palette-blue;
+    margin-top: 30px;
+    padding: 0.62rem 5rem;
+
+    &:hover {
+      background: $palette-blue;
+      color: $landing-03;
+    }
   }
 }
