@@ -26,6 +26,8 @@
             = link_to _("Catalogues"), backoffice_catalogues_path, class: "nav-link"
         = nav_link controller: :services, html_options: { class: "nav-item" } do
           = link_to _("Services"), backoffice_services_path, class: "nav-link"
+        = nav_link controller: :services, html_options: { class: "nav-item" } do
+          = link_to _("Statistics"), backoffice_services_path, class: "nav-link"
         - if policy([:backoffice, Provider]).index?
           = nav_link controller: :providers, html_options: { class: "nav-item" } do
             = link_to _("Providers"), backoffice_providers_path, class: "nav-link"

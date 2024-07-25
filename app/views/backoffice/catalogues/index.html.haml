@@ -1,22 +1,30 @@
 - content_for :title, _("Catalogues")
-- breadcrumb :backoffice_catalogues, params[:page].presence
-.container
+
+.container.p-0.backoffice
   %h1
     = _("Catalogues")
     - if policy([:backoffice, Catalogue]).new?
       .float-right
-        = link_to _("Add new Catalogue"),
+        = link_to _("+ Add new Catalogue"),
                   new_backoffice_catalogue_path,
                   class: "btn btn-primary",
                   "data-e2e": "add-new-catalogue"
       .clearfix
   %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-catalogues-list" }
+    %li.list-group-item.heading-row
+      .row
+        .col-12.col-md-5 Name
+        .col-12.col-md-2 Status
+        .col-12.col-md-5
     - @catalogues.each do |catalogue|
       %li.list-group-item.providers
         .row
-          .col-12.col-md-7
+          .col-12.col-md-5
             = link_to catalogue.name, backoffice_catalogue_path(catalogue,
             params: { page: params[:page] } || {}), class: "catalogue-name"
+          .col-12.col-md-2
+            %span.status{ class: catalogue.status }
+              = catalogue.status
           .col-12.col-md-5
             .actions
               - if policy([:backoffice, catalogue]).destroy?
@@ -28,7 +36,4 @@
                 - if policy([:backoffice, catalogue]).edit?
                   = link_to _("Edit"),
                       edit_backoffice_catalogue_path(catalogue),
-                      class: "btn-sm btn-warning float-right mr-4"
-
-            %span.status{ class: catalogue.status }
-              = catalogue.status
+                      class: "edit-btn float-right mr-4"
