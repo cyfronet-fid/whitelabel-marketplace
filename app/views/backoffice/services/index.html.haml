@@ -1,22 +1,9 @@
 - content_for :title, _("Owned services & datasources")
-- breadcrumb :backoffice_services, @category
 
 = content_for :category_view, "backoffice/categories/nav/category"
 = content_for :all_services, backoffice_services_path(category_query_params)
-
-.row.mb-3.d-flex.justify-content-center
-  .col-lg-3
-  .col-lg-6
-    = render "backoffice/services/search", query_params: @query_params || {}
-  .col-lg-3
-    - if policy([:backoffice, Service]).new?
-      = link_to _("Create new Service"),
-                    new_backoffice_service_path,
-                    class: "btn btn-primary create-resource float-right",
-                    "data-e2e": "create-resource"
-
-
-= render "services/index", services: @services,
+.container.p-0.backoffice
+  = render "services/index", services: @services,
                            presentable: @services,
                            category: @category,
                            pagy: @pagy,

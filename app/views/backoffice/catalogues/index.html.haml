@@ -13,19 +13,19 @@
   %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-catalogues-list" }
     %li.list-group-item.heading-row
       .row
-        .col-12.col-md-5 Name
+        .col-12.col-md-8 Name
         .col-12.col-md-2 Status
-        .col-12.col-md-5
+        .col-12.col-md-2
     - @catalogues.each do |catalogue|
       %li.list-group-item.providers
         .row
-          .col-12.col-md-5
+          .col-12.col-md-8
             = link_to catalogue.name, backoffice_catalogue_path(catalogue,
             params: { page: params[:page] } || {}), class: "catalogue-name"
           .col-12.col-md-2
             %span.status{ class: catalogue.status }
               = catalogue.status
-          .col-12.col-md-5
+          .col-12.col-md-2
             .actions
               - if policy([:backoffice, catalogue]).destroy?
                 = link_to backoffice_catalogue_path(catalogue.id),

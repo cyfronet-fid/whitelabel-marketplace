@@ -13,9 +13,9 @@
   %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-providers-list" }
     %li.list-group-item.heading-row
       .row
-        .col-12.col-md-5 Name
+        .col-12.col-md-8 Name
         .col-12.col-md-2 Status
-        .col-12.col-md-5
+        .col-12.col-md-2
     = render partial: "backoffice/providers/provider", collection: @providers, as: :provider
 
   = (pagy_bootstrap_nav @pagy).html_safe

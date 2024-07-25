@@ -1,5 +1,5 @@
 - content_for :title, _("New Provider")
 
 .container.p-0.backoffice
-  %h1#title.mb-4= _("New Provider")
+  %h1= _("New Provider")
   = render "form", provider: @provider, catalogues: @catalogues
