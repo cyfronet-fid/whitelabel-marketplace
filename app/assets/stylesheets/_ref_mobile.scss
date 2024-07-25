@@ -68,6 +68,23 @@
 }
 
 @media (max-width: 991px) {
+  .eosc-common.white-label {
+    .container {
+      ul {
+        li {
+          a {
+            float: right;
+            margin-bottom: 5px;
+          }
+        }
+      }
+    }
+  }
+
+  .breadcrumbs-backoffice-wrapper {
+    padding-top: 15px;
+  }
+
   .service-info-box {
     .title {
       font-size: 1em;
@@ -101,10 +118,6 @@
         font-size: 0.65rem;
       }
     }
-  }
-
-  .backoffice {
-    margin: 0 0 20px;
   }
 
   .navbar-toggler {
@@ -235,6 +248,23 @@
 }
 
 @media (max-width: 768px) {
+  .empty-information {
+    padding: 18px;
+
+    h2 {
+      font-size: 23px;
+      line-height: 120%;
+    }
+
+    .details-intro {
+      font-size: 19px;
+    }
+
+    .btn {
+      padding: 0.62rem 2rem;
+    }
+  }
+
   .browse {
     width: 100%;
 
