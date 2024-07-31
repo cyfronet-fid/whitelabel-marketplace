@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::PlatformsController < Backoffice::ApplicationController
+class Backoffice::OtherSettings::PlatformsController < Backoffice::ApplicationController
   before_action :find_and_authorize, only: %i[show edit update destroy]
 
   def index
@@ -21,7 +21,7 @@ class Backoffice::PlatformsController < Backoffice::ApplicationController
     authorize(@platform)
 
     if @platform.save
-      redirect_to backoffice_platform_path(@platform), notice: "New platform created successfully"
+      redirect_to backoffice_other_settings_platform_path(@platform), notice: "New platform created successfully"
     else
       render :new, status: :bad_request
     end
@@ -32,7 +32,7 @@ class Backoffice::PlatformsController < Backoffice::ApplicationController
 
   def update
     if @platform.update(permitted_attributes(@platform))
-      redirect_to backoffice_platform_path(@platform), notice: "Platform updated successfully"
+      redirect_to backoffice_other_settings_platform_path(@platform), notice: "Platform updated successfully"
     else
       render :edit, status: :bad_request
     end
@@ -40,7 +40,7 @@ class Backoffice::PlatformsController < Backoffice::ApplicationController
 
   def destroy
     @platform.destroy!
-    redirect_to backoffice_platforms_path, notice: "Platform removed successfully"
+    redirect_to backoffice_other_settings_platforms_path, notice: "Platform removed successfully"
   end
 
   private

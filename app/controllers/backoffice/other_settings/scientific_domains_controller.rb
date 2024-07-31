@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::ScientificDomainsController < Backoffice::ApplicationController
+class Backoffice::OtherSettings::ScientificDomainsController < Backoffice::ApplicationController
   before_action :find_and_authorize, only: %i[show edit update destroy]
 
   def index
@@ -21,7 +21,7 @@ class Backoffice::ScientificDomainsController < Backoffice::ApplicationControlle
     authorize(@scientific_domain)
 
     if @scientific_domain.save
-      redirect_to backoffice_scientific_domain_path(@scientific_domain),
+      redirect_to backoffice_other_settings_scientific_domain_path(@scientific_domain),
                   notice: "New scientific domain created successfully"
     else
       render :new, status: :bad_request
@@ -33,7 +33,7 @@ class Backoffice::ScientificDomainsController < Backoffice::ApplicationControlle
 
   def update
     if @scientific_domain.update(permitted_attributes(@scientific_domain))
-      redirect_to backoffice_scientific_domain_path(@scientific_domain),
+      redirect_to backoffice_other_settings_scientific_domain_path(@scientific_domain),
                   notice: "Scientific domain updated successfully"
     else
       render :edit, status: :bad_request
@@ -42,20 +42,20 @@ class Backoffice::ScientificDomainsController < Backoffice::ApplicationControlle
 
   def destroy
     if @scientific_domain.descendant_ids.present?
-      redirect_back fallback_location: backoffice_scientific_domain_path(@scientific_domain),
+      redirect_back fallback_location: backoffice_other_settings_scientific_domain_path(@scientific_domain),
                     alert:
                       "This scientific domain has successors connected to it,
                             therefore is not possible to remove it. If you want to remove it,
                             edit them so they are not associated with this scientific domain anymore"
     elsif @scientific_domain.services.present?
-      redirect_back fallback_location: backoffice_scientific_domain_path(@scientific_domain),
+      redirect_back fallback_location: backoffice_other_settings_scientific_domain_path(@scientific_domain),
                     alert: "This scientific domain has services connected to it, remove associations to delete it."
     elsif @scientific_domain.providers.present?
-      redirect_back fallback_location: backoffice_scientific_domain_path(@scientific_domain),
+      redirect_back fallback_location: backoffice_other_settings_scientific_domain_path(@scientific_domain),
                     alert: "This scientific domain has providers connected to it, remove associations to delete it."
     else
       @scientific_domain.destroy!
-      redirect_to backoffice_scientific_domains_path, notice: "Scientific Domain removed successfully"
+      redirect_to backoffice_other_settings_scientific_domains_path, notice: "Scientific Domain removed successfully"
     end
   end
 

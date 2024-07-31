@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Executive::StatisticsController < Executive::ApplicationController
+class Backoffice::StatisticsController < Backoffice::ApplicationController
   def index
     report = UsageReport.new
 

@@ -1,4 +1,5 @@
 - content_for :title, @service.name
+- breadcrumb :backoffice_service, @service
 
 .container.p-0.backoffice
   - if @service.offers.blank?

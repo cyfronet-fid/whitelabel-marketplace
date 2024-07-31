@@ -2,6 +2,6 @@
 - breadcrumb :backoffice_vocabulary_edit, @vocabulary, @type
 
 %h2= _("Edit #{@type}")
-= render "backoffice/vocabularies/form", vocabulary: @vocabulary,
-         url: send("backoffice_#{snake_cased(@type)}_path", @vocabulary),
+= render "form", vocabulary: @vocabulary,
+         url: send("backoffice_other_settings_#{snake_cased(@type)}_path", @vocabulary),
          button_name: "Update #{@type}", type: @type

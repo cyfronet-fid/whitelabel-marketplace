@@ -14,7 +14,7 @@ RSpec.feature "Platforms in backoffice", manager_frontend: true do
       create(:platform, name: "p1")
       create(:platform, name: "p2")
 
-      visit backoffice_platforms_path
+      visit backoffice_other_settings_platforms_path
 
       expect(page).to have_content("p1")
       expect(page).to have_content("p2")
@@ -29,7 +29,7 @@ RSpec.feature "Platforms in backoffice", manager_frontend: true do
     end
 
     scenario "I can create new platform" do
-      visit backoffice_platforms_path
+      visit backoffice_other_settings_platforms_path
       click_on "Add new Platform"
 
       fill_in "Name", with: "My new platform"

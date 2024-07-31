@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::CategoriesController < Backoffice::ApplicationController
+class Backoffice::OtherSettings::CategoriesController < Backoffice::ApplicationController
   before_action :find_and_authorize, only: %i[show edit update destroy]
 
   def index
@@ -21,7 +21,7 @@ class Backoffice::CategoriesController < Backoffice::ApplicationController
     authorize(@category)
 
     if @category.save
-      redirect_to backoffice_category_path(@category), notice: "New category created successfully"
+      redirect_to backoffice_other_settings_category_path(@category), notice: "New category created successfully"
     else
       render :new, status: :bad_request
     end
@@ -50,7 +50,7 @@ class Backoffice::CategoriesController < Backoffice::ApplicationController
                     alert: "This category has services connected to it, remove associations to delete it."
     else
       @category.destroy!
-      redirect_to backoffice_categories_path, notice: "Category removed successfully"
+      redirect_to backoffice_other_settings_categories_path, notice: "Category removed successfully"
     end
   end
 

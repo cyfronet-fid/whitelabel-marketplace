@@ -1,22 +1,26 @@
 - content_for :title, _("Owned services & datasources")
+- breadcrumb :backoffice_services
 
-= content_for :category_view, "backoffice/categories/nav/category"
+= content_for :category_view, "backoffice/other_settings/categories/nav/category"
 = content_for :all_services, backoffice_services_path(category_query_params)
 .container.p-0.backoffice
-  = render "services/index", services: @services,
-                           presentable: @services,
-                           category: @category,
-                           pagy: @pagy,
-                           services_count: @services_total,
-                           categories: @siblings_with_counters,
-                           subcategories: @subcategories_with_counters,
-                           sort_options: @sort_options,
-                           highlights: @highlights,
-                           filters: @filters,
-                           active_filters: @active_filters,
-                           offers: @offers,
-                           comparison_enabled: @comparison_enabled,
-                           favourite_services: @favourite_services,
-                           query_params: @query_params,
-                           show_recommendations: false,
-                           show_comparison: false
+  - if policy_scope([:backoffice, Service]).size.positive?
+    = render "services/index", services: @services,
+                             presentable: @services,
+                             category: @category,
+                             pagy: @pagy,
+                             services_count: @services_total,
+                             categories: @siblings_with_counters,
+                             subcategories: @subcategories_with_counters,
+                             sort_options: @sort_options,
+                             highlights: @highlights,
+                             filters: @filters,
+                             active_filters: @active_filters,
+                             offers: @offers,
+                             comparison_enabled: @comparison_enabled,
+                             favourite_services: @favourite_services,
+                             query_params: @query_params,
+                             show_recommendations: false,
+                             show_comparison: false
+  - else
+    Create your first service placeholder

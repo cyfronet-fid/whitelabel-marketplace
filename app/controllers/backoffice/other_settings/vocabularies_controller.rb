@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::VocabulariesController < Backoffice::ApplicationController
+class Backoffice::OtherSettings::VocabulariesController < Backoffice::ApplicationController
   before_action :find_and_authorize, only: %i[show edit update destroy]
   before_action :instantiate_type
 
@@ -23,7 +23,7 @@ class Backoffice::VocabulariesController < Backoffice::ApplicationController
     authorize(@vocabulary)
 
     if @vocabulary.save
-      redirect_to send("backoffice_#{@vocabulary.model_name.element}_path", @vocabulary),
+      redirect_to send("backoffice_other_settings_#{@vocabulary.model_name.element}_path", @vocabulary),
                   notice: "New #{VOCABULARY_TYPES[@vocabulary.model_name.element.to_sym][:name]} created successfully"
     else
       render :new, status: :bad_request
@@ -35,7 +35,7 @@ class Backoffice::VocabulariesController < Backoffice::ApplicationController
 
   def update
     if @vocabulary.update(permitted_attributes(@vocabulary))
-      redirect_to send("backoffice_#{@vocabulary.model_name.element}_path", @vocabulary),
+      redirect_to send("backoffice_other_settings_#{@vocabulary.model_name.element}_path", @vocabulary),
                   notice: "#{VOCABULARY_TYPES[@vocabulary.model_name.element.to_sym][:name]} updated successfully"
     else
       render :edit, status: :bad_request
@@ -44,20 +44,23 @@ class Backoffice::VocabulariesController < Backoffice::ApplicationController
 
   def destroy
     if @vocabulary.descendant_ids.present?
-      redirect_back fallback_location: send("backoffice_#{@vocabulary.model_name.element}_path", @vocabulary),
+      redirect_back fallback_location:
+                      send("backoffice_other_settings_#{@vocabulary.model_name.element}_path", @vocabulary),
                     alert:
                       "This #{@type} has successors connected to it,
                             therefore is not possible to remove it. If you want to remove it,
                             edit them so they are not associated with this #{@type} anymore"
     elsif @vocabulary.try(:services).present?
-      redirect_back fallback_location: send("backoffice_#{@vocabulary.model_name.element}_path", @vocabulary),
+      redirect_back fallback_location:
+                      send("backoffice_other_settings_#{@vocabulary.model_name.element}_path", @vocabulary),
                     alert: "This vocabulary has services connected to it, remove associations to delete it."
     elsif @vocabulary.try(:providers).present?
-      redirect_back fallback_location: send("backoffice_#{@vocabulary.model_name.element}_path", @vocabulary),
+      redirect_back fallback_location:
+                      send("backoffice_other_settings_#{@vocabulary.model_name.element}_path", @vocabulary),
                     alert: "This vocabulary has providers connected to it, remove associations to delete it."
     else
       @vocabulary.destroy!
-      redirect_to send("backoffice_#{@vocabulary.model_name.element.pluralize}_path"),
+      redirect_to send("backoffice_other_settings_#{@vocabulary.model_name.element.pluralize}_path"),
                   notice: "#{@type} removed successfully"
     end
   end
