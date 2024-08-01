@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::CategoryPolicy < ApplicationPolicy
-  class Scope < Scope
-    def resolve
-      scope
-    end
-  end
-
+class Backoffice::CategoryPolicy < Backoffice::VocabularyPolicy
   def index?
     service_portfolio_manager?
   end
@@ -33,11 +27,5 @@ class Backoffice::CategoryPolicy < ApplicationPolicy
 
   def permitted_attributes
     %i[name description eid parent_id logo]
-  end
-
-  private
-
-  def service_portfolio_manager?
-    user&.service_portfolio_manager?
   end
 end
