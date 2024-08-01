@@ -2,7 +2,7 @@
 - breadcrumb :backoffice_scientific_domains
 
 = render "layouts/backoffice/other_settings_wrapper" do
-  .container
+  .container.p-0.backoffice
     %h1
       = _("Scientific Domains")
       - if policy([:backoffice, ScientificDomain]).new?
@@ -13,7 +13,7 @@
                     "data-e2e": "add-new-scientific-domain"
         .clearfix
     -# haml-lint:disable InlineStyles
-    %ul.list-group.backoffice-list.indent-list.mt-3.mb-3{ "data-e2e": "backoffice-scientific-domains-list" }
+    %ul.list-group.backoffice-list.indent-list.mb-3{ "data-e2e": "backoffice-scientific-domains-list" }
       - ancestry_tree(@scientific_domains).each do |record|
         - sd = record[1]
         %li.list-group-item{ class: "#{"subcategory" if sd.ancestry_depth.positive?}",
@@ -30,5 +30,5 @@
             - if policy([:backoffice, sd]).edit?
               = link_to _("Edit"),
                         edit_backoffice_other_settings_scientific_domain_path(sd),
-                        class: "btn-sm btn-warning float-right mr-4"
+                        class: "edit-btn float-right mr-4"
     -# haml-lint:enable InlineStyles

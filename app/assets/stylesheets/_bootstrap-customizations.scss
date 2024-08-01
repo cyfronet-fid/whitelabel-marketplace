@@ -2656,7 +2656,7 @@ label[data-multicheckbox].small {
 .backoffice-list {
   .list-group-item {
     border: none;
-    padding: 0.45rem 1.2rem;
+    padding: 0.45rem 1rem;
 
     &:nth-child(even) {
       background: $alert-bg;
@@ -2664,7 +2664,7 @@ label[data-multicheckbox].small {
 
     &.subcategory {
       padding-left: var(--pl-level);
-      background: url("tree-indent.png") no-repeat var(--bg-level) 0;
+      background: $palette-white url("tree-indent.png") no-repeat var(--bg-level) 0 !important;
     }
 
     a {
@@ -2747,6 +2747,12 @@ label[data-multicheckbox].small {
     background: url("icon-edit.svg") 100% 50% no-repeat;
     background-size: 18px auto;
     font-size: 14px;
+  }
+
+  &.indent-list {
+    .list-group-item {
+      background: $alert-bg;
+    }
   }
 }
 
@@ -8464,6 +8470,13 @@ footer {
 .breadcrumbs-backoffice-wrapper {
   background: $alert-bg !important;
   padding-bottom: 15px;
+
+  .breadcrumbs {
+    .data-probe {
+      padding: 0;
+      border: 0;
+    }
+  }
 }
 
 .commons-header .menu {
@@ -8472,7 +8485,7 @@ footer {
 
 .backoffice-nav {
   border-radius: 8px;
-  margin-top: 30px;
+  margin: 30px 0;
   padding: 0;
   border: 1px solid $custom-17;
 
@@ -8654,6 +8667,25 @@ footer {
     &:hover {
       background: $palette-blue;
       color: $landing-03;
+    }
+  }
+}
+
+.other-settings-menu {
+  width: 100%;
+  margin-bottom: 40px;
+  border-bottom: 1px solid $custom-17;
+  display: flex;
+
+  a {
+    font-size: 18px;
+    font-weight: 500;
+    padding: 8px 24px;
+    color: $landing-01;
+
+    &.active {
+      color: $landing-04;
+      border-bottom: 4px solid $landing-04;
     }
   }
 }

@@ -14,14 +14,14 @@
                   "data-e2e": "add-new-catalogue"
   - else
     %h1
-    = _("Catalogues")
-    - if policy([:backoffice, Catalogue]).new?
-      .float-right
-        = link_to _("+ Add new Catalogue"),
-                  new_backoffice_catalogue_path,
-                  class: "btn btn-primary",
-                  "data-e2e": "add-new-catalogue"
-      .clearfix
+      = _("Catalogues")
+      - if policy([:backoffice, Catalogue]).new?
+        .float-right
+          = link_to _("+ Add new Catalogue"),
+                    new_backoffice_catalogue_path,
+                    class: "btn btn-primary",
+                    "data-e2e": "add-new-catalogue"
+        .clearfix
     %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-catalogues-list" }
       %li.list-group-item.heading-row
         .row
