@@ -80,6 +80,11 @@ crumb :backoffice_bundle_edit do |bundle|
   parent :backoffice_service, bundle.service
 end
 
+crumb :backoffice_statistics do
+  link "Statistics", backoffice_statistics_path
+  parent :backoffice_root
+end
+
 crumb :backoffice_other_settings do
   link "Other settings", backoffice_scientific_domains_path
   parent :backoffice_root
