@@ -1,7 +1,7 @@
 - content_for :title, _("Categories")
 - breadcrumb :backoffice_categories
 = render "layouts/backoffice/other_settings_wrapper" do
-  .container
+  .container.p-0.backoffice
     %h1
       = _("Categories")
       - if policy([:backoffice, Category]).new?
@@ -29,5 +29,5 @@
             - if policy([:backoffice, category]).edit?
               = link_to _("Edit"),
                   edit_backoffice_other_settings_category_path(category),
-                  class: "btn-sm btn-warning float-right mr-4"
+                  class: "edit-btn float-right mr-4"
     -# haml-lint:enable InlineStyles

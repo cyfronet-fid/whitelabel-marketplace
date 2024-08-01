@@ -2,20 +2,22 @@
 - breadcrumb :backoffice_vocabularies, @type.pluralize
 
 = render "layouts/backoffice/other_settings_wrapper" do
-  .container
+  .container.p-0.backoffice
     %h1
-      = _(@type.pluralize)
+      Vocabularies
     .row
       .col-12.col-md-3
         = render "backoffice/other_settings/vocabularies/nav", types: @all_types
       .col-12.col-md-9
-        - if policy([:backoffice, Vocabulary]).new?
-          .float-right
-            = link_to _("Add new #{@type}"),
-                          send("new_backoffice_other_settings_#{snake_cased(@type)}_path"),
-                          class: "btn btn-primary",
-                          "data-e2e": "add-new-vocabulary-btn"
-          .clearfix
+        %h2
+          = _(@type.pluralize)
+          - if policy([:backoffice, Vocabulary]).new?
+            .float-right
+              = link_to _("Add new #{@type}"),
+                            send("new_backoffice_other_settings_#{snake_cased(@type)}_path"),
+                            class: "btn btn-primary",
+                            "data-e2e": "add-new-vocabulary-btn"
+            .clearfix
         -# haml-lint:disable InlineStyles
         %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-vocabulary-list" }
           - ancestry_tree(@vocabularies).each do |record|
@@ -32,5 +34,5 @@
                     %i.far.fa-trash-alt
                 - if policy([:backoffice, Vocabulary]).edit?
                   = link_to _("Edit"), send("edit_backoffice_other_settings_#{snake_cased(@type)}_path", vocabulary),
-                  class: "btn-sm btn-warning float-right mr-4"
+                  class: "edit-btn float-right mr-4"
         -# haml-lint:enable InlineStyles

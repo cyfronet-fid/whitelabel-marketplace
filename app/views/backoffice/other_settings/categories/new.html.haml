@@ -1,5 +1,6 @@
 - content_for :title, _("New Category")
 - breadcrumb :backoffice_category_new, @category
-
-%h2= _("New Category")
-= render "form", category: @category
+= render "layouts/backoffice/other_settings_wrapper" do
+  .container.p-0.backoffice
+    %h1= _("New Category")
+    = render "form", category: @category
