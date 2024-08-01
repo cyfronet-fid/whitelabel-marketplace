@@ -318,10 +318,19 @@
     .info-icons {
       top: 15px;
       right: 15px;
+
+      .access-information {
+        padding-top: 8px !important;
+      }
     }
 
     h2 {
       font-size: 1rem;
+
+      .badge {
+        top: 0;
+        left: 10px;
+      }
     }
 
     .media-body {
@@ -353,6 +362,10 @@
 
     .media-body {
       order: 2;
+    }
+
+    .backoffice-button-row {
+      order: 3;
     }
 
     .right-extra-info {
@@ -1043,6 +1056,8 @@
   .backoffice-list {
     .list-group-item {
       a {
+        font-size: 13px !important;
+
         &:first-child {
           max-width: 60%;
           font-size: 0.9rem;
@@ -1053,6 +1068,12 @@
 
     &.indent-list {
       .list-group-item {
+        &.subcategory {
+          a {
+            font-size: 12px;
+          }
+        }
+
         a {
           &:first-child {
             max-width: 100%;
@@ -1060,6 +1081,29 @@
           }
         }
       }
+    }
+  }
+
+  .other-settings-menu {
+    margin-bottom: 40px;
+    border-bottom: 0;
+    flex-direction: column;
+
+    a {
+      font-size: 16px;
+      padding: 0 0 17px;
+    }
+  }
+
+  .backoffice {
+    h1 {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      font-size: 12px;
+      padding: 0.52rem 1rem;
     }
   }
 

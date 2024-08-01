@@ -3,14 +3,14 @@
 
 .container.p-0.backoffice
   %h1= _("Statistics")
-  .card-deck.text-center.mb-4
+  .card-deck.text-center.mb-4.statistics-card
     = render "statistic", title: _("All services"), amount: @all_services_count,
       description: _("Number of all EOSC services registered in the EOSC Marketplace")
     = render "statistic", title: _("Marketplace ordering"), amount: @orderable_count,
       description: _("Number of EOSC services with offerings using EOSC Marketplace ordering process")
     = render "statistic", title: _("No Marketplace ordering"), amount: @not_orderable_count,
       description: _("Number of EOSC services not using EOSC Marketplace ordering process")
-  .card-deck.mb-4.text-center
+  .card-deck.mb-4.text-center.statistics-card
     = render "statistic", title: _("Fully open access"), amount: @fully_open_access_count,
       description: statistics_description("fully_open_access")
     = render "statistic", title: _("Open access"), amount: @open_access_count,
@@ -19,7 +19,7 @@
       description: statistics_description("order_required")
     = render "statistic", title: _("Other"), amount: @other_count,
       description: statistics_description("other")
-  #statistics.accordion
+  #statistics.accordion.statistics-accordion
     = render "pages/card", parent: "statistics",
       name: "providers", title: _("Providers (%{count})") % { count: @providers_count } do
       %p= _("Providers in the Marketplace:")

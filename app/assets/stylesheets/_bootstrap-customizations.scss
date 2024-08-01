@@ -654,7 +654,7 @@ textarea:-ms-input-placeholder {
 
   .collapse,
   .collapsing {
-    background: $palette-solid-5;
+    background: $alert-bg;
   }
 }
 
@@ -6951,7 +6951,7 @@ abbr[title] {
   }
 
   .landing-header {
-    background: var(--Linear, linear-gradient(177deg, #fff 2.04%, #edf4ff 97.59%));
+    background: var(--Linear, linear-gradient(180deg, #fff 0%, #edf4ff 100%));
     padding: 90px 0 110px;
 
     .logo-box {
@@ -7781,10 +7781,6 @@ abbr[title] {
 }
 
 .eosc-common {
-  &.top {
-    background: var(--Linear, linear-gradient(180deg, $palette-white 2.04%, $alert-bg 97.59%)) !important;
-  }
-
   &.white-label {
     .container {
       padding-left: 45px !important;
@@ -7811,6 +7807,37 @@ abbr[title] {
         display: block;
       }
     }
+  }
+}
+
+.backoffice {
+  .top {
+    background: var(--Linear, linear-gradient(180deg, $palette-white 2.04%, $alert-bg 97.59%)) !important;
+  }
+
+  h1 {
+    color: $custom-16;
+    font-size: 29px;
+    font-weight: 600;
+    margin-bottom: 35px;
+    line-height: 100%; /* 50px */
+  }
+
+  h2 {
+    color: $custom-16;
+    font-size: 22px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    line-height: 100%; /* 50px */
+  }
+
+  .btn-primary {
+    font-size: 14px;
+    padding: 0.62rem 1.3rem;
+  }
+
+  .category-separator {
+    display: none;
   }
 }
 
@@ -8514,33 +8541,6 @@ footer {
   }
 }
 
-.backoffice {
-  h1 {
-    color: $custom-16;
-    font-size: 29px;
-    font-weight: 600;
-    margin-bottom: 35px;
-    line-height: 100%; /* 50px */
-  }
-
-  h2 {
-    color: $custom-16;
-    font-size: 22px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    line-height: 100%; /* 50px */
-  }
-
-  .btn-primary {
-    font-size: 14px;
-    padding: 0.62rem 1.3rem;
-  }
-
-  .category-separator {
-    display: none;
-  }
-}
-
 .become-provider {
   border-radius: 8px;
   background: $alert-bg;
@@ -8694,6 +8694,26 @@ footer {
     &.active {
       color: $landing-04;
       border-bottom: 4px solid $landing-04;
+    }
+  }
+}
+
+.statistics-card {
+  .card {
+    overflow: hidden;
+
+    .card-header {
+      color: $palette-white;
+      background: $palette-blue;
+      font-size: 18px;
+    }
+  }
+}
+
+.statistics-accordion {
+  .card-header {
+    .btn {
+      font-weight: 600;
     }
   }
 }
