@@ -234,6 +234,10 @@ a {
   }
 }
 
+.breadcrumbs-wrapper {
+  margin: 12px auto 20px;
+}
+
 .breadcrumbs {
   font-size: 15px;
   font-weight: 300;
@@ -241,7 +245,7 @@ a {
 
   .data-probe {
     border-bottom: 1px solid $custom-17;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
   }
 
   a {
