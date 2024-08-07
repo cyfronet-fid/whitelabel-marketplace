@@ -26,7 +26,7 @@
       %li.list-group-item.heading-row
         .row
           .col-12.col-md-8 Name
-          .col-12.col-md-2 Status
+          .col-12.col-md-2.text-center Status
           .col-12.col-md-2
       - @catalogues.each do |catalogue|
         %li.list-group-item.providers
@@ -34,7 +34,7 @@
             .col-12.col-md-8
               = link_to catalogue.name, backoffice_catalogue_path(catalogue,
               params: { page: params[:page] } || {}), class: "catalogue-name"
-            .col-12.col-md-2
+            .col-12.col-md-2.text-center
               %span.status{ class: catalogue.status }
                 = catalogue.status
             .col-12.col-md-2

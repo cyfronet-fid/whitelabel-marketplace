@@ -20,3 +20,4 @@
           %li "#{source.source_type}: #{source.eid}"
     %hr.bottom-hr.mt-5.mb-4
     = render "actions", provider: @provider
+  = link_to _("<- Back to Providers"), backoffice_providers_path, class: "backoffice-back-link mt-3"

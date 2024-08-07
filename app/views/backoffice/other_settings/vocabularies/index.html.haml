@@ -13,7 +13,7 @@
           = _(@type.pluralize)
           - if policy([:backoffice, Vocabulary]).new?
             .float-right
-              = link_to _("Add new #{@type}"),
+              = link_to _("+ Add new #{@type}"),
                             send("new_backoffice_other_settings_#{snake_cased(@type)}_path"),
                             class: "btn btn-primary",
                             "data-e2e": "add-new-vocabulary-btn"

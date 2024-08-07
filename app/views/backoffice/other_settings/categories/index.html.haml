@@ -6,7 +6,7 @@
       = _("Categories")
       - if policy([:backoffice, Category]).new?
         .float-right
-          = link_to _("Add new Category"),
+          = link_to _("+ Add new Category"),
                     new_backoffice_other_settings_category_path,
                     class: "btn btn-primary",
                     "data-e2e": "add-new-category"

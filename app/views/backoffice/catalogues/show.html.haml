@@ -44,3 +44,5 @@
                   backoffice_catalogue_path(@catalogue.id),
                   class: "btn btn-danger",
                   data: { turbo_confirm: action_prompt("catalogue", "remove"), turbo_method: :delete }
+
+  = link_to _("<- Back to Catalogues"), backoffice_catalogues_path, class: "backoffice-back-link mt-3"

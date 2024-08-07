@@ -18,7 +18,7 @@ body {
 
   > main {
     padding: 0 15px;
-    margin-bottom: 5.5rem;
+    margin-bottom: 3.5rem;
   }
 }
 
@@ -2690,7 +2690,6 @@ label[data-multicheckbox].small {
     }
 
     .status {
-      float: left;
       margin: 0;
       text-align: center;
       color: $palette-white;
@@ -6212,10 +6211,13 @@ abbr[title] {
 
     a {
       font-size: 16px;
-    }
+      width: 100%;
+      display: block;
 
-    a[aria-expanded="true"] {
-      font-weight: 600;
+      &.active {
+        font-weight: 600;
+        border-bottom: 3px solid $custom-12;
+      }
     }
   }
 }
@@ -6229,7 +6231,7 @@ abbr[title] {
   background: $white;
   z-index: 100;
   padding: 0 20px 20px 0;
-  max-width: 162px;
+  max-width: 235px;
 }
 
 .based-on-your-search {
@@ -8541,6 +8543,13 @@ footer {
         padding: 10px 4px;
         text-align: center;
       }
+
+      &.active {
+        .nav-link {
+          background: $alert-bg;
+          color: $custom-12;
+        }
+      }
     }
   }
 }
@@ -8607,10 +8616,6 @@ footer {
     background: $palette-white;
     max-width: 810px;
     border: 1px solid $palette-white;
-
-    &:hover {
-      border: 1px solid $custom-16;
-    }
 
     .backoffice-item-txt {
       gap: 15px;
@@ -8720,4 +8725,9 @@ footer {
       font-weight: 600;
     }
   }
+}
+
+.backoffice-back-link {
+  display: block;
+  margin-top: 25px;
 }
