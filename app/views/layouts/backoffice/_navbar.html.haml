@@ -1,3 +1,4 @@
+- other_settings = %w[scientific_domains categories platforms vocabularies]
 = render "layouts/sections"
 
 .breadcrumbs-backoffice-wrapper
@@ -26,7 +27,7 @@
             = link_to _("Catalogues"), backoffice_catalogues_path, class: "nav-link"
         = nav_link controller: :statistics, html_options: { class: "nav-item" } do
           = link_to _("Statistics"), backoffice_statistics_path, class: "nav-link"
-        = nav_link controller: :scientific_domains, html_options: { class: "nav-item" } do
-          - other_settings = %w[scientific_domains categories platforms vocabularies]
+        = nav_link controller: :scientific_domains,
+        html_options: { class: "nav-item #{"active" if controller.controller_name.in? other_settings}" } do
           = link_to _("Other settings"), backoffice_scientific_domains_path,
-          class: "nav-link #{"active" if controller.controller_name.in? other_settings}"
+          class: "nav-link"

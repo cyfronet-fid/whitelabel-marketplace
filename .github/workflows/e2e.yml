@@ -83,7 +83,7 @@ jobs:
         path: ./test/system/cypress/screenshots
     - name: Containers logs
       if: failure()
-      run: docker-compose logs
+      run: docker compose logs
     - name: Stop containers
       if: always()
-      run: docker-compose down
+      run: docker compose down

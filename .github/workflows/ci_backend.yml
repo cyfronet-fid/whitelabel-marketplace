@@ -35,7 +35,7 @@ jobs:
         bundle exec rspec -t ~end_user_frontend -t ~manager_frontend
     - name: Containers logs
       if: failure()
-      run: docker-compose logs
+      run: docker compose logs
     - name: Stop containers
       if: always()
-      run: docker-compose down
+      run: docker compose down
