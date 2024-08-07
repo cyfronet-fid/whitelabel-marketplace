@@ -7,7 +7,7 @@
       Vocabularies
     .row
       .col-12.col-md-3
-        = render "backoffice/other_settings/vocabularies/nav", types: @all_types
+        = render "backoffice/other_settings/vocabularies/nav", types: @all_types, type: @type
       .col-12.col-md-9
         %h2
           = _(@type.pluralize)

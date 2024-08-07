@@ -1,6 +1,6 @@
 .col-12.justify-content-center.d-none{ class: ("d-flex" if request.fullpath.include?("backoffice")) }
   .col-lg-9.pl-0
-    = render "backoffice/services/search", query_params: @query_params || {}
+    = render "backoffice/services/search", query_params: query_params || {}
   .col-lg-3.pr-0
     - if policy([:backoffice, Service]).new?
       = link_to _("+ Create new Service"),
