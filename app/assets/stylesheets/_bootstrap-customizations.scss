@@ -184,7 +184,7 @@ a {
   }
 
   &:hover {
-    background: $custom-12;
+    background: $landing-04;
   }
 }
 
@@ -8542,6 +8542,14 @@ footer {
         font-weight: 500;
         padding: 10px 4px;
         text-align: center;
+
+        &:hover {
+          background: $alert-bg;
+        }
+
+        &::before {
+          display: none;
+        }
       }
 
       &.active {
