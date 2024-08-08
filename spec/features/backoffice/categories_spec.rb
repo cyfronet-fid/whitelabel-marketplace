@@ -24,7 +24,7 @@ RSpec.feature "Categories in backoffice", manager_frontend: true do
       parent = create(:category, name: "parent")
       child = create(:category, name: "child", parent: parent)
 
-      visit backoffice_category_path(child)
+      visit backoffice_other_settings_category_path(child)
 
       expect(page).to have_content("child")
       expect(page).to have_content("parent")
@@ -49,7 +49,7 @@ RSpec.feature "Categories in backoffice", manager_frontend: true do
       create(:category, name: "parent")
       category = create(:category, name: "Old name")
 
-      visit edit_backoffice_category_path(category)
+      visit edit_backoffice_other_settings_category_path(category)
 
       fill_in "Name", with: "New name"
       select "parent", from: "Parent"

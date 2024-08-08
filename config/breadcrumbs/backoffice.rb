@@ -61,22 +61,22 @@ crumb :backoffice_service_preview do |service|
 end
 
 crumb :backoffice_offer_new do |service|
-  link "New", new_backoffice_service_offer_path(service)
+  link "New Offer", new_backoffice_service_offer_path(service)
   parent :backoffice_service, service
 end
 
 crumb :backoffice_offer_edit do |offer|
-  link "Edit", edit_backoffice_service_offer_path(offer)
+  link "Edit Offer", edit_backoffice_service_offer_path(offer.service, offer)
   parent :backoffice_service, offer.service
 end
 
 crumb :backoffice_bundle_new do |bundle|
-  link "New", backoffice_service_path(bundle.service)
+  link "New Bundle", backoffice_service_path(bundle.service)
   parent :backoffice_service, bundle.service
 end
 
 crumb :backoffice_bundle_edit do |bundle|
-  link "Edit", edit_backoffice_service_bundle_path(bundle)
+  link "Edit Bundle", edit_backoffice_service_bundle_path(bundle.service, bundle)
   parent :backoffice_service, bundle.service
 end
 
@@ -86,7 +86,7 @@ crumb :backoffice_statistics do
 end
 
 crumb :backoffice_other_settings do
-  link "Other settings", backoffice_scientific_domains_path
+  link "Other settings", backoffice_other_settings_scientific_domains_path
   parent :backoffice_root
 end
 

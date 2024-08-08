@@ -22,9 +22,11 @@
                              query_params: @query_params,
                              show_recommendations: false,
                              show_comparison: false
+  - elsif !policy_scope([:backoffice, Provider]).size.positive?
+    = render "backoffice/services/blank_prompt", title: _("To add a Service, create a Provider first"),
+      prompt: _("Join our Providers to explore how to onboard services and create offers."),
+      link_text: _("Go to providers page"), link_path: backoffice_providers_path
   - else
-    .empty-information.col-12.col-md-9.m-auto
-      %h2 To add a Service, create a Provider first
-      .details-intro
-        Join our Providers to explore how to onboard services and create offers.
-      %a.btn.btn-primary{ href: "/backoffice/providers" } Go to providers page
+    = render "backoffice/services/blank_prompt", title: _("You don't have any Owned Services"),
+      prompt: _("Create your first service by clicking the button below."),
+      link_text: _("+ Create new Service"), link_path: new_backoffice_service_path

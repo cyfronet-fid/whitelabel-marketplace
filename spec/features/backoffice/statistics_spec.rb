@@ -11,14 +11,14 @@ RSpec.feature "Executive stistics", manager_frontend: true do
     let(:user) { create(:user) }
 
     scenario "I cannot see executive statistics" do
-      visit executive_statistics_path
+      visit backoffice_statistics_path
 
       expect(page.body).to have_no_selector("h1", text: "Statistics")
     end
   end
 
-  context "as executive member" do
-    let(:user) { create(:user, roles: [:executive]) }
+  context "as service_portfolio_manager" do
+    let(:user) { create(:user, roles: [:service_portfolio_manager]) }
 
     scenario "I can see executive statistics" do
       report =
@@ -37,7 +37,7 @@ RSpec.feature "Executive stistics", manager_frontend: true do
         )
       allow(UsageReport).to receive(:new).and_return(report)
 
-      visit executive_statistics_path
+      visit backoffice_statistics_path
 
       expect(page.body).to have_selector("h1", text: "Statistics")
       expect(page.body).to have_text(

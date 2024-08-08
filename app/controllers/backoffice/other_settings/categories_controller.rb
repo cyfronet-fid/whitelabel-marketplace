@@ -32,7 +32,7 @@ class Backoffice::OtherSettings::CategoriesController < Backoffice::ApplicationC
 
   def update
     if @category.update(permitted_attributes(@category))
-      redirect_to backoffice_category_path(@category), notice: "Category updated successfully"
+      redirect_to backoffice_other_settings_category_path(@category), notice: "Category updated successfully"
     else
       render :edit, status: :bad_request
     end
@@ -40,13 +40,13 @@ class Backoffice::OtherSettings::CategoriesController < Backoffice::ApplicationC
 
   def destroy
     if @category.descendant_ids.present?
-      redirect_back fallback_location: backoffice_category_path(@category),
+      redirect_back fallback_location: backoffice_other_settings_category_path(@category),
                     alert:
                       "This category has successors connected to it,
                             therefore is not possible to remove it. If you want to remove it,
                             edit them so they are not associated with this category anymore"
     elsif @category.services.present?
-      redirect_back fallback_location: backoffice_category_path(@category),
+      redirect_back fallback_location: backoffice_other_settings_category_path(@category),
                     alert: "This category has services connected to it, remove associations to delete it."
     else
       @category.destroy!
