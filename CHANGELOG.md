@@ -9,13 +9,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## [3.58.0]
 
+### Added
+- Environmental variable to hide recommendation panel (`SHOW_RECOMMENDATION_PANEL`) (@maria-j-k)
+
 ### Changed
 - MarketplaceLocation renamed to ResearchActivity (@maria-j-k)
 - Remove suggested services (@maria-j-k)
 - Unlock unpublish/suspend and delete actions for active providers and catalogues (@goreck888)
-
-### Added
-- Environmental variable to hide recommendation panel (`SHOW_RECOMMENDATION_PANEL`) (@maria-j-k)
 
 ### Fixed
 - Number of requests handling data_administrators scope (@goreck888)
@@ -23,6 +23,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Pre-fill administrator data in catalogues creation form (@maria-j-k)
 - Fix access_type validator in offer (@maria-j-k)
 
+### Security
+- Bump ruby to 3.3.4 and other dependencies - rexml and braces (@goreck888)
 
 ## [3.57.0]
 
