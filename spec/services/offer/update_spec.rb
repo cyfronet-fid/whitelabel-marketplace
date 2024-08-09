@@ -53,7 +53,7 @@ RSpec.describe Offer::Update, backend: true do
       bundled_offer.reload
       bundle.reload
 
-      expect(bundle).to be_unpublished
+      expect(bundle).to be_draft
     end
   end
 end
