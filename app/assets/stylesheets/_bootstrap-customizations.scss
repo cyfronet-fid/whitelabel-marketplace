@@ -8743,6 +8743,68 @@ footer {
   }
 }
 
+.showcase-placeholder {
+  border-radius: 8px;
+  background: $alert-bg;
+  padding: 40px 37px;
+
+  h2 {
+    color: $custom-12;
+    font-size: 32px;
+    font-weight: 600;
+    line-height: 100%;
+    margin-bottom: 20px;
+  }
+
+  p {
+    color: $landing-01;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 140%;
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  .empty-information {
+    max-width: 100%;
+    color: $palette-white;
+    margin-top: 25px !important;
+    background-position: 50% 50%;
+    padding: 30px 25px 30px 30px;
+    font-weight: 300;
+    line-height: 140%;
+
+    h2 {
+      color: $landing-03;
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 100%;
+    }
+
+    p {
+      color: $palette-white;
+      font-weight: 300;
+      font-size: 22px;
+    }
+
+    ul {
+      li {
+        color: $palette-white;
+        font-weight: 300;
+        margin-bottom: 14px;
+        font-size: 22px;
+        line-height: 140%;
+      }
+    }
+
+    .btn-primary {
+      width: 100%;
+    }
+  }
+}
+
 .statistics-card {
   .card {
     overflow: hidden;

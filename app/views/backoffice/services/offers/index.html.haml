@@ -6,9 +6,17 @@
   - if @offers.manageable.any?
     = render "layouts/common_parts/services/offers", offers: @offers, service: @service, bundles: @bundles
   - else
-    %h2 Showcase your service
-    %p
-      You added your service without creating an offer. It has appeared in our catalog for informational purposes only.
-      Users can find your service and see its details, but they can’t order or interact with it directly.
-    = render "backoffice/services/blank_prompt", title: _("Unlock the full potential of your service"),
-      prompt: new_offer_prompt, link_text: _("Create an offer"), link_path: new_backoffice_service_offer_path(@service)
+    .showcase-placeholder
+      .d-flex
+        .left-column
+          %h2 Showcase your service
+          %p
+            You added your service without creating an offer. It has appeared in our catalog
+            %span for informational purposes only.
+            Users can find your service and see its details, but they
+            %span can’t order or interact with it directly.
+        .right-column
+          = image_tag("arrow-down.svg")
+      = render "backoffice/services/blank_prompt", title: _("Unlock the full potential of your service"),
+        prompt: new_offer_prompt, link_text: _("+ Create an offer"),
+        link_path: new_backoffice_service_offer_path(@service)

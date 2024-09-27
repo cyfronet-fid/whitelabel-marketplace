@@ -47,6 +47,49 @@
 }
 
 @media (max-width: 991px) {
+  .showcase-placeholder {
+    padding: 20px;
+
+    .right-column {
+      display: flex;
+      padding-left: 10px;
+
+      img {
+        max-width: 90px;
+        height: auto;
+      }
+    }
+
+    h2 {
+      font-size: 23px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 16px;
+    }
+
+    .empty-information {
+      margin-top: 10px !important;
+      padding: 25px 15px 30px 20px !important;
+
+      h2 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 16px;
+      }
+
+      ul {
+        li {
+          font-size: 16px;
+          margin-bottom: 9px;
+        }
+      }
+    }
+  }
+
   .details-box-wrapper {
     z-index: 1;
 
