@@ -5195,12 +5195,6 @@ abbr[title] {
   }
 }
 
-.subsection {
-  margin: 0;
-  font-weight: 300;
-  padding-bottom: 0;
-}
-
 .additional-information {
   .offer-description {
     h4 {
@@ -7854,11 +7848,42 @@ abbr[title] {
     font-weight: 500;
     margin-bottom: 20px;
     line-height: 100%; /* 50px */
+
+    &.subsection {
+      font-size: 24px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 140%; /* 33.6px */
+      color: $landing-02;
+      display: flex;
+    }
   }
 
   .btn-primary {
     font-size: 14px;
     padding: 0.62rem 1.3rem;
+
+    &.btn-sm {
+      padding: 6px 30px;
+      border: 1px solid $custom-16;
+    }
+  }
+
+  .btn-secondary {
+    font-size: 14px;
+    padding: 0.62rem 1.3rem;
+    border: 1px solid $custom-16;
+    background: $alert-bg;
+    color: $custom-16;
+
+    &.btn-sm {
+      padding: 6px 30px;
+    }
+
+    &:hover {
+      background: $custom-16;
+      color: $palette-white;
+    }
   }
 
   .category-separator {
