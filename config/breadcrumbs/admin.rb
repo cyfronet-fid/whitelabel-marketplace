@@ -38,3 +38,8 @@ crumb :admin_tour_feedbacks do
   link "Tour Feedback", admin_tour_feedbacks_path
   parent :admin_root
 end
+
+crumb :admin_features do
+  link "Features", admin_features_path
+  parent :admin_root
+end
