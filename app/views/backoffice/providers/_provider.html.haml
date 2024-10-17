@@ -2,7 +2,7 @@
   .row
     .col-12.col-md-8
       = link_to provider.name, backoffice_provider_path(provider,
-            params: { page: params[:page] } || {}), class: "provider-name"
+            params: { page: params[:page] } || {}), class: "#{provider}-name"
     .col-12.col-md-2.text-center
       %span.status{ class: provider.status }
         = provider.status
