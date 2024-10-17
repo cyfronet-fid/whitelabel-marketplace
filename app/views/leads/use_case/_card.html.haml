@@ -1,5 +1,5 @@
 .col-sm-12.col-md-4
-  .simple-intro.lead-box
+  .simple-intro.lead-box.h-100
     = yield :item_bar if content_for(:item_bar)
     .icon
       - if card.picture.attached? && card.picture.variable?

@@ -1,5 +1,5 @@
 .col-sm-12.col-md-4
-  .lead-box
+  .lead-box.h-100
     = yield :item_bar if content_for(:item_bar)
     = link_to card.url, class: "learn-link" do
       .learn-title{ "data-toggle": "tooltip", title: (card.header.size > 20 ? card.header : nil) }
