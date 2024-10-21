@@ -5,7 +5,7 @@
   .group-item.ml-3
     = link_to admin_lead_section_path(section),
       data: { "turbo-method": :delete, "turbo-confirm": _("Are you sure you want to remove this lead section?") },
-      class: "btn btn-sm btn-secondary" do
+      class: "btn btn-sm btn-secondary", id: "delete-lead-section-#{section.id}" do
       Delete section
     = link_to _("Edit section"), edit_admin_lead_section_path(section),
       class: "btn btn-sm btn-primary ml-2"
