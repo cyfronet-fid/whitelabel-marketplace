@@ -1,11 +1,11 @@
 # frozen_string_literal: true
+require "action_view/helpers"
 
 class Presentable::ListComponent < ApplicationComponent
-  include Pagy::Frontend
-  def initialize(collection:, pagy:)
+  include ActionView::Helpers
+  def initialize(collection:)
     super()
     @collection = collection
-    @pagy = pagy
-    @klass = collection.klass.name.downcase
+    @klass = collection.model.name.underscore
   end
 end

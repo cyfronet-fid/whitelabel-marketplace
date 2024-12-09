@@ -1,15 +1,13 @@
-%ul.list-group.backoffice-list.mt-3.mb-3{ data: { controller: "list" } }
+%ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-providers-list" }
   %li.list-group-item.heading-row
     .row
-      .col-12.col-md-1
-        = check_box_tag "toggleAll", nil,
-                                id: "toggleAll",
-                                class: "form-check-input",
-                                data: { action: "click->list#toggleAll" }
+      .col-12.col-md-1= check_box_tag "#{@klass}_ids[]", nil,
+                        id: "#{@klass}",
+                        class: "form-check-input",
+                        data: { action: "click->list#toggleAll click->list#toggleActions" }
       .col-12.col-md-7 Name
-      .col-12.col-md-2.text-center Creation date
+      .col-12.col-md-2 Creation date
       .col-12.col-md-2.text-center Status
-  = render partial: "components/presentable/list_component/list_item", collection: @collection, as: :obj, locals: { klass: @klass }
 
-
-= (pagy_bootstrap_nav @pagy).html_safe
+  - @collection.each do |obj|
+    = render "components/presentable/list_component/list_item", obj: obj, klass: @klass
