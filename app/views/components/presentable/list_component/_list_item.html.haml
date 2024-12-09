@@ -4,10 +4,9 @@
       = check_box_tag "#{klass}_ids[]", obj.id,
                       id: "#{klass}-#{obj.id}",
                       class: "form-check-input",
-                      data: { list_target: "checkbox" },
-                      multiple: true
+                      data: { list_target: "checkbox", action: "click->list#toggleActions" }
     .col-12.col-md-7
-      = link_to obj.name, nil, class: "#{klass}-name", data: { action: "click->list#toggleCurrent", value: "#{klass}-#{obj.id}" }
+      = link_to obj.name, "javascript:;", class: "#{klass}-name", data: { action: "click->list#toggleCurrent", value: "#{klass}-#{obj.id}" }
     .col-12.col-md-2
       = obj.created_at
     .col-12.col-md-2.text-center

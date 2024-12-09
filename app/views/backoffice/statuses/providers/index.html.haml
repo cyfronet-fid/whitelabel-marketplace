@@ -1,1 +1,26 @@
-= render Presentable::ListComponent.new(collection: @providers, pagy: @pagy)
+= form_with url: backoffice_statuses_providers_path,
+  html: { "data-controller" => "form list", "data-form-target": "form" } do |f|
+
+  = render Presentable::ListComponent.new(collection: @providers)
+  = (pagy_bootstrap_nav @pagy).html_safe
+  = f.button "Publish selected",
+    name: "commit",
+    value: "Publish",
+    class: "btn btn-primary float-right",
+    data: { turbo_confirm: "Confirm to publish",
+    confirm_details: "Are you sure you want to publish selected providers?",
+    confirm_button: "Publish" }
+  = f.button "Unpublish selected",
+    name: "commit",
+    value: "Unpublish",
+    class: "btn btn-error float-right",
+    data: { turbo_confirm: "Confirm to unpublish",
+    confirm_details: "Are you sure you want to unpublish selected providers?",
+    confirm_button: "Unpublish" }
+  = f.button "Publish selected",
+    name: "commit",
+    value: "Suspend",
+    class: "btn btn-info float-right",
+    data: { turbo_confirm: "Confirm to suspend",
+    confirm_details: "Are you sure you want to suspend selected providers?",
+    confirm_button: "Suspend" }

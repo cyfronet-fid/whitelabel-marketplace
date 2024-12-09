@@ -68,6 +68,9 @@
                     new_backoffice_provider_path,
                     class: "btn btn-primary",
                     "data-e2e": "add-new-provider"
+          = link_to _("Manage Providers"),
+            backoffice_statuses_providers_path,
+            class: "btn btn-info float-right"
         .clearfix
 
     %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-providers-list" }
