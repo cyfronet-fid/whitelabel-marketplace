@@ -21,6 +21,9 @@
                     new_backoffice_catalogue_path,
                     class: "btn btn-primary",
                     "data-e2e": "add-new-catalogue"
+          = link_to _("Manage Providers"),
+            backoffice_statuses_catalogues_path,
+            class: "btn btn-info float-right", data: { turbo_frame: "modal" }
         .clearfix
     %ul.list-group.backoffice-list.mt-3.mb-3{ "data-e2e": "backoffice-catalogues-list" }
       %li.list-group-item.heading-row

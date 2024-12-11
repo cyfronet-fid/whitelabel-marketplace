@@ -5103,6 +5103,10 @@ abbr[title] {
   .modal-dialog {
     max-width: 570px;
 
+    &.wide {
+      max-width: 1280px;
+    }
+
     &.new-feature {
       max-width: 885px;
 

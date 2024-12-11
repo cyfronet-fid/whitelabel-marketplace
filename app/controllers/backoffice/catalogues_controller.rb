@@ -5,7 +5,7 @@ class Backoffice::CataloguesController < Backoffice::ApplicationController
 
   def index
     authorize(Catalogue)
-    @catalogues = policy_scope(Catalogue).with_attached_logo
+    @pagy, @catalogues = pagy(policy_scope(Catalogue).with_attached_logo.order(:name))
   end
 
   def show
