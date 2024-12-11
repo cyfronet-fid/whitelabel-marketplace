@@ -5216,6 +5216,17 @@ abbr[title] {
       justify-content: space-between;
       display: flex;
       width: 100%;
+
+      .btn-secondary,
+      .btn-primary {
+        font-size: 1rem;
+        width: 30%;
+      }
+
+      .btn-secondary {
+        border: 1px solid $custom-16;
+        color: $custom-16;
+      }
     }
 
     .modal-info {
@@ -7978,7 +7989,8 @@ abbr[title] {
     }
   }
 
-  .btn-primary {
+  .btn-primary,
+  .btn-secondary {
     font-size: 14px;
     padding: 0.62rem 1.3rem;
 
