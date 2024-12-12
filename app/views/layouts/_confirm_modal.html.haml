@@ -1,4 +1,4 @@
-%dialog#confirm
+%dialog#confirm.confirm-modal
   .row
     .col-12.col-md-11
     .col-12.col-md-1
@@ -7,9 +7,9 @@
   .row
     .col-12
       .modal__content
-        %h3#confirm-title Are you sure?
-        #confirm-body
+        %h3.confirm-title Are you sure?
+        .confirm-body
       .modal-actions
-        %button#dismiss-btn.confirm-cancel.btn.btn-primary.close.close-link.pl-3.pr-3{ type: "button" }
+        %button#dismiss-btn.btn.btn-secondary{ type: "button" }
           Cancel
         %button#confirm-accept.btn.btn-primary Yes, I'm Sure

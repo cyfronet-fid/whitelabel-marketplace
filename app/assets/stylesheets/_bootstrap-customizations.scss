@@ -5270,6 +5270,61 @@ abbr[title] {
   }
 }
 
+.confirm-modal {
+  flex-direction: column;
+  border: none;
+  border-radius: 8px;
+  width: 600px;
+  padding: 15px 24px 40px;
+  overflow: hidden;
+
+  &::backdrop {
+    background: $modal-overlay-bg-strong;
+  }
+
+  .close {
+    span {
+      font-size: 30px;
+      line-height: 20px;
+      display: inline-block;
+    }
+  }
+
+  .confirm-title {
+    font-size: 24px;
+    font-weight: 500;
+  }
+
+  .confirm-body {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 150%;
+    color: $body-color;
+  }
+
+  .modal-actions {
+    justify-content: space-between;
+    display: flex;
+    margin-top: 40px;
+    width: 100%;
+
+    .btn {
+      width: 48%;
+    }
+
+    .btn-secondary {
+      border: 1px solid $custom-16;
+      color: $custom-16;
+    }
+  }
+}
+
+.subsection {
+  margin: 0;
+  font-weight: 300;
+  padding-bottom: 0;
+}
+
 .additional-information {
   .offer-description {
     h4 {
