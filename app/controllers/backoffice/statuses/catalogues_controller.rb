@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class Backoffice::Statuses::CataloguesController < Backoffice::CataloguesController
+  include StatusChangeHelper
+
   def create
     @catalogues = Catalogue.where(id: params[:catalogue_ids])
     @catalogues.each do |catalogue|
-      next if "Catalogue::#{params[:commit]}".constantize.call(catalogue)
+      next if action_for(catalogue, params[:commit]).call(catalogue)
       redirect_to backoffice_catalogues_path,
                   alert:
                     "Catalogue #{catalogue.name} was not #{params[:commit]}ed. " +

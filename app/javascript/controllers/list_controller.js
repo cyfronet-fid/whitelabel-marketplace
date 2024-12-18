@@ -14,6 +14,7 @@ export default class extends Controller {
     event.preventDefault();
     const target = document.getElementById(event.currentTarget.dataset.value);
     target.checked = !target.checked;
+    this.toggleActions(event);
   }
 
   toggleActions(event) {

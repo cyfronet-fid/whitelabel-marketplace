@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class Backoffice::Statuses::ProvidersController < Backoffice::ProvidersController
+  include StatusChangeHelper
   def create
     @providers = Provider.where(id: params[:provider_ids])
     @providers.each do |provider|
-      next if "Provider::#{params[:commit]}".constantize.call(provider)
+      next if action_for(provider, params[:commit]).call(provider)
       redirect_to backoffice_statuses_providers_path,
                   alert:
                     "Provider #{provider.name} was not #{params[:commit]}ed. " +

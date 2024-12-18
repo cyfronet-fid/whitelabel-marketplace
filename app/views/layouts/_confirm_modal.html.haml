@@ -10,6 +10,6 @@
         %h3.confirm-title Are you sure?
         .confirm-body
       .modal-actions
-        %button#dismiss-btn.btn.btn-secondary{ type: "button" }
+        %button#dismiss-btn.btn.btn-secondary.close.modal__backdrop.confirm-cancel{ type: "button" }
           Cancel
-        %button#confirm-accept.btn.btn-primary Yes, I'm Sure
+        %button#confirm-accept.btn.btn-primary{ data_e2e: "modal-confirm" } Yes, I'm Sure
