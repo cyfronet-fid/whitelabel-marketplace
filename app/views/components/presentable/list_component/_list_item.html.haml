@@ -1,0 +1,14 @@
+%li.list-group-item.providers
+  .row
+    .col
+      = check_box_tag "#{klass}_ids[]", obj.id,
+                      id: "#{klass}-#{obj.id}",
+                      class: "form-check-input",
+                      data: { list_target: "checkbox", action: "click->list#toggleActions" }
+    .col
+      = link_to obj.name, "javascript:;", class: "#{klass}-name", data: { action: "click->list#toggleCurrent", value: "#{klass}-#{obj.id}" }
+    .col
+      = obj.created_at
+    .col.text-center
+      %span.status{ class: obj.status }
+        = obj.status

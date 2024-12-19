@@ -1,0 +1,7 @@
+- if turbo_frame_request?
+  = render TurboModalComponent.new(title: "Manage Providers", custom_style: "wide") do
+    = render "backoffice/statuses/form", collection: @catalogues, pagy: @pagy,
+      form_path: backoffice_statuses_catalogues_path
+- else
+  = render "backoffice/statuses/form", collection: @catalogues, pagy: @pagy,
+    form_path: backoffice_statuses_catalogues_path

@@ -68,6 +68,7 @@ describe("My project", () => {
     cy.fillFormProject(project3);
     cy.get("[data-e2e='create-project-btn']").click();
     cy.contains("a", "Delete").click();
+    cy.get("[data-e2e='modal-confirm").click();
     cy.contains(".alert-success", "Project removed successfully").should("be.visible");
   });
 });

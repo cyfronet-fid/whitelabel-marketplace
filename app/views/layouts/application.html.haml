@@ -17,6 +17,16 @@
       = render "layouts/flash"
     = render "layouts/welcome_modal"
     = turbo_frame_tag "modal"
+    %dialog#confirm.modal
+      .modal__backdrop.confirm-cancel
+        .modal__content
+          %h3#confirm-title Are you sure?
+          #confirm-body
+        .modal-actions
+
+          %button#dismiss-btn.close.close-link.pl-3.pr-3{ type: "button", data: { dismiss: "modal" } }
+            %span Cancel
+          %button#confirm-accept.btn.btn-primary Yes, I'm Sure
     %header
       = render "layouts/navbar",
         categories: @siblings || @root_categories,

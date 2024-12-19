@@ -1,0 +1,6 @@
+= form_with url: form_path,
+  html: { data: { controller: "form list", form_target: "form", turbo: true } } do |f|
+
+  = render Presentable::ListComponent.new(collection: collection)
+  = (pagy_bootstrap_nav pagy).html_safe
+  = render "backoffice/common_parts/form/status_actions", f: f, type: collection.model.name

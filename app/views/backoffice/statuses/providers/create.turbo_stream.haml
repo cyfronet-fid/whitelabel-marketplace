@@ -1,0 +1,4 @@
+- @providers.each do |provider|
+  = turbo_stream.replace(provider, partial: "backoffice/providers/provider",
+                                          locals: { provider: provider })
+= render_turbo_stream_flash

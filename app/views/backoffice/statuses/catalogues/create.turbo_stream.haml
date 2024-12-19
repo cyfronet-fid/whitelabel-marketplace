@@ -1,0 +1,4 @@
+- @catalogues.each do |catalogue|
+  = turbo_stream.replace(catalogue, partial: "backoffice/catalogues/catalogue",
+                                          locals: { catalogue: catalogue })
+= render_turbo_stream_flash
