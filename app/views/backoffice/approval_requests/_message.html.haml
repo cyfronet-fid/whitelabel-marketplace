@@ -1,0 +1,9 @@
+= turbo_frame_tag message do
+  %li.list-group-item
+    .row.col-12
+      %h4.text-left
+        = message.author
+        .text-right.small
+          = message.created_at
+      %p.text-left
+        = message.message

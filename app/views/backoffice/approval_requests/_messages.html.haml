@@ -1,0 +1,7 @@
+= turbo_frame_tag "messages" do
+  .modal-dialog-scrollable
+    - if messages.present?
+      %ul.list-group
+        = render partial: "backoffice/approval_requests/message", collection: messages
+    - else
+      Messages sent to user email will appear here.
