@@ -10,15 +10,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 ## [Unreleased]
 
 ### Added
+
 - Simplify project creation form (@wujuu)
 - Offer recommendations in project view (@wujuu)
+- New provider wizard form (@maria-j-k, @goreck888, @jarekzet)
 
 ## [3.59.0]
 
 ### Added
-- New provider wizard form (@maria-j-k, @goreck888, @jarekzet)
-
-### Deprecated
+ 
+- Add save as draft feature to offers form (@maria-j-k, @jarekzet)
+- Add duplicate offer feature to offers form (@maria-j-k)
+- Readme section about manual dev setup (@Michal-Kolomanski)
 
 - `ASSET_HOST` and `ASSET_PROTOCOL` environment variables (@goreck888)
 
@@ -40,7 +43,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Default link to the Explore service (@goreck888)
 - Provider and catalogue backoffice view (@jarekzet)
 - Dropdown menu mods (@jarekzet)
-
 
 ## [3.58.0] 2025-01-22
 
