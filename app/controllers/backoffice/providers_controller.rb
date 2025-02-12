@@ -15,31 +15,18 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def new
-    @provider = Provider.new
-    @provider.sources.build source_type: "eosc_registry"
-    @provider.alternative_identifiers.build
-    @provider.data_administrators << DataAdministrator.new(
-      first_name: current_user.first_name,
-      last_name: current_user.last_name,
-      email: current_user.email
-    )
-    @provider.build_main_contact
-    @provider.public_contacts.build
-    @provider.link_multimedia_urls.build
-    authorize(@provider)
-  end
-
-  def create
-    permitted_attributes = permitted_attributes(Provider)
-    @provider = Provider.new(**permitted_attributes, status: :unpublished)
-    authorize(@provider)
-
-    if valid_model_and_urls? && @provider.save(validate: false)
-      redirect_to backoffice_provider_path(@provider, page: params[:page]), notice: "New provider created successfully"
-    else
-      catalogue_scope
-      render :new, status: :unprocessable_entity
-    end
+    provider_builder_key = Random.urlsafe_base64(6)
+    session[:provider_id] = provider_builder_key
+    session[:wizard_action] = "create"
+    session[:wizard_completion_level] = -1
+    redirect_to backoffice_provider_step_path(provider_builder_key, "profile")
+    # @provider = Provider.new
+    # @provider.sources.build source_type: "eosc_registry"
+    # @provider.alternative_identifiers.build
+    
+    
+    # @provider.link_multimedia_urls.build
+    # authorize(@provider)
   end
 
   def edit

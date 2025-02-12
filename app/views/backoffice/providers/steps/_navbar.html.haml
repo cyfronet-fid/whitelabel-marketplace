@@ -1,0 +1,25 @@
+.steps-row
+  = link_to "Provider's Profile", backoffice_provider_step_path(provider_id, "profile"), class: "offer-step active-button"
+  - if completion_level >= 2
+    = link_to backoffice_provider_step_path(provider_id, "location"), id: "step-two-button", class: "offer-step active-button" do
+      Location
+  - else
+    .offer-step#step-two-button Location
+
+  - if completion_level >= 3
+    = link_to backoffice_provider_step_path(provider_id, "contacts"), id: "step-three-button", class: "offer-step active-button" do
+      Contacts
+  - else
+    .offer-step#step-three-button Contacts
+
+  - if completion_level >= 4
+    = link_to backoffice_provider_step_path(provider_id, "manager"), id: "step-four-button", class: "offer-step active-button" do
+      Provider's Manager
+  - else
+    .offer-step#step-four-button Provider's Manager
+
+  - if completion_level >= 5
+    = link_to backoffice_provider_step_path(provider_id, "summary"), id: "step-five-button", class: "offer-step active-button" do
+      Summary
+  - else
+    .offer-step#step-five-button Summary

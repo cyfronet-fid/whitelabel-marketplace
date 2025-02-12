@@ -7,6 +7,7 @@ export default class extends Controller {
     "form",
     "input",
     "publicContact",
+    "mainContact",
     "destroy",
     "multimedia",
     "useCase",
@@ -29,6 +30,18 @@ export default class extends Controller {
     "national_roadmaps",
     "fixme",
     "tag_list",
+    "mcFirstName",
+    "mcLastName",
+    "mcEmail",
+    "mcPhone",
+    "mcPosition",
+    "mcCode",
+    "pcFirstName",
+    "pcLastName",
+    "pcEmail",
+    "pcPhone",
+    "pcPosition",
+    "pcCode"
   ];
 
   initialize() {
@@ -52,6 +65,17 @@ export default class extends Controller {
       this.fixmeTarget.style.position = "static";
     }
   }
+
+  duplicateContact(event) {
+    event.preventDefault();
+    this.pcFirstNameTarget.value = this.mcFirstNameTarget.value
+    this.pcLastNameTarget.value = this.mcLastNameTarget.value
+    this.pcCodeTarget.value = this.mcCodeTarget.value
+    this.pcPhoneTarget.value = this.mcPhoneTarget.value
+    this.pcEmailTarget.value = this.mcEmailTarget.value
+    this.pcPositionTarget.value = this.mcPositionTarget.value
+  }
+
 
   updateForm() {
     switch (this.serviceTypeTarget.value) {
