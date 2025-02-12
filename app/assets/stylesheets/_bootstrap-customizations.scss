@@ -9261,3 +9261,40 @@ footer {
   display: block;
   margin-top: 25px;
 }
+
+.approval-requests {
+  padding: 24px 24px 10px;
+  border-radius: 8px;
+  border: 1px solid $custom-17;
+  margin-bottom: 60px;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+
+  .backoffice-list {
+    .list-group-item.providers {
+      .row {
+        .col:first-child {
+          flex: 0 0 675px;
+          display: flex;
+          align-items: center;
+        }
+
+        .col:nth-child(3) {
+          flex: 0 0 170px;
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
+
+    .btn-manage {
+      padding-left: 25px;
+      background: url("assets/icon-manage.svg") 0 50% no-repeat;
+      background-size: 18px auto;
+      font-size: 14px;
+    }
+  }
+}
