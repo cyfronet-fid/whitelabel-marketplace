@@ -21,7 +21,7 @@ RSpec.describe Api::V1::Ess::ServicesController, swagger_doc: "v1/ess_swagger.js
       response 200, "services found" do
         schema "$ref" => "ess/service/service_index.json"
 
-        let!(:manager) { create(:user, roles: [:service_portfolio_manager]) }
+        let!(:manager) { create(:user, roles: [:coordinator]) }
         let!(:services) { create_list(:service, 3) }
         let!(:draft) { create(:service, status: :draft) }
         let!(:deleted) { create(:service, status: :deleted) }

@@ -5,8 +5,11 @@
   - if @providers.blank?
     = render "backoffice/providers/provider_prompt"
   - else
-    %h1
-      = _("Providers")
+    %h1= _("Providers")
+    - if @approval_requests.present?
+      = render "backoffice/approval_requests/index", approvals: @approval_requests
+
+
       - if policy([:backoffice, Provider]).new?
         .float-right
           = link_to _("+ Add new Provider"),
