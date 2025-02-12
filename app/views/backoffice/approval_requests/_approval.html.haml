@@ -9,9 +9,9 @@
       %h3 Messages
       = render "backoffice/approval_requests/messages", messages: approval.messages
   .row
-    .col-md-8
-      = f.input :message, value: ""
-    .col-md-3.align-content-center
+    .col-md-12
+      = f.input :message, value: "", class: "textarea-md"
+    .col-md-12
       = f.button :submit, _("Send message"), class: "btn btn-primary btn-sm"
 
 - content_for(:buttons) do
