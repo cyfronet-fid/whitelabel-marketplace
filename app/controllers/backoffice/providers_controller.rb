@@ -19,45 +19,16 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     session[:provider_id] = provider_builder_key
     session[:wizard_action] = "create"
     session[:wizard_completion_level] = -1
+    session[provider_builder_key] = {}
     redirect_to backoffice_provider_step_path(provider_builder_key, "profile")
-    # @provider = Provider.new
-    # @provider.sources.build source_type: "eosc_registry"
-    # @provider.alternative_identifiers.build
-    
-    
-    # @provider.link_multimedia_urls.build
-    # authorize(@provider)
   end
 
   def edit
-    add_missing_nested_models
-  end
-
-  def update
-    provider_duplicate = @provider.dup
-
-    # IMPORTANT!!! Writing upstream_id from params is required to inject context to policy
-    provider_duplicate.upstream_id = params[:provider][:upstream_id]
-    permitted_attributes = permitted_attributes(provider_duplicate)
-    if provider_duplicate.published? && provider_duplicate.catalogue.present? &&
-         !provider_duplicate.catalogue.published?
-      attrs.merge(status: provider_duplicate&.catalogue&.status)
-    end
-    @provider.assign_attributes(permitted_attributes)
-
-    if valid_model_and_urls? && @provider.save(validate: false)
-      redirect_to backoffice_provider_path(@provider), notice: "Provider updated successfully"
-    else
-      if @provider.public_contacts.present? && @provider.public_contacts.all?(&:marked_for_destruction?)
-        @provider.public_contacts[0].reload
-      end
-      if @provider.data_administrators.present? && @provider.data_administrators.all?(&:marked_for_destruction?)
-        @provider.data_administrators[0].reload
-      end
-      catalogue_scope
-      add_missing_nested_models
-      render :edit, status: :bad_request
-    end
+    session[:provider_id] = @provider.id
+    session[:wizard_action] = "update"
+    session[:wizard_completion_level] = 4
+    session[@provider.id] = create_provider_hash(@provider)
+    redirect_to backoffice_provider_step_path(@provider, "profile")
   end
 
   def destroy
@@ -118,5 +89,25 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     end
 
     valid
+  end
+
+  def create_provider_hash(provider)
+    to_except = %i[id created_at updated_at]
+    contact_except = to_except + %i[contactable_type contactable_id]
+
+    data_administrators_attributes =
+      provider.data_administrators.map.with_index { |dm, i| { i.to_s => dm.as_json(except: to_except) } }
+    public_contacts_attributes =
+      provider.public_contacts.map.with_index { |pc, i| { i.to_s => pc.as_json(except: contact_except) } }
+
+    provider_hash = provider.as_json(except: to_except)
+    provider_hash["country"] = provider_hash["country"]["country_data_or_code"]
+    if @provider.main_contact
+      provider_hash["main_contact_attributes"] = @provider.main_contact.as_json(except: contact_except)
+    end
+
+    provider_hash["public_contacts_attributes"] = public_contacts_attributes.reduce({}, :merge)
+    provider_hash["data_administrators_attributes"] = data_administrators_attributes.reduce({}, :merge)
+    provider_hash
   end
 end

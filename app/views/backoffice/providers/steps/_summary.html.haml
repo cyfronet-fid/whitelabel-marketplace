@@ -1,9 +1,11 @@
 - current_step = "summary"
+
+-# = render "common_parts/modals/become_provider_modal", f: f
 = simple_form_for [:backoffice, provider],
   url: backoffice_provider_step_path(params[:provider_id], current_step),
   html: { "data-controller": "administrator", "data-form-target": "form"  },
   method: :put, data: { turbo_frame: :_top }  do |f|
-  = render "backoffice/providers/steps/navbar", provider_id: params[:provider_id]
+  = render "backoffice/providers/steps/navbar", provider: provider, f: f
   .new-form-style
     = f.input :form_step, as: :hidden, input_html: { value: current_step }
 
@@ -92,8 +94,8 @@
             = render "backoffice/providers/steps/summary_manager_section", manager: manager
 
       %hr.bottom-hr.mt-5.mb-4
-        .row
-          .col-10
-            = f.button :submit, "Submit", class: "btn btn-primary pl-5 pr-5"
-          .col-2
-            = f.button :submit, back_title, class: "btn btn-primary pl-5 pr-5"
+      .row
+        .col-10
+          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "profile")
+        .col-2
+          = f.button :submit, submit_title, class: "btn btn-primary pl-5 pr-5"

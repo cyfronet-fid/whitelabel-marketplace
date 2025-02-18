@@ -3,14 +3,14 @@
   url: backoffice_provider_step_path(params[:provider_id], current_step),
   html: { "data-controller": "administrator", "data-form-target": "form" },
   method: :put do |f|
-  = render "backoffice/providers/steps/navbar", provider_id: params[:provider_id]
+  = render "backoffice/providers/steps/navbar", provider: provider, f: f
   .new-form-style
     = f.input :form_step, as: :hidden, input_html: { value: current_step }
 
     .row.service-contact-emails{ data: { controller: "administrator", administrator_target: "dataAdministrators" } }
       .col-12
         %h4
-          = _("Data Administrators")
+          = _("Provider's manager")
           = f.error :data_administrators, class: "invalid-feedback d-block"
           = f.fields_for :data_administrators, disabled: provider.upstream_id.present?, multiple: true, as: :array,
             wrapper_html: { "data-provider-target" => "dataAdministrator" } do |data_administrator_form|
@@ -23,6 +23,6 @@
     %hr.bottom-hr.mt-5.mb-4
       .row
         .col-10
-          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"
+          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "contacts")
         .col-2
-          = f.button :submit, back_title, class: "btn btn-primary pl-5 pr-5"
+          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"

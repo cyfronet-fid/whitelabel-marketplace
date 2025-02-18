@@ -41,7 +41,7 @@ export default class extends Controller {
     "pcEmail",
     "pcPhone",
     "pcPosition",
-    "pcCode"
+    "pcCode",
   ];
 
   initialize() {
@@ -68,14 +68,13 @@ export default class extends Controller {
 
   duplicateContact(event) {
     event.preventDefault();
-    this.pcFirstNameTarget.value = this.mcFirstNameTarget.value
-    this.pcLastNameTarget.value = this.mcLastNameTarget.value
-    this.pcCodeTarget.value = this.mcCodeTarget.value
-    this.pcPhoneTarget.value = this.mcPhoneTarget.value
-    this.pcEmailTarget.value = this.mcEmailTarget.value
-    this.pcPositionTarget.value = this.mcPositionTarget.value
+    this.pcFirstNameTarget.value = this.mcFirstNameTarget.value;
+    this.pcLastNameTarget.value = this.mcLastNameTarget.value;
+    this.pcCodeTarget.value = this.mcCodeTarget.value;
+    this.pcPhoneTarget.value = this.mcPhoneTarget.value;
+    this.pcEmailTarget.value = this.mcEmailTarget.value;
+    this.pcPositionTarget.value = this.mcPositionTarget.value;
   }
-
 
   updateForm() {
     switch (this.serviceTypeTarget.value) {

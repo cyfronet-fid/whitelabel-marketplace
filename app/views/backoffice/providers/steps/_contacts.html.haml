@@ -3,7 +3,7 @@
   url: backoffice_provider_step_path(params[:provider_id], current_step),
   html: { "data-form-target": "form" },
   method: :put do |f|
-  = render "backoffice/providers/steps/navbar", provider_id: params[:provider_id]
+  = render "backoffice/providers/steps/navbar", provider: provider, f: f
   .new-form-style
     = f.input :form_step, as: :hidden, input_html: { value: current_step }
 
@@ -54,6 +54,6 @@
     %hr.bottom-hr.mt-5.mb-4
       .row
         .col-10
-          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"
+          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "location")
         .col-2
-          = f.button :submit, back_title, class: "btn btn-primary pl-5 pr-5"
+          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"

@@ -117,7 +117,6 @@ class Provider < ApplicationRecord
     self.status ||= :published
   end
 
-  
   with_options if: -> { required_for_step?("profile") } do
     validates :name, presence: true
     validates :abbreviation, presence: true
@@ -139,17 +138,15 @@ class Provider < ApplicationRecord
 
   with_options if: -> { required_for_step?("manager") } do
     validates :data_administrators,
-            presence: true,
-            length: {
-              minimum: 1,
-              message: "are required. Please add at least one"
-            }
+              presence: true,
+              length: {
+                minimum: 1,
+                message: "are required. Please add at least one"
+              }
   end
 
-
   validates :provider_life_cycle_statuses, length: { maximum: 1 }
-  
-  
+
   validate :logo_variable, on: %i[create update]
   validate :validate_array_values_uniqueness
   validate :catalogue_published
@@ -238,7 +235,7 @@ class Provider < ApplicationRecord
   end
 
   def current_step_index(step)
-    steps.index(step) +1
+    steps.index(step) + 1
   end
 
   private
@@ -252,7 +249,7 @@ class Provider < ApplicationRecord
   end
 
   def steps
-    ["profile", "location", "contacts", "manager", "summary"] 
+    %w[profile location contacts manager summary]
   end
 
   def remove_empty_array_fields

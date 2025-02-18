@@ -15,19 +15,9 @@ module Backoffice::ProvidersHelper
     render "backoffice/providers/steps/#{step_id}", provider: provider
   end
 
-  def next_title
-    "Next"
-  end
-
-  def back_title
-    "Back"
-  end
-
   def completion_level
     session[:wizard_completion_level] + 2
   end
-
-
 
   def hosting_legal_entity_input(form)
     if PROFILE_4_ENABLED
