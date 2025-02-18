@@ -125,10 +125,14 @@ Rails.application.routes.draw do
     end
     get "service_autocomplete", to: "services#autocomplete", as: :service_autocomplete
     get "services/c/:category_id" => "services#index", :as => :category_services
+    
     resources :providers, constraints: { id: %r{[^/]+} } do
       resource :publish, controller: "providers/publishes", only: :create
       resource :unpublish, controller: "providers/unpublishes", only: :create
+      resources :steps, controller: "providers/steps", only: %i[show update]
     end
+   
+
     resources :catalogues do
       resource :publish, controller: "catalogues/publishes", only: :create
       resource :unpublish, controller: "catalogues/unpublishes", only: :create

@@ -718,6 +718,7 @@ RSpec.feature "Services in backoffice", manager_frontend: true do
       expect(page).to have_field "service_main_contact_attributes_first_name", disabled: true
       expect(page).to have_field "service_main_contact_attributes_last_name", disabled: true
       expect(page).to have_field "service_main_contact_attributes_email", disabled: true
+      expect(page).to have_field "service_main_contact_attributes_country_phone_code", disabled: true
       expect(page).to have_field "service_main_contact_attributes_phone", disabled: true
       expect(page).to have_field "service_main_contact_attributes_organisation", disabled: true
       expect(page).to have_field "service_main_contact_attributes_position", disabled: true

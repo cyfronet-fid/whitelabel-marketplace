@@ -1,0 +1,22 @@
+- current_step = "location"
+= simple_form_for [:backoffice, provider],
+  url: backoffice_provider_step_path(params[:provider_id], current_step),
+  html: { "data-form-target": "form" },
+  method: :put do |f|
+  = render "backoffice/providers/steps/navbar", provider: provider, f: f
+  .new-form-style
+    = f.input :form_step, as: :hidden, input_html: { value:  current_step }
+    %h4 Location
+    .offer-section-wrapper.bottom-margin
+      = f.input :street_name_and_number, disabled: cant_edit(:street_name_and_number)
+      = f.input :postal_code, disabled: cant_edit(:postal_code)
+      = f.input :city, disabled: cant_edit(:city)
+      = f.input :region, disabled: cant_edit(:region)
+      = f.input :country, disabled: cant_edit(:country), as: :select,
+          collection: Country.options.map { |c| [ c.iso_short_name, "value" => c.alpha2 ] }
+    %hr.bottom-hr.mt-5.mb-4
+      .row
+        .col-10
+          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "profile")
+        .col-2
+          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"
