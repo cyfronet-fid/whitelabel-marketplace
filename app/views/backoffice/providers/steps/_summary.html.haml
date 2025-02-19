@@ -1,0 +1,101 @@
+- current_step = "summary"
+
+-# = render "common_parts/modals/become_provider_modal", f: f
+= simple_form_for [:backoffice, provider],
+  url: backoffice_provider_step_path(params[:provider_id], current_step),
+  html: { "data-controller": "administrator", "data-form-target": "form"  },
+  method: :put, data: { turbo_frame: :_top }  do |f|
+  = render "backoffice/providers/steps/navbar", provider: provider, f: f
+  .new-form-style
+    = f.input :form_step, as: :hidden, input_html: { value: current_step }
+
+    .offer-section-wrapper.bottom-margin
+      .row
+        .col-6
+          %h4 PROVIDER PROFILE
+      .row
+        .col-6
+          Name
+        .col-6
+          = provider.name
+      .row
+        .col-6
+          Abbreviation
+        .col-6
+          = provider.abbreviation
+      .row
+        .col-6
+          Description
+        .col-6
+          = provider.description
+      .row
+        .col-6
+          Website URL
+        .col-6
+          = provider.website
+      .row
+        .col-6
+          Logo URL
+        .col-6
+          = provider.logo
+      .row
+        .col-6
+          Is the provider a legal entity?
+        .col-6
+          = provider.legal_entity
+
+    .offer-section-wrapper.bottom-margin
+      .row
+        .col-6
+          %h4 LOCATION
+      .row
+        .col-6
+          Street name and number
+        .col-6
+          = provider.street_name_and_number
+      .row
+        .col-6
+          Postal Code
+        .col-6
+          = provider.postal_code
+      .row
+        .col-6
+          City
+        .col-6
+          = provider.city
+      .row
+        .col-6
+          Region
+        .col-6
+          = provider.region
+      .row
+        .col-6
+          Country
+        .col-6
+          = provider.country
+    .offer-section-wrapper.bottom-margin
+      .row
+        .col-6
+          %h4 MAIN CONTACT
+          = render "backoffice/providers/steps/summary_contact_section", contact: provider.main_contact
+
+    .offer-section-wrapper.bottom-margin
+      .row
+        .col-6
+          %h4 PUBLIC CONTACTS
+          - provider.public_contacts.each do |contact|
+            = render "backoffice/providers/steps/summary_contact_section", contact: contact
+
+      .offer-section-wrapper.bottom-margin
+      .row
+        .col-6
+          %h4 PROVIDER'S MANAGER
+          - provider.data_administrators.each do |manager|
+            = render "backoffice/providers/steps/summary_manager_section", manager: manager
+
+      %hr.bottom-hr.mt-5.mb-4
+      .row
+        .col-10
+          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "profile")
+        .col-2
+          = f.button :submit, submit_title, class: "btn btn-primary pl-5 pr-5"

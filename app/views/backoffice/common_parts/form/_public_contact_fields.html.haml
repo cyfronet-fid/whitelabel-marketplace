@@ -1,11 +1,25 @@
 %div{ "data-form-target": "publicContact" }
   .contact
     = public_contact_form.hidden_field :id, disabled: object.present? ? object&.upstream_id.present? : nil
-    = public_contact_form.input :first_name, disabled: object.present? ? object&.upstream_id.present? : nil
-    = public_contact_form.input :last_name, disabled: object.present? ? object&.upstream_id.present? : nil
-    = public_contact_form.input :email, disabled: object.present? ? object&.upstream_id.present? : nil
-    = public_contact_form.input :phone, disabled: object.present? ? object&.upstream_id.present? : nil
-    = public_contact_form.input :position, disabled: object.present? ? object&.upstream_id.present? : nil
+    = public_contact_form.input :first_name, disabled: object.present? ? object&.upstream_id.present? : nil,
+      input_html: { "data-form-target": "pcFirstName" }
+    = public_contact_form.input :last_name, disabled: object.present? ? object&.upstream_id.present? : nil,
+      input_html: { "data-form-target": "pcLastName" }
+    = public_contact_form.input :email, disabled: object.present? ? object&.upstream_id.present? : nil,
+      input_html: { "data-form-target": "pcEmail" }
+    .row
+      .col-2
+        = public_contact_form.input :country_phone_code,
+          label: "Dialing Code",
+          collection: Country.all.map { |c| [ "#{c.country_code} #{c.emoji_flag}", "value" => c.country_code ] },
+          selected: "#{object.country.country_code} #{object.country.emoji_flag}",
+          input_html: { "data-form-target": "pcCode" }
+      .col-6
+        = public_contact_form.input :phone,
+          label: "Phone Number",
+          input_html: { "data-form-target": "pcPhone" }
+    = public_contact_form.input :position, disabled: object.present? ? object&.upstream_id.present? : nil,
+      input_html: { "data-form-target": "pcPosition" }
     - unless provider_form
       = public_contact_form.input :organisation, disabled: object.present? ? object&.upstream_id.present? : nil
     = public_contact_form.hidden_field :_destroy, "data-form-target": "destroy"

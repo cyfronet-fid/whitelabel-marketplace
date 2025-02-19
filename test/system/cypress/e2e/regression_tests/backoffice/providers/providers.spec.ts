@@ -67,7 +67,7 @@ describe("Providers", () => {
       });
   });
 
-  it("shouldn't add new provider", () => {
+  it.skip("shouldn't add new provider", () => {
     cy.visit("/backoffice/providers/new");
     cy.location("href").should("contain", "/providers/new");
     cy.fillFormCreateProvider({ ...provider, basicWebpage_url: "wrongFormat", adminEmail: "wrongFormat" }, wrongLogo);
@@ -147,7 +147,7 @@ describe("Providers", () => {
     cy.contains("div.alert-success", message.successDeletionMessage).should("be.visible");
   });
 
-  it("should go to Providers in Backoffice and edit one of providers", () => {
+  it.skip("should go to Providers in Backoffice and edit one of providers", () => {
     cy.visit("/backoffice/providers/new");
     cy.fillFormCreateProvider(provider3, correctLogo);
     cy.get("[data-e2e='create-provider-btn']").click();

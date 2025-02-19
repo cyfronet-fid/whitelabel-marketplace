@@ -7,6 +7,18 @@ module Backoffice::ProvidersHelper
     !policy([:backoffice, @provider]).permitted_attributes.include?(attribute)
   end
 
+  def get_dialling_code(country)
+    Country.get_country_phone_code(country)
+  end
+
+  def render_next_step(step_id, provider)
+    render "backoffice/providers/steps/#{step_id}", provider: provider
+  end
+
+  def completion_level
+    session[:wizard_completion_level] + 2
+  end
+
   def hosting_legal_entity_input(form)
     if PROFILE_4_ENABLED
       form.input :hosting_legal_entity,

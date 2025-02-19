@@ -1,0 +1,23 @@
+.steps-row
+  .offer-step.active-button
+    = f.button :submit, "Provider's profile"
+  #step-two-button.offer-step{ class: ("active-button" if completion_level >= 2) }
+    - if completion_level >= 2
+      = f.button :submit, "Location"
+    - else
+      Location
+  #step-three-button.offer-step{ class: ("active-button" if completion_level >= 3) }
+    - if completion_level >= 3
+      = f.button :submit, "Contacts"
+    - else
+      Contacts
+  #step-four-button.offer-step{ class: ("active-button" if completion_level >= 4) }
+    - if completion_level >= 4
+      = f.button :submit, "Provider's Manager"
+    - else
+      Provider's manager
+  #step-five-button.offer-step{ class: ("active-button" if completion_level >= 5) }
+    - if completion_level >= 5
+      = f.button :submit, "Summary"
+    - else
+      Summary

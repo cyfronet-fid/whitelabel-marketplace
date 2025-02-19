@@ -142,6 +142,11 @@ class Country
       end
       regions.map { |r| r }
     end
+
+    def get_country_phone_code(value)
+      country = find_by_name(value)
+      "#{country.international_prefix}#{country.country_code}"
+    end
   end
 
   class Array
