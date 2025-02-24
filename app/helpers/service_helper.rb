@@ -69,8 +69,10 @@ module ServiceHelper
   end
 
   def order_type(orderable)
-    types = ([orderable&.order_type] + orderable&.offers&.published&.map(&:order_type)).compact.uniq
-    types.size > 1 ? "various" : orderable&.order_type || "other"
+    order_type = orderable&.order_type
+    offers = orderable&.offers&.empty? ? [] : orderable.offers.published.compact.uniq
+    types = ([order_type] + offers.map(&:order_type))
+    types.size > 1 ? "various" : order_type || "other"
   end
 
   def highlighted_for(field, model, highlights)

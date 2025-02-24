@@ -238,7 +238,7 @@ class Provider < ApplicationRecord
 
   def owned_by?(user)
     data_administrators&.map(&:user_id)&.include?(user&.id) ||
-      catalogue&.data_administrators&.map(&:user_id)&.include?(user.id)
+      (catalogue.present? && catalogue.data_administrators&.map(&:user_id)&.include?(user.id))
   end
 
   def valid_urls?
