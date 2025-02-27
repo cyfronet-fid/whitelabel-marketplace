@@ -17,6 +17,10 @@ class Backoffice::ProviderPolicy < Backoffice::ApplicationPolicy
     user.present?
   end
 
+  def edit?
+    coordinator? || record&.owned_by?(user)
+  end
+
   def update?
     user.present?
   end

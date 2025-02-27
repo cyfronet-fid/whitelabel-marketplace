@@ -22,11 +22,12 @@
               input_html: { "data-form-target": "mcEmail" }
             .row
               .col-2
+                - c = provider.country
                 = main_contact_form.input :country_phone_code,
                   label: "Dialing Code",
-                  collection: Country.all.map { |c| [ "#{c.country_code} #{c.emoji_flag}", "value" => c.country_code ] },
-                  selected: "#{provider.country.country_code} #{provider.country.emoji_flag}",
-                  input_html: { "data-form-target": "mcCode" }
+                  collection: dial_codes,
+                  selected: "#{c.iso_short_name} #{c.emoji_flag} (+#{c.country_code})",
+                  input_html: { multiple: false, data: { form_target: "mcCode", choice: true } }
               .col-6
                 = main_contact_form.input :phone,
                   label: "Phone Number",

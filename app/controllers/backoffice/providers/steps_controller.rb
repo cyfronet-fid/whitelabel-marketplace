@@ -2,6 +2,7 @@
 
 class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   include UrlHelper
+  skip_before_action :backoffice_authorization!
 
   class WizardActionError < StandardError
   end
@@ -32,8 +33,11 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
     saved_params = session[provider_id]
     provider_attrs = saved_params.merge permitted_step_attributes
 
-    @provider = Provider.new(provider_attrs)
+    @provider = Provider.new(provider_attrs.except("logo"))
     if @provider.valid?
+      logo = ImageHelper.to_json(provider_attrs.delete("logo")) if provider_attrs["logo"].present? &&
+        !provider_attrs["logo"].is_a?(Hash)
+      provider_attrs["logo"] = logo if logo.present?
       session[provider_id] = provider_attrs
       redirect_to_next_step(params[:commit])
     else
@@ -87,18 +91,25 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   def finish_wizard_path
     provider_id = session[:provider_id]
     saved_params = session[provider_id]
-    clear_session_data
 
     if session[:wizard_action] == "create"
-      @provider = Provider.new(permitted_attributes(Provider).merge(saved_params))
+      @provider = Provider.new(permitted_attributes(Provider).merge(saved_params.merge(status: :unpublished)))
       if valid_model_and_urls? && @provider.save(validate: false)
+        if current_user.providers.published.empty? && !current_user.coordinator?
+          ar = ApprovalRequest.new(approvable: @provider, user: current_user, status: :published)
+          ar.save
+        end
+        clear_session_data
         redirect_to backoffice_provider_path(@provider), notice: "New provider created successfully"
       else
         render :show, status: :unprocessable_entity
       end
     else
+      clear_session_data
       @provider = Provider.find_by(id: provider_id)
-      @provider.update!(saved_params)
+      logo = saved_params.delete("logo")
+      @provider.update(saved_params)
+      @provider.update_logo!(logo) if logo.present?
       redirect_to backoffice_provider_path(@provider), notice: "Provider updated successfully"
     end
   end
@@ -186,7 +197,9 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
     provider_id = session[:provider_id]
     session[provider_id] ||= {}
     provider_attrs = session[provider_id] || {}
-    @provider = Provider.new provider_attrs
+    logo = provider_attrs["logo"] if provider_attrs.key?("logo")
+    @provider = Provider.new provider_attrs.except("logo")
+    @provider.update_logo!(logo) if logo.present?
   end
 
   def next_title
