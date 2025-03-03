@@ -88,6 +88,9 @@ application.register("project-item", ProjectItemController);
 import QuantityPriceController from "./quantity_price_controller";
 application.register("quantity-price", QuantityPriceController);
 
+import RaidProjectController from "./raid_project_controller";
+application.register("raid-project", RaidProjectController);
+
 import RemovalsController from "./removals_controller";
 application.register("removals", RemovalsController);
 

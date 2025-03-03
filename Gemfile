@@ -10,7 +10,7 @@ gem "pg", "~> 1.5", "< 2.0"
 gem "puma"
 gem "nori"
 
-gem "uglifier", "~> 4.2"
+gem "uglifier", ">= 1.3.0"
 gem "sprockets-rails"
 gem "jsbundling-rails"
 gem "cssbundling-rails"
@@ -20,8 +20,8 @@ gem "turbo-rails"
 gem "stimulus-rails"
 gem "render_async"
 
-gem "bootsnap", "~> 1.18", require: false
-gem "colorize", "~> 1.1", require: false
+gem "bootsnap", ">= 1.4.2", require: false
+gem "colorize", ">= 0.8.1", require: false
 
 gem "ancestry"
 gem "gretel"
@@ -32,6 +32,7 @@ gem "acts-as-taggable-on"
 gem "countries"
 gem "i18n_data"
 gem "humanize"
+gem "iso-639"
 
 gem "activestorage-validator"
 gem "image_processing", ">= 1.2"
@@ -144,3 +145,8 @@ gem "timeout", "~>0.4"
 # Use Redis for Action Cable
 gem "redis", "~> 5.2"
 gem "redis-actionpack", "~> 5.4"
+
+# Raid related gems
+gem "yajl-ffi", "~> 0.1.2"
+gem "rubyzip"
+gem "wicked"
