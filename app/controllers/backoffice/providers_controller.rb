@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Backoffice::ProvidersController < Backoffice::ApplicationController
+  include Backoffice::ProvidersHelper
   include UrlHelper
 
   before_action :find_and_authorize, only: %i[show edit update destroy]
@@ -17,12 +18,10 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def new
-    provider_builder_key = Random.urlsafe_base64(6)
-    session[:provider_id] = provider_builder_key
+    @provider = Provider.new
     session[:wizard_action] = "create"
-    session[:wizard_completion_level] = -1
-    session[provider_builder_key] = {}
-    redirect_to backoffice_provider_step_path(provider_builder_key, "profile")
+    session[:new] = {}
+    redirect_to backoffice_provider_step_path("new", "profile")
   end
 
   def create
@@ -43,11 +42,36 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def edit
-    session[:provider_id] = @provider.id
     session[:wizard_action] = "update"
-    session[:wizard_completion_level] = 4
     session[@provider.id] = create_provider_hash(@provider)
     redirect_to backoffice_provider_step_path(@provider, "profile")
+  end
+
+  def update
+    provider_duplicate = @provider.dup
+
+    # IMPORTANT!!! Writing upstream_id from params is required to inject context to policy
+    provider_duplicate.upstream_id = params[:provider][:upstream_id]
+    permitted_attributes = permitted_attributes(provider_duplicate)
+    if provider_duplicate.published? && provider_duplicate.catalogue.present? &&
+         !provider_duplicate.catalogue.published?
+      attrs.merge(status: provider_duplicate&.catalogue&.status)
+    end
+    @provider.assign_attributes(permitted_attributes)
+
+    if valid_model_and_urls? && @provider.save(validate: false)
+      redirect_to backoffice_provider_path(@provider), notice: "Provider updated successfully"
+    else
+      if @provider.public_contacts.present? && @provider.public_contacts.all?(&:marked_for_destruction?)
+        @provider.public_contacts[0].reload
+      end
+      if @provider.data_administrators.present? && @provider.data_administrators.all?(&:marked_for_destruction?)
+        @provider.data_administrators[0].reload
+      end
+      catalogue_scope
+      add_missing_nested_models
+      render :edit, status: :bad_request
+    end
   end
 
   def destroy
@@ -106,7 +130,6 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
       @provider.errors.clear
       valid = true
     end
-
     valid
   end
 

@@ -13,7 +13,7 @@
         = public_contact_form.input :country_phone_code,
           label: "Dialing Code",
           collection: dial_codes,
-          selected: "#{c.iso_short_name} #{c.emoji_flag} (+#{c.country_code})",
+          selected:  ("#{c.iso_short_name} #{c.emoji_flag} (+#{c.country_code})" if c.present?),
           input_html: { multiple: false, data: { form_target: "pcCode", choice: true } }
       .col-6
         = public_contact_form.input :phone,

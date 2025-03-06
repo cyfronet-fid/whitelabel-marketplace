@@ -37,7 +37,7 @@
         .col-6
           Logo URL
         .col-6
-          = provider.logo
+          = image_tag "#{logo["base64"]}", class: "logo-preview"
       .row
         .col-6
           Is the provider a legal entity?

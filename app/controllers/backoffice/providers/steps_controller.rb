@@ -1,16 +1,18 @@
 # frozen_string_literal: true
 
 class Backoffice::Providers::StepsController < Backoffice::ApplicationController
+  include Backoffice::ProvidersHelper
   include UrlHelper
   skip_before_action :backoffice_authorization!
+  before_action :validate_wizard_action, only: :show
+
+  helper_method :current_step_index
 
   class WizardActionError < StandardError
   end
 
   class CommitValueError < StandardError
   end
-
-  helper_method :back_title, :next_title, :submit_title
 
   FORM_STEPS = {
     profile: %i[name abbreviation description website logo legal_entity],
@@ -22,22 +24,29 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
     manager: [data_administrators_attributes: %i[id first_name last_name email _destroy]]
   }.freeze
 
+  STEPS = %i[profile location contacts manager summary].freeze
+
   def show
-    validate_wizard_action
-    step_state(params[:id].to_sym)
+    prepare_step(params[:id].to_sym)
   end
 
   def update
-    set_completion_level if session[:wizard_action] == "create"
-    provider_id = session[:provider_id]
+    provider_id = params[:provider_id]
     saved_params = session[provider_id]
     provider_attrs = saved_params.merge permitted_step_attributes
 
     @provider = Provider.new(provider_attrs.except("logo"))
     if @provider.valid?
-      logo = ImageHelper.to_json(provider_attrs.delete("logo")) if provider_attrs["logo"].present? &&
-        !provider_attrs["logo"].is_a?(Hash)
-      provider_attrs["logo"] = logo if logo.present?
+      @logo =
+        if provider_attrs["logo"].present?
+          if provider_attrs["logo"].is_a?(Hash)
+            provider_attrs["logo"]
+          else
+            ImageHelper.to_json(provider_attrs.delete("logo"))
+          end
+        end
+
+      provider_attrs["logo"] = @logo if @logo.present?
       session[provider_id] = provider_attrs
       redirect_to_next_step(params[:commit])
     else
@@ -48,169 +57,119 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   private
 
   def target_step(commit)
-    if commit == next_title
-      return next_step
-    elsif commit == back_title
-      return prev_step
-    else
-      target_step_value = commit.split[-1].downcase.to_sym
-      return target_step_value if steps.include? target_step_value
-    end
-    raise CommitValueError, "Unknown commit value"
-  end
+    raise CommitValueError, "Unknown commit value" if commit.blank?
 
-  def set_completion_level
-    completion_level = [current_step_index, session[:wizard_completion_level]].max
-    session[:wizard_completion_level] = completion_level
+    case commit
+    when next_title
+      next_step
+    when back_title
+      prev_step
+    else
+      target_step_value = commit.split.last&.downcase&.to_sym
+      STEPS.include?(target_step_value) ? target_step_value : (raise CommitValueError, "Unknown commit value")
+    end
   end
 
   def redirect_to_next_step(commit)
     if commit == submit_title
       finish_wizard_path
     else
-      target_step_value = target_step(commit)
-      step_state(target_step_value.to_sym)
+      @step = target_step(commit)
+      prepare_step(@step.to_sym)
       render turbo_stream:
                turbo_stream.update(
                  "provider-form",
-                 partial: partial_path(target_step_value),
+                 partial: partial_path(@step),
                  locals: {
-                   provider: @provider
+                   provider: @provider,
+                   logo: @logo
                  }
                )
     end
   end
 
   def clear_session_data
-    session.delete session[:provider_id]
     session.delete(:provider_id)
     session.delete(:wizard_action)
     session.delete(:wizard_completion_level)
   end
 
   def finish_wizard_path
-    provider_id = session[:provider_id]
-    saved_params = session[provider_id]
-
-    if session[:wizard_action] == "create"
-      @provider = Provider.new(permitted_attributes(Provider).merge(saved_params.merge(status: :unpublished)))
-      if valid_model_and_urls? && @provider.save(validate: false)
+    saved_params = session[params[:provider_id]]
+    @logo = saved_params.delete("logo")
+    if params[:provider_id] == "new"
+      @provider.status = :unpublished
+      if @provider.save
         if current_user.providers.published.empty? && !current_user.coordinator?
           ar = ApprovalRequest.new(approvable: @provider, user: current_user, status: :published)
           ar.save
         end
-        clear_session_data
-        redirect_to backoffice_provider_path(@provider), notice: "New provider created successfully"
       else
         render :show, status: :unprocessable_entity
       end
     else
-      clear_session_data
-      @provider = Provider.find_by(id: provider_id)
-      logo = saved_params.delete("logo")
-      @provider.update(saved_params)
-      @provider.update_logo!(logo) if logo.present?
-      redirect_to backoffice_provider_path(@provider), notice: "Provider updated successfully"
+      @provider = Provider.find_by(id: params[:provider_id])
+      render :show, status: :unprocessable_entity unless @provider.update(saved_params)
     end
+    @provider.update_logo!(@logo) if @logo.present?
+    action = session.delete(:wizard_action)
+    clear_session_data
+    redirect_to backoffice_provider_path(@provider), notice: "Provider #{action}d successfully"
   end
 
   def partial_path(step)
     "backoffice/providers/steps/#{step}"
   end
 
-  def step_state(step_to_set)
-    method("set_#{step_to_set}").call
-  end
-
-  def set_profile
+  def prepare_step(step_to_set)
     find_and_authorize
-  end
-
-  def set_location
-    find_and_authorize
-  end
-
-  def set_contacts
-    find_and_authorize
-    @provider.build_main_contact if @provider.main_contact.blank?
-    @provider.public_contacts.build if @provider.public_contacts.empty?
-  end
-
-  def set_manager
-    find_and_authorize
-    if @provider.data_administrators.blank?
-      @provider.data_administrators << DataAdministrator.new(
-        first_name: current_user.first_name,
-        last_name: current_user.last_name,
-        email: current_user.email
-      )
+    case step_to_set
+    when :contacts
+      @provider.build_main_contact if @provider.main_contact.blank?
+      @provider.public_contacts.build if @provider.public_contacts.empty?
+    when :manager
+      if @provider.data_administrators.blank?
+        @provider.data_administrators << DataAdministrator.new(
+          first_name: current_user.first_name,
+          last_name: current_user.last_name,
+          email: current_user.email
+        )
+      end
+    when :summary
+      @logo = session[params[:provider_id]]["logo"]
     end
   end
 
-  def set_summary
-    find_and_authorize
-  end
-
-  def steps
-    %i[profile location contacts manager summary]
-  end
-
   def step
-    params[:provider] ? params[:provider][:form_step].to_sym : :profile
+    @step ||= params[:id]
   end
 
   def current_step_index
-    steps.index(step.to_sym)
+    STEPS.index(step.to_sym)
   end
 
   def next_step
-    current_step_index < 4 ? steps[current_step_index + 1] : steps[current_step_index]
+    STEPS[[(current_step_index + 1), 5].min]
   end
 
   def prev_step
-    current_step_index.positive? ? steps[current_step_index - 1] : steps[current_step_index]
+    STEPS[[(current_step_index - 1), 0].max]
   end
 
   def permitted_step_attributes
     params.require(:provider).permit(:form_step, *FORM_STEPS[step.to_sym])
   end
 
-  def valid_model_and_urls?
-    # More restricted validation in form instead of ActiveRecord itself
-    # is related to loose validation of importing data from external services
-    valid = @provider.valid?
-    if @provider.website_changed? && !UrlHelper.url_valid?(@provider.website)
-      valid = false
-      @provider.errors.add(:website, "isn't valid or website doesn't exist, please check URL")
-    end
-    valid
-  end
-
   def validate_wizard_action
-    raise WizardActionError, "wizard_action parameter not set" if session[:wizard_action].nil?
-    unless %w[create update].include? session[:wizard_action]
-      raise WizardActionError, "Unpermitted wizard_action parameter"
+    if session[:wizard_action].nil? || !%w[create update].include?(session[:wizard_action])
+      raise WizardActionError, "wizard_action parameter not set"
     end
   end
 
   def find_and_authorize
-    provider_id = session[:provider_id]
+    provider_id = params[:provider_id]
     session[provider_id] ||= {}
-    provider_attrs = session[provider_id] || {}
-    logo = provider_attrs["logo"] if provider_attrs.key?("logo")
+    provider_attrs = session[provider_id]
     @provider = Provider.new provider_attrs.except("logo")
-    @provider.update_logo!(logo) if logo.present?
-  end
-
-  def next_title
-    "Next"
-  end
-
-  def back_title
-    "Back"
-  end
-
-  def submit_title
-    "#{session[:wizard_action].capitalize} provider"
   end
 end

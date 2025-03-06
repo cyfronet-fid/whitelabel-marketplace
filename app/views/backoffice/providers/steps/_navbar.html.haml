@@ -1,23 +1,22 @@
+- csi = current_step_index
 .steps-row
-  .offer-step.active-button
-    = f.button :submit, "Provider's profile"
-  #step-two-button.offer-step{ class: ("active-button" if completion_level >= 2) }
-    - if completion_level >= 2
+  = link_to backoffice_provider_step_path(params[:provider_id], "profile") do
+    .offer-step.active-button
+      Provider's profile
+  #step-two-button.offer-step{ class: ("active-button" if csi.positive?) }
+    - if csi < 1
       = f.button :submit, "Location"
     - else
-      Location
-  #step-three-button.offer-step{ class: ("active-button" if completion_level >= 3) }
-    - if completion_level >= 3
+      = link_to "Location", backoffice_provider_step_path(params[:provider_id], "location")
+  #step-three-button.offer-step{ class: ("active-button" if csi > 1) }
+    - if csi < 2
       = f.button :submit, "Contacts"
     - else
-      Contacts
-  #step-four-button.offer-step{ class: ("active-button" if completion_level >= 4) }
-    - if completion_level >= 4
+      = link_to "Contacts", backoffice_provider_step_path(params[:provider_id], "contacts")
+  #step-four-button.offer-step{ class: ("active-button" if csi > 2) }
+    - if csi < 3
       = f.button :submit, "Provider's Manager"
     - else
-      Provider's manager
-  #step-five-button.offer-step{ class: ("active-button" if completion_level >= 5) }
-    - if completion_level >= 5
-      = f.button :submit, "Summary"
-    - else
-      Summary
+      = link_to "Provider's Manager", backoffice_provider_step_path(params[:provider_id], "manager")
+  #step-five-button.offer-step{ class: ("active-button" if csi > 3) }
+    = f.button :submit, "Summary"

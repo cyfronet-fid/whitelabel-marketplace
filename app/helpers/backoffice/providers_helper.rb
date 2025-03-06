@@ -7,16 +7,8 @@ module Backoffice::ProvidersHelper
     !policy([:backoffice, @provider]).permitted_attributes.include?(attribute)
   end
 
-  def get_dialling_code(country)
-    Country.get_country_phone_code(country)
-  end
-
-  def render_next_step(step_id, provider)
-    render "backoffice/providers/steps/#{step_id}", provider: provider
-  end
-
-  def completion_level
-    session[:wizard_completion_level] + 2
+  def render_step(step_id, provider)
+    render "backoffice/providers/steps/#{step_id}", provider: provider, step_index: step_id
   end
 
   def hosting_legal_entity_input(form)
@@ -37,5 +29,17 @@ module Backoffice::ProvidersHelper
                  label: "Hosting Legal Entity",
                  disabled: cant_edit(:hosting_legal_entity_string)
     end
+  end
+
+  def next_title
+    "Next"
+  end
+
+  def back_title
+    "Back"
+  end
+
+  def submit_title
+    "#{session[:wizard_action].capitalize} provider"
   end
 end

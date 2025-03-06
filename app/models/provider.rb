@@ -8,6 +8,7 @@ class Provider < ApplicationRecord
   include Viewable
   include Propagable
   include Statusable
+  include UrlHelper
 
   extend FriendlyId
   friendly_id :pid
@@ -124,6 +125,7 @@ class Provider < ApplicationRecord
     validates :website, presence: true
     validates :description, presence: true
     validates :logo, blob: { content_type: :image }
+    validate :valid_urls?
   end
 
   with_options if: -> { required_for_step?("location") } do
@@ -233,6 +235,14 @@ class Provider < ApplicationRecord
   def owned_by?(user)
     data_administrators&.map(&:user_id)&.include?(user&.id) ||
       catalogue&.data_administrators&.map(&:user_id)&.include?(user.id)
+  end
+
+  def valid_urls?
+    if website_changed? && !UrlHelper.url_valid?(website)
+      errors.add(:website, "isn't valid or website doesn't exist, please check URL")
+      return false
+    end
+    true
   end
 
   def current_step_index(step)
