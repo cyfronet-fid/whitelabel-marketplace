@@ -2,6 +2,7 @@
 
 module Backoffice::ProvidersHelper
   PROFILE_4_ENABLED = Rails.configuration.profile_4_enabled.freeze
+  PROVIDER_TABS = %i[basic marketing classification location contact maturity dependencies other admins].freeze
 
   def cant_edit(attribute)
     !policy([:backoffice, @provider]).permitted_attributes.include?(attribute)
@@ -41,5 +42,18 @@ module Backoffice::ProvidersHelper
 
   def submit_title
     "#{session[:wizard_action].capitalize} provider"
+  end
+
+  def preloaded(provider)
+    params[:provider_id] == "new" ? provider : Provider.with_attached_logo.find(params[:provider_id])
+  end
+
+  def provider_tabs
+    PROVIDER_TABS
+  end
+
+  def exit_confirm_details
+    summary_step = link_to "summary step", backoffice_provider_step_path(params[:provider_id], "summary"), method: :post
+    _("If you leave, you will lose your changes, go to the #{summary_step} and save them")
   end
 end

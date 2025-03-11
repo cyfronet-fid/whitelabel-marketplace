@@ -18,8 +18,4 @@
                 disabled: cant_edit(:legal_entity),
                 boolean_style: :inline,
                 label: "Is the provider a legal entity?"
-    %hr.bottom-hr.mt-5.mb-4
-      .row
-        .col-10
-        .col-2
-          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"
+    = render "backoffice/providers/steps/buttons", f: f

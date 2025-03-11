@@ -6,7 +6,7 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   skip_before_action :backoffice_authorization!
   before_action :validate_wizard_action, only: :show
 
-  helper_method :current_step_index
+  helper_method :current_step_index, :step, :prev_step, :next_step
 
   class WizardActionError < StandardError
   end
@@ -31,27 +31,24 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   end
 
   def update
-    provider_id = params[:provider_id]
-    saved_params = session[provider_id]
+    saved_params = session[session_key]
     provider_attrs = saved_params.merge permitted_step_attributes
-
-    @provider = Provider.new(provider_attrs.except("logo"))
+    @provider = init_provider(session_key, provider_attrs)
     if @provider.valid?
-      @logo =
-        if provider_attrs["logo"].present?
-          if provider_attrs["logo"].is_a?(Hash)
-            provider_attrs["logo"]
-          else
-            ImageHelper.to_json(provider_attrs.delete("logo"))
-          end
-        end
-
       provider_attrs["logo"] = @logo if @logo.present?
-      session[provider_id] = provider_attrs
+      session[session_key] = provider_attrs
       redirect_to_next_step(params[:commit])
     else
-      render :show
+      render :show, status: :unprocessable_entity
     end
+  end
+
+  def exit
+    clear_session_data
+    redirect_to backoffice_providers_path
+  end
+
+  def destroy
   end
 
   private
@@ -89,15 +86,14 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   end
 
   def clear_session_data
-    session.delete(:provider_id)
+    session.delete(session_key.to_sym)
     session.delete(:wizard_action)
-    session.delete(:wizard_completion_level)
   end
 
   def finish_wizard_path
-    saved_params = session[params[:provider_id]]
+    saved_params = session[session_key]
     @logo = saved_params.delete("logo")
-    if params[:provider_id] == "new"
+    if session_key == "new"
       @provider.status = :unpublished
       if @provider.save
         if current_user.providers.published.empty? && !current_user.coordinator?
@@ -108,7 +104,7 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
         render :show, status: :unprocessable_entity
       end
     else
-      @provider = Provider.find_by(id: params[:provider_id])
+      init_provider(session_key, saved_params.except("logo"))
       render :show, status: :unprocessable_entity unless @provider.update(saved_params)
     end
     @provider.update_logo!(@logo) if @logo.present?
@@ -136,8 +132,12 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
         )
       end
     when :summary
-      @logo = session[params[:provider_id]]["logo"]
+      @logo = session[session_key]["logo"]
     end
+  end
+
+  def session_key
+    @provider.present? ? @provider&.id.to_s : params[:provider_id]
   end
 
   def step
@@ -167,9 +167,26 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   end
 
   def find_and_authorize
-    provider_id = params[:provider_id]
-    session[provider_id] ||= {}
-    provider_attrs = session[provider_id]
-    @provider = Provider.new provider_attrs.except("logo")
+    session[session_key] ||= {}
+    provider_attrs = session[session_key]
+    @provider ||= init_provider(session_key, provider_attrs.except("logo"))
+    load_logo(provider_attrs)
+  end
+
+  def init_provider(provider_id, provider_attrs)
+    if provider_id == "new"
+      p = Provider.new(provider_attrs)
+    else
+      p = Provider.with_attached_logo.friendly.find(provider_id)
+      p.assign_attributes(provider_attrs.except("logo"))
+    end
+    p
+  end
+
+  def load_logo(provider_attrs)
+    @logo =
+      if provider_attrs["logo"].present?
+        provider_attrs["logo"].is_a?(Hash) ? provider_attrs["logo"] : ImageHelper.to_json(provider_attrs.delete("logo"))
+      end
   end
 end

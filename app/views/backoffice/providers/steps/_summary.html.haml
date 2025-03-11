@@ -35,9 +35,13 @@
           = provider.website
       .row
         .col-6
-          Logo URL
+          Logo
         .col-6
-          = image_tag "#{logo["base64"]}", class: "logo-preview"
+          - if local_assigns[:logo]&.key?("base64")
+            = image_tag "#{logo["base64"]}", class: "logo-preview"
+          - else
+            = presentable_logo(preloaded(provider))
+
       .row
         .col-6
           Is the provider a legal entity?
@@ -93,9 +97,4 @@
           - provider.data_administrators.each do |manager|
             = render "backoffice/providers/steps/summary_manager_section", manager: manager
 
-      %hr.bottom-hr.mt-5.mb-4
-      .row
-        .col-10
-          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "profile")
-        .col-2
-          = f.button :submit, submit_title, class: "btn btn-primary pl-5 pr-5"
+      = render "backoffice/providers/steps/buttons", f: f

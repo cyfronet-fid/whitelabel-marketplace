@@ -15,6 +15,21 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def show
+    respond_to do |format|
+      current_tab = params[:tab]
+      partial = current_tab.present? && current_tab.to_sym.in?(provider_tabs) ? params[:tab] : "basic"
+      format.turbo_stream do
+        render turbo_stream:
+                 turbo_stream.replace(
+                   "tab_content",
+                   partial: "backoffice/providers/tabs/#{partial}",
+                   locals: {
+                     provider: @provider
+                   }
+                 )
+      end
+      format.html
+    end
   end
 
   def new
@@ -44,6 +59,10 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   def edit
     session[:wizard_action] = "update"
     session[@provider.id] = create_provider_hash(@provider)
+    respond_to do |format|
+      format.html
+      format.turbo_stream
+    end
     redirect_to backoffice_provider_step_path(@provider, "profile")
   end
 

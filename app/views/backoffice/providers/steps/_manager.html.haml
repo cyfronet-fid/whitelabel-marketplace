@@ -20,9 +20,4 @@
                   action: "click->administrator#addAdmin",
                   fields: f.fields_for(:data_administrators, DataAdministrator.new,
                   child_index: "new_field") { |da_form| render_data_administrator(da_form, provider) } }
-    %hr.bottom-hr.mt-5.mb-4
-      .row
-        .col-10
-          = link_to back_title, backoffice_provider_step_path(params[:provider_id], "contacts")
-        .col-2
-          = f.button :submit, next_title, class: "btn btn-primary pl-5 pr-5"
+    = render "backoffice/providers/steps/buttons", f: f

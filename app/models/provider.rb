@@ -116,7 +116,7 @@ class Provider < ApplicationRecord
   before_validation do
     remove_empty_array_fields
     self.legal_status = nil unless legal_entity
-    self.status ||= :published
+    self.status ||= :unpublished
   end
 
   with_options if: -> { required_for_step?("profile") } do
@@ -136,6 +136,7 @@ class Provider < ApplicationRecord
   end
 
   with_options if: -> { required_for_step?("contacts") } do
+    validates :main_contact, presence: true
     validates :public_contacts, presence: true, length: { minimum: 1, message: "are required. Please add at least one" }
   end
 
