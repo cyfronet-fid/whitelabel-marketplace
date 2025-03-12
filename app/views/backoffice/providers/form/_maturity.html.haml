@@ -1,19 +1,5 @@
-.card.shadow-sm.rounded
-  %button.btn.btn-link{ type: "button", class: ("collapsed" if collapsed?(provider,
-              [:provider_life_cycle_status, :certifications])),
-                data: { toggle: "collapse", target: "#maturity" },
-                aria: { expanded: true, controls: "maturity" } }
-    .card-header.text-left{ id: "maturity-header" }
-      .row
-        .col-10
-          = _("Maturity")
-        .col-2.text-right
-          .collapse-icon
-            %i.fas.fa-chevron-down
-            %i.fas.fa-chevron-up
-.collapse{ id: "maturity", "aria-labelledby": "maturity-header",
-          "data-parent": "#accordion-form",
-          class: ("show" unless collapsed?(provider, [:provider_life_cycle_status, :certifications])) }
+.tab-pane{ id: "maturity", "aria-labelledby": "maturity-header", role: "tabpanel",
+          "data-form-target": "tab" }
   .card-body
     = f.input :provider_life_cycle_status,
               collection: Vocabulary.where(type: "Vocabulary::ProviderLifeCycleStatus"),

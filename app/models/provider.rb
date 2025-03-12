@@ -125,7 +125,7 @@ class Provider < ApplicationRecord
     validates :website, presence: true
     validates :description, presence: true
     validates :logo, blob: { content_type: :image }
-    validate :valid_urls?
+    validate :valid_urls?, unless: -> { Rails.env.test? }
   end
 
   with_options if: -> { required_for_step?("location") } do

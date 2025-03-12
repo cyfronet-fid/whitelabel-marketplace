@@ -1,20 +1,5 @@
-.card.shadow-sm.rounded
-  %button.btn.btn-link{ type: "button", class: ("collapsed" if collapsed?(provider,
-              [:description, :logo, :link_multimedia_urls, :"link_multimedia_urls.url"])),
-              data: { toggle: "collapse", target: "#marketing" },
-              aria: { expanded: true, controls: "marketing" } }
-    .card-header.text-left{ id: "marketing-header" }
-      .row
-        .col-10
-          = _("Marketing")
-        .col-2.text-right
-          .collapse-icon
-            %i.fas.fa-chevron-down
-            %i.fas.fa-chevron-up
-.collapse{ id: "marketing", "aria-labelledby": "marketing-header",
-          "data-parent": "#accordion-form",
-          class: ("show" unless collapsed?(provider, [:description, :logo,
-          :link_multimedia_urls, :"link_multimedia_urls.url"])) }
+.tab-pane{ id: "marketing", "aria-labelledby": "marketing-header", role: "tabpanel",
+          "data-form-target": "tab" }
   .card-body
     .service-description
       = f.input :description, disabled: cant_edit(:description)

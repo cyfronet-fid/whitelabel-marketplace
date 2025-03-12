@@ -1,0 +1,9 @@
+= turbo_frame_tag "tab_content" do
+  = render "tabs", provider: provider, current_tab: tab
+  %main.col-12.col-xl-9.pr-4.pt-4
+    #actions.btn-group
+      - if policy([:backoffice, provider]).edit?
+        = link_to _("Edit provider"),
+                    edit_backoffice_provider_path(provider),
+                    class: "btn btn-primary edit-button", "data-turbo": false
+    = render "backoffice/providers/tabs/#{tab}", provider: provider

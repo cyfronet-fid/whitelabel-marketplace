@@ -3,7 +3,7 @@
   .col-6
     = link_to back_title, backoffice_provider_step_path(params[:provider_id], prev_step) unless current_step_index.zero?
   .col-2
-    = link_to "Exit", exit_backoffice_provider_step_path(params[:provider_id], step),
+    = link_to "Exit", backoffice_provider_exit_path(params[:provider_id]),
           data: { turbo_confirm: "Exit provider editor",
           confirm_details: exit_confirm_details,
           confirm_button: "Exit", turbo_method: :post, turbo_frame: "_top" }, class: "btn btn-danger"

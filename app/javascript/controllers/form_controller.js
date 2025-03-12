@@ -42,6 +42,7 @@ export default class extends Controller {
     "pcPhone",
     "pcPosition",
     "pcCode",
+    "tab",
   ];
 
   initialize() {
@@ -64,6 +65,15 @@ export default class extends Controller {
     } else {
       this.fixmeTarget.style.position = "static";
     }
+  }
+
+  toggleTab(event) {
+    event.preventDefault();
+    this.tabTargets.forEach((el) => {
+      el.classList.remove("active");
+    });
+    const toDisplay = document.getElementById(event.target.dataset.target);
+    toDisplay.classList.add("active");
   }
 
   duplicateContact(event) {

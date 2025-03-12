@@ -8,7 +8,7 @@
     = public_contact_form.input :email, disabled: object.present? ? object&.upstream_id.present? : nil,
       input_html: { "data-form-target": "pcEmail" }
     .row
-      .col-2
+      .col-3
         - c = object.country
         = public_contact_form.input :country_phone_code,
           label: "Dialing Code",
