@@ -25,6 +25,7 @@ describe("Providers", () => {
 
   it("should go to Providers in Backoffice and select one of providers", { tags: "@extended-test" }, () => {
     cy.openUserDropdown();
+    cy.get("[data-e2e='provider-panel']").click();
     cy.get("[data-e2e='backoffice']").click();
     cy.location("href").should("contain", "/backoffice");
     cy.get("[data-e2e='providers']").click();

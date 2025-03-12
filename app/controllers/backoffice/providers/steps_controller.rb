@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Backoffice::Providers::StepsController < Backoffice::ApplicationController
+class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   include Backoffice::ProvidersHelper
   include UrlHelper
   skip_before_action :backoffice_authorization!
@@ -33,7 +33,6 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
   def update
     saved_params = session[session_key]
     provider_attrs = saved_params.merge permitted_step_attributes
-    @provider = init_provider(session_key, provider_attrs)
     if @provider.valid?
       provider_attrs["logo"] = @logo if @logo.present?
       session[session_key] = provider_attrs
@@ -41,11 +40,6 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
     else
       render :show, status: :unprocessable_entity
     end
-  end
-
-  def exit
-    clear_session_data
-    redirect_to backoffice_providers_path
   end
 
   def destroy
@@ -83,11 +77,6 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
                  }
                )
     end
-  end
-
-  def clear_session_data
-    session.delete(session_key.to_sym)
-    session.delete(:wizard_action)
   end
 
   def finish_wizard_path
@@ -134,10 +123,6 @@ class Backoffice::Providers::StepsController < Backoffice::ApplicationController
     when :summary
       @logo = session[session_key]["logo"]
     end
-  end
-
-  def session_key
-    @provider.present? ? @provider&.id.to_s : params[:provider_id]
   end
 
   def step

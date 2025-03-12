@@ -18,11 +18,11 @@ class Backoffice::ProviderPolicy < Backoffice::ApplicationPolicy
   end
 
   def edit?
-    coordinator? || record&.owned_by?(user)
+    edit_permissions?
   end
 
   def update?
-    user.present?
+    edit_permissions?
   end
 
   def permitted_attributes
@@ -90,6 +90,10 @@ class Backoffice::ProviderPolicy < Backoffice::ApplicationPolicy
 
   def catalogue_access?
     user&.catalogue_owner?
+  end
+
+  def edit_permissions?
+    !record.deleted? && (coordinator? || record&.owned_by?(user))
   end
 
   def access?

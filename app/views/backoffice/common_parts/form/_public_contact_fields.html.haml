@@ -8,8 +8,8 @@
     = public_contact_form.input :email, disabled: object.present? ? object&.upstream_id.present? : nil,
       input_html: { "data-form-target": "pcEmail" }
     .row
-      .col-2
-        - c = object.country
+      .col-3
+        - c = object.respond_to?(:country) ? object&.country : object&.resource_organisation&.country
         = public_contact_form.input :country_phone_code,
           label: "Dialing Code",
           collection: dial_codes,

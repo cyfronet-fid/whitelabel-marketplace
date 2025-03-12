@@ -4,6 +4,6 @@
       - provider_tabs.each_with_index do |tab, i|
         %li.nav-item
           = link_to _(tab.capitalize), { tab: tab },
-            class: "nav-link #{"active" if params[:tab] == tab || (params[:tab].blank? && i.zero?) }",
+            class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) }",
             role: "tab",
             data: { e2e: "provider-#{tab}-btn", turbo_stream: true }

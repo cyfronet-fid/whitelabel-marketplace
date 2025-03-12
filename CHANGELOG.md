@@ -9,6 +9,11 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## [3.58.1] 2025-03-04
 
+### Added
+
+- New provider wizard (@maria-j-k, @jarekzet, @goreck888)
+- New styles for the provider form (@goreck888)
+
 ### Changed
 
 - Default link to the Explore service (@goreck888)

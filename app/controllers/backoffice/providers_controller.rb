@@ -17,13 +17,14 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   def show
     respond_to do |format|
       current_tab = params[:tab]
-      partial = current_tab.present? && current_tab.to_sym.in?(provider_tabs) ? params[:tab] : "basic"
+      partial = current_tab.present? && current_tab.to_sym.in?(provider_tabs) ? params[:tab].to_sym : :basic
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(
                    "tab_content",
-                   partial: "backoffice/providers/tabs/#{partial}",
+                   partial: "backoffice/providers/tabs/wrapper",
                    locals: {
+                     tab: partial,
                      provider: @provider
                    }
                  )
@@ -57,13 +58,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def edit
-    session[:wizard_action] = "update"
-    session[@provider.id] = create_provider_hash(@provider)
-    respond_to do |format|
-      format.html
-      format.turbo_stream
-    end
-    redirect_to backoffice_provider_step_path(@provider, "profile")
+    add_missing_nested_models
   end
 
   def update
@@ -106,6 +101,11 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
         format.html { redirect_to backoffice_provider_path(@provider), alert: alert }
       end
     end
+  end
+
+  def exit
+    clear_session_data
+    redirect_to backoffice_providers_path
   end
 
   private
@@ -170,5 +170,14 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     provider_hash["public_contacts_attributes"] = public_contacts_attributes.reduce({}, :merge)
     provider_hash["data_administrators_attributes"] = data_administrators_attributes.reduce({}, :merge)
     provider_hash
+  end
+
+  def session_key
+    @provider.present? ? @provider&.id.to_s : params[:provider_id]
+  end
+
+  def clear_session_data
+    session.delete(session_key.to_sym)
+    session.delete(:wizard_action)
   end
 end

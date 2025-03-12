@@ -1,20 +1,4 @@
-.card.shadow-sm.rounded
-  %button.btn.btn-link{ type: "button", class: ("collapsed" if collapsed?(provider,
-            [:"data_administrators.email", :data_administrators])),
-                data: { toggle: "collapse", target: "#admins" },
-                aria: { expanded: true, controls: "admins" } }
-    .card-header.text-left{ id: "admins-header" }
-      .row
-        .col-10
-          = _("Admins")
-        .col-2.text-right
-          .collapse-icon
-            %i.fas.fa-chevron-down
-            %i.fas.fa-chevron-up
-.collapse{ id: "admins", "aria-labelledby": "admins-header",
-          "data-parent": "#accordion-form",
-          class: ("show" unless collapsed?(provider,
-            [:"data_administrators.email", :data_administrators])) }
+.tab-pane{ id: "admins", "aria-labelledby": "admins-header", role: "tabpanel", "data-form-target": "tab" }
   .card-body
     .row.service-contact-emails{ data: { controller: "administrator", administrator_target: "dataAdministrators" } }
       .col-12
