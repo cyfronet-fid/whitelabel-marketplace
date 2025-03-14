@@ -1,0 +1,6 @@
+%ul.nav.nav-tabs.row.pl-3{ role: "tabs" }
+  - provider_tabs.each do |tab|
+    %li.nav-item{ role: "presentation" }
+      %button.nav-link{ id: "#{tab}-tab", type: "button", role: "tab",
+          aria: { controls: "provider-edit-form" },
+          data: { action: "click->form#toggleTab", toggle: "tab", target: "#{tab}" } }= _(tab.capitalize)

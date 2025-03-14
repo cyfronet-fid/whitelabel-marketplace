@@ -4,6 +4,11 @@
   filter: grayscale(1);
 }
 
+.logo-preview {
+  max-height: 180px;
+  max-width: 180px;
+}
+
 body {
   font-size: $font-size-sm;
   margin-bottom: 0 !important;
@@ -7752,6 +7757,7 @@ abbr[title] {
 
   .offer-step {
     cursor: pointer;
+    text-decoration: none;
     z-index: 100;
 
     &:before {
@@ -7775,25 +7781,25 @@ abbr[title] {
       }
     }
 
-    &#order-parameters-button {
+    &#step-two-button {
       &:before {
         content: "2";
       }
     }
 
-    &#offer-parameters-button {
+    &#step-three-button {
       &:before {
         content: "3";
       }
     }
 
-    &#offer-description-button {
+    &#step-four-button {
       &:before {
         content: "4";
       }
     }
 
-    &#summary-button {
+    &#step-five-button {
       &:before {
         content: "5";
       }

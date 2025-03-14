@@ -1,0 +1,22 @@
+- csi = current_step_index
+.steps-row
+  = link_to backoffice_provider_step_path(params[:provider_id], "profile") do
+    .offer-step.active-button
+      Provider's profile
+  #step-two-button.offer-step{ class: ("active-button" if csi.positive?) }
+    - if csi < 1
+      = f.button :submit, "Location"
+    - else
+      = link_to "Location", backoffice_provider_step_path(params[:provider_id], "location")
+  #step-three-button.offer-step{ class: ("active-button" if csi > 1) }
+    - if csi < 2
+      = f.button :submit, "Contacts"
+    - else
+      = link_to "Contacts", backoffice_provider_step_path(params[:provider_id], "contacts")
+  #step-four-button.offer-step{ class: ("active-button" if csi > 2) }
+    - if csi < 3
+      = f.button :submit, "Provider's Manager"
+    - else
+      = link_to "Provider's Manager", backoffice_provider_step_path(params[:provider_id], "manager")
+  #step-five-button.offer-step{ class: ("active-button" if csi > 3) }
+    = f.button :submit, "Summary"
