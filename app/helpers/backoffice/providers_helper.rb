@@ -33,11 +33,11 @@ module Backoffice::ProvidersHelper
   end
 
   def next_title
-    "Next"
+    "Next ->"
   end
 
   def back_title
-    "Back"
+    "<- Back"
   end
 
   def submit_title

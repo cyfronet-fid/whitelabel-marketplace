@@ -7757,6 +7757,7 @@ abbr[title] {
 
   .offer-step {
     cursor: pointer;
+    position: relative;
     text-decoration: none;
     z-index: 100;
 
@@ -7921,6 +7922,10 @@ abbr[title] {
     .form-control {
       &.text {
         padding-top: 10px;
+      }
+
+      &#provider_description {
+        height: 190px;
       }
     }
   }
@@ -9157,8 +9162,8 @@ footer {
 /* WHITELABEL BACKOOFICE MODS */
 
 .breadcrumbs-backoffice-wrapper {
-  background: $alert-bg !important;
-  padding-bottom: 15px;
+  background: linear-gradient(0deg, $alert-bg 0%, $palette-white 100%);
+  padding: 20px 0;
 
   .breadcrumbs {
     .data-probe {

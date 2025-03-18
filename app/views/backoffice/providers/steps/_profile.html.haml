@@ -5,17 +5,28 @@
   html: { "data-form-target": "form" },
   method: :put do |f|
   = render "backoffice/providers/steps/navbar", provider: provider, f: f
-  .new-form-style
-    %h4 Provider's profile
-    .offer-section-wrapper.bottom-margin
-      = f.input :form_step, as: :hidden, input_html: { value: current_step }
-      = f.input :name, label: "Provider's name"
-      = f.input :abbreviation
-      = f.input :description
-      = f.input :website, label: "Website URL"
-      = f.input :logo, label: "logo URL"
-      = f.input :legal_entity, as: :boolean, include_hidden: true,
-                disabled: cant_edit(:legal_entity),
-                boolean_style: :inline,
-                label: "Is the provider a legal entity?"
-    = render "backoffice/providers/steps/buttons", f: f
+  .new-offer-form
+    .row
+      .col-lg-7.pl-0
+        %h4 Provider's profile
+        .offer-section-wrapper
+          = f.input :form_step, as: :hidden, input_html: { value: current_step }
+          = f.input :name, label: "Provider's name"
+          = f.input :abbreviation
+          = f.input :description, rows: 10
+          = f.input :website, label: "Website URL"
+          = f.input :logo, label: "logo URL"
+          = f.input :legal_entity, as: :boolean, include_hidden: true,
+                    disabled: cant_edit(:legal_entity),
+                    boolean_style: :inline,
+                    label: "Is the provider a legal entity?"
+        = render "backoffice/providers/steps/buttons", f: f
+      .col-lg-5.right-tips
+        .right-tip
+          %p
+            Looking for more information?
+            %br
+            Visit the
+            %strong
+              %a{ href: "#" }Knowledge hub
+            for detailed guides and useful resources.
