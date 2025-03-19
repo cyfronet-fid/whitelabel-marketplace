@@ -8,14 +8,14 @@
     = public_contact_form.input :email, disabled: object.present? ? object&.upstream_id.present? : nil,
       input_html: { "data-form-target": "pcEmail" }
     .row
-      .col-3
+      .col-5
         - c = object.respond_to?(:country) ? object&.country : object&.resource_organisation&.country
         = public_contact_form.input :country_phone_code,
           label: "Dialing Code",
           collection: dial_codes,
           selected:  ("#{c.iso_short_name} #{c.emoji_flag} (+#{c.country_code})" if c.present?),
           input_html: { multiple: false, data: { form_target: "pcCode", choice: true } }
-      .col-6
+      .col-7
         = public_contact_form.input :phone,
           label: "Phone Number",
           input_html: { "data-form-target": "pcPhone" }
@@ -26,4 +26,4 @@
     = public_contact_form.hidden_field :_destroy, "data-form-target": "destroy"
     .text-right
       = link_to _("Delete contact"), "#", id: "public-contact-delete-#{public_contact_form.index}",
-      class: "btn-sm disablable btn-danger", "data-action": "click->form#removeField"
+      class: "float-right remove-button", "data-action": "click->form#removeField"

@@ -7814,7 +7814,12 @@ abbr[title] {
     border: none;
     padding: 0;
     margin: 0 0 13px;
-    text-transform: uppercase;
+    font-weight: 400;
+    font-size: 18px;
+  }
+
+  .hidden {
+    margin: 0 !important;
   }
 
   .offer-section-wrapper {
@@ -7903,6 +7908,10 @@ abbr[title] {
       }
     }
 
+    .form-control-file {
+      border: none;
+    }
+
     label,
     legend {
       font-weight: 600;
@@ -7919,6 +7928,18 @@ abbr[title] {
       background: #fff;
     }
 
+    .form-group {
+      margin-bottom: 1.7rem;
+
+      &.hidden {
+        margin: 0;
+      }
+
+      &.provider_legal_entity {
+        margin-top: 30px;
+      }
+    }
+
     .form-control {
       &.text {
         padding-top: 10px;
@@ -7927,6 +7948,23 @@ abbr[title] {
       &#provider_description {
         height: 190px;
       }
+    }
+
+    .remove-button {
+      color: $custom-16;
+      font-weight: 600;
+      margin: 0 0 35px;
+      line-height: 18px;
+      font-size: 14px;
+      background: url("icon-trash.svg") no-repeat;
+      padding-left: 22px;
+    }
+
+    .btn-simple {
+      color: $custom-16;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
     }
   }
 }
@@ -7969,6 +8007,17 @@ abbr[title] {
     font-size: 18px;
     font-weight: 600;
     line-height: 28px;
+  }
+
+  .back-link-wrapper {
+    padding: 16px 0;
+
+    a {
+      color: $custom-16;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 28px;
+    }
   }
 }
 
