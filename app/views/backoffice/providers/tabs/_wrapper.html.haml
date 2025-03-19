@@ -1,5 +1,6 @@
 = turbo_frame_tag "tab_content" do
-  = render "tabs", provider: provider, current_tab: tab
+  .service-box-redesign
+    = render "tabs", provider: provider, current_tab: tab
   %main.col-12.col-xl-9.pr-4.pt-4
     #actions.btn-group
       - if policy([:backoffice, provider]).edit?
