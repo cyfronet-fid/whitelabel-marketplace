@@ -1,24 +1,5 @@
-.card.shadow-sm.rounded
-  %button.btn.btn-link{ type: "button", class: ("collapsed" if collapsed?(provider,
-            [:"main_contact.first_name", :"main_contact.last_name",
-            :"main_contact.email", :"public_contacts.email",
-            :"main_contact.phone", :"public_contacts.phone",
-            :public_contacts])),
-              data: { toggle: "collapse", target: "#contact" },
-              aria: { expanded: true, controls: "contact" } }
-    .card-header.text-left{ id: "contact-header" }
-      .row
-        .col-10
-          = _("Contact")
-        .col-2.text-right
-          .collapse-icon
-            %i.fas.fa-chevron-down
-            %i.fas.fa-chevron-up
-.collapse{ id: "contact", "aria-labelledby": "contact-header",
-        "data-parent": "#accordion-form",
-        class: ("show" unless collapsed?(provider, [:"main_contact.first_name",
-        :"main_contact.last_name", :"main_contact.email", :"public_contacts.email",
-        :"main_contact.phone", :"public_contacts.phone", :public_contacts])) }
+.tab-pane{ id: "contact", "aria-labelledby": "contact-header", role: "tabpanel",
+        "data-form-target": "tab" }
   .card-body
     .row.service-contact-emails
       .col-12
@@ -30,7 +11,16 @@
             = main_contact_form.input :first_name, disabled: provider.upstream_id.present?
             = main_contact_form.input :last_name, disabled: provider.upstream_id.present?
             = main_contact_form.input :email, disabled: provider.upstream_id.present?
-            = main_contact_form.input :phone, disabled: provider.upstream_id.present?
+            .row
+              .col-3
+                - c = provider.country
+                = main_contact_form.input :country_phone_code,
+                  label: "Dialing Code",
+                  collection: dial_codes,
+                  selected:  ("#{c.iso_short_name} #{c.emoji_flag} (+#{c.country_code})" if c.present?),
+                  input_html: { multiple: false, data: { form_target: "pcCode", choice: true } }
+              .col-6
+                = main_contact_form.input :phone, disabled: provider.upstream_id.present?
             = main_contact_form.input :position, disabled: provider.upstream_id.present?
     .row.service-contact-emails{ "data-service-target": "publicContacts" }
       .col-12

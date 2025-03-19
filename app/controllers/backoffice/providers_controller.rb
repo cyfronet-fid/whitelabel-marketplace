@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Backoffice::ProvidersController < Backoffice::ApplicationController
+  include Backoffice::ProvidersHelper
   include UrlHelper
 
   before_action :find_and_authorize, only: %i[show edit update destroy]
@@ -14,21 +15,29 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def show
+    respond_to do |format|
+      current_tab = params[:tab]
+      partial = current_tab.present? && current_tab.to_sym.in?(provider_tabs) ? params[:tab].to_sym : :basic
+      format.turbo_stream do
+        render turbo_stream:
+                 turbo_stream.replace(
+                   "tab_content",
+                   partial: "backoffice/providers/tabs/wrapper",
+                   locals: {
+                     tab: partial,
+                     provider: @provider
+                   }
+                 )
+      end
+      format.html
+    end
   end
 
   def new
     @provider = Provider.new
-    @provider.sources.build source_type: "eosc_registry"
-    @provider.alternative_identifiers.build
-    @provider.data_administrators << DataAdministrator.new(
-      first_name: current_user.first_name,
-      last_name: current_user.last_name,
-      email: current_user.email
-    )
-    @provider.build_main_contact
-    @provider.public_contacts.build
-    @provider.link_multimedia_urls.build
-    authorize(@provider)
+    session[:wizard_action] = "create"
+    session[:new] = {}
+    redirect_to backoffice_provider_step_path("new", "profile")
   end
 
   def create
@@ -94,6 +103,11 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     end
   end
 
+  def exit
+    clear_session_data
+    redirect_to backoffice_providers_path
+  end
+
   private
 
   def catalogue_scope
@@ -135,7 +149,35 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
       @provider.errors.clear
       valid = true
     end
-
     valid
+  end
+
+  def create_provider_hash(provider)
+    to_except = %i[id created_at updated_at]
+    contact_except = to_except + %i[contactable_type contactable_id]
+
+    data_administrators_attributes =
+      provider.data_administrators.map.with_index { |dm, i| { i.to_s => dm.as_json(except: to_except) } }
+    public_contacts_attributes =
+      provider.public_contacts.map.with_index { |pc, i| { i.to_s => pc.as_json(except: contact_except) } }
+
+    provider_hash = provider.as_json(except: to_except)
+    provider_hash["country"] = provider_hash["country"]["country_data_or_code"]
+    if @provider.main_contact
+      provider_hash["main_contact_attributes"] = @provider.main_contact.as_json(except: contact_except)
+    end
+
+    provider_hash["public_contacts_attributes"] = public_contacts_attributes.reduce({}, :merge)
+    provider_hash["data_administrators_attributes"] = data_administrators_attributes.reduce({}, :merge)
+    provider_hash
+  end
+
+  def session_key
+    @provider.present? ? @provider&.id.to_s : params[:provider_id]
+  end
+
+  def clear_session_data
+    session.delete(session_key.to_sym)
+    session.delete(:wizard_action)
   end
 end
