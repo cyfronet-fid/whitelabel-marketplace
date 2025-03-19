@@ -33,6 +33,7 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   def update
     saved_params = session[session_key]
     provider_attrs = saved_params.merge permitted_step_attributes
+    @provider.assign_attributes provider_attrs
     if @provider.valid?
       provider_attrs["logo"] = @logo if @logo.present?
       session[session_key] = provider_attrs
