@@ -100,6 +100,11 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash
-    turbo_stream.prepend "flash-messages", partial: "layouts/flash"
+    turbo_stream.prepend "flash", partial: "layouts/flash"
+  end
+
+  def recaptcha_tags(options = {})
+    return unless Rails.application.config.recaptcha_enabled
+    super
   end
 end
