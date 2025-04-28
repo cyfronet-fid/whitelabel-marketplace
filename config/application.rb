@@ -81,6 +81,15 @@ module Mp
     config.eosc_commons_env = ENV.fetch("EOSC_COMMONS_ENV", "production")
     config.user_actions_target = ENV.fetch("USER_ACTIONS_TARGET", "all")
 
+    config.raid_on = ENV.fetch("RAID_ON", false)
+    config.eosc_commons_base_url =
+      if ENV["EOSC_COMMONS_BASE_URL"].present?
+        ENV["EOSC_COMMONS_BASE_URL"]
+      else
+        "https://s3.cloud.cyfronet.pl/eosc-portal-common/"
+      end
+    config.eosc_commons_env = ENV["EOSC_COMMONS_ENV"].present? ? ENV["EOSC_COMMONS_ENV"] : "beta"
+
     config.profile_4_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("PROFILE_4_ENABLED", false))
     config.home_page_external_links_enabled = ActiveModel::Type::Boolean.new.cast(
       ENV.fetch("HOME_PAGE_EXTERNAL_LINKS_ENABLED", false))
