@@ -5,7 +5,7 @@ class Offer::Delete < Offer::ApplicationService
     unbundle!
     @offer.status = :deleted
     result =
-      if @offer&.project_items&.size&.positive? || @offer&.main_bundles&.size&.positive?
+      if @offer.project_items&.size&.positive? || @offer.main_bundles&.size&.positive?
         @offer.save!(validate: false)
       else
         @offer.destroy!

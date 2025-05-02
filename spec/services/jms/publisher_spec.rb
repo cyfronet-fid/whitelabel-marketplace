@@ -26,7 +26,7 @@ describe Jms::Publisher, backend: true do
 
     publisher = Jms::Publisher.new("foo", "user", "password", "example.com", false, logger)
 
-    expect(logger).to receive(:debug).with("Publishing to foo, message {:foo=>\"bar\"}")
+    expect(logger).to receive(:debug).with("Publishing to foo, message {foo: \"bar\"}")
     expect(client).to receive(:publish).with("/topic/foo", message, message_headers)
     publisher.publish(message)
 
@@ -41,7 +41,7 @@ describe Jms::Publisher, backend: true do
 
       publisher = Jms::Publisher.new("foo", "user", "password", "example.com", false, logger)
 
-      expect(logger).to receive(:debug).with("Publishing to foo, message {:foo=>\"bar\"}")
+      expect(logger).to receive(:debug).with("Publishing to foo, message {foo: \"bar\"}")
       expect(client).to receive(:publish).with("/topic/foo", message, message_headers).and_raise(RuntimeError)
 
       expect { publisher.publish(message) }.to raise_error(Jms::Publisher::PublishError) do |e|

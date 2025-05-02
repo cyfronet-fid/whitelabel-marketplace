@@ -74,12 +74,15 @@ class ProjectItem::Wizard
     delegate :created?, :bundled_parameters, to: :project_item
 
     def visible?
-      offer.nil? || (bundle.present? && bundle&.all_offers&.map(&:parameters)&.any?(&:present?)) ||
-        project_item.property_values.count.positive? || voucherable?
+      offer.nil? || bundle_has_parameters? || project_item.property_values.count.positive? || voucherable?
     end
 
     def error
       "Please correct errors presented below"
+    end
+
+    def bundle_has_parameters?
+      bundle.present? && bundle.all_offers&.map(&:parameters)&.any?(&:present?)
     end
   end
 
