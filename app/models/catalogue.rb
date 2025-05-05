@@ -43,7 +43,7 @@ class Catalogue < ApplicationRecord
 
   has_many :sources, class_name: "CatalogueSource", dependent: :destroy
   belongs_to :upstream, foreign_key: "upstream_id", class_name: "CatalogueSource", optional: true
-
+  has_many :nodes, through: :catalogue_vocabularies, source: :vocabulary, source_type: "Vocabulary::Node"
   has_many :catalogue_data_administrators
   has_many :data_administrators, through: :catalogue_data_administrators, dependent: :destroy, autosave: true
 
@@ -68,6 +68,7 @@ class Catalogue < ApplicationRecord
   validates :city, presence: true
   validates :country, presence: true
   validates :public_contacts, presence: true, length: { minimum: 1, message: "are required. Please add at least one" }
+  validates :nodes, length: { maximum: 1 }
   validate :logo_variable, on: %i[create update]
   validates :data_administrators,
             presence: true,

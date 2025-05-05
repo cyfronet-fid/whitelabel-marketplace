@@ -3,6 +3,7 @@
 class Backoffice::ProvidersController < Backoffice::ApplicationController
   include Backoffice::ProvidersHelper
   include UrlHelper
+  include ApplicationHelper
 
   before_action :find_and_authorize, only: %i[show edit update destroy]
   before_action :catalogue_scope
