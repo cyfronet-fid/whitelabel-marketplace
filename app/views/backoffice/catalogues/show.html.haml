@@ -23,7 +23,7 @@
     %hr.bottom-hr.mt-5.mb-4.d-none
     .btn-group
       - if policy([:backoffice, @catalogue]).edit?
-        = link_to _("Edit catalogue"),
+        = unescaped_link_to _("Edit catalogue"),
                   edit_backoffice_catalogue_path(@catalogue),
                   class: "btn-special edit-button"
 

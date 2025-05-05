@@ -116,7 +116,7 @@ Rails.application.routes.draw do
       resources :providers, only: %i[create]
       resources :catalogues, only: %i[create]
     end
-    resources :services, controller: "services", constraints: { id: %r{[^/]+} } do
+    resources :services, controller: "services", constraints: { id: pid_format_constraint } do
       scope module: :services do
         resource :logo_preview, only: :show
         resources :offers do
