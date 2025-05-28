@@ -57,8 +57,6 @@ class Offer < ApplicationRecord
   before_validation :set_internal
   before_validation :set_oms_details
   before_validation :sanitize_oms_params
-  before_validation :set_iid
-  after_initialize :set_iid
 
   has_many :bundle_offers
   has_many :bundles, through: :bundle_offers, dependent: :destroy
@@ -70,6 +68,7 @@ class Offer < ApplicationRecord
   belongs_to :offer_type, class_name: "Vocabulary::ServiceCategory", optional: true
   belongs_to :offer_subtype, class_name: "Vocabulary::ServiceCategory", optional: true
 
+  validate :set_iid, on: :create
   validates :service, presence: true
   validates :iid, presence: true, numericality: true
   validates :order_url, mp_url: true, if: :order_url?
@@ -88,6 +87,13 @@ class Offer < ApplicationRecord
     validate :check_oms_params, if: -> { current_oms.present? }
     validate :same_order_type_as_in_service, if: -> { service&.order_type.present? }
   end
+
+  validate :check_main_bundles, if: -> { draft? }
+  validates :service, presence: true
+  validates :iid, presence: true, numericality: true
+  validates :order_url, mp_url: true, if: :order_url?
+
+  validate :primary_oms_exists?, if: -> { primary_oms_id.present? }
 
   before_destroy :check_main_bundles
 
