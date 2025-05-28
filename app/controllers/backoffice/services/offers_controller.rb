@@ -40,12 +40,6 @@ class Backoffice::Services::OffersController < Backoffice::ApplicationController
     end
   end
 
-  def submit_summary
-    template = offer_template
-    authorize(template)
-    render partial: "backoffice/services/offers/steps/summary", locals: { offer: template }
-  end
-
   def edit
   end
 
