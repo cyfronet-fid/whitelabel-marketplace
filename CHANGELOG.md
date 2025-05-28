@@ -14,6 +14,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Simplify project creation form (@wujuu)
 - Offer recommendations in project view (@wujuu)
 - New provider wizard form (@maria-j-k, @goreck888, @jarekzet)
+- Node information (@goreck888)
 
 ## [3.59.0]
 
@@ -22,7 +23,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add save as draft feature to offers form (@maria-j-k, @jarekzet)
 - Add duplicate offer feature to offers form (@maria-j-k)
 - Readme section about manual dev setup (@Michal-Kolomanski)
-
 - `ASSET_HOST` and `ASSET_PROTOCOL` environment variables (@goreck888)
 
 ## [3.58.2]
