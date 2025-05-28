@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  pid_format_constraint = %r{[^/]+(?:/[^/]+)?}
+
   ############################## IMPORTANT!!! ################################
   # !!! Code of high security risk impact !!!
   # AAI service authentication is skipped for tests purpose
@@ -23,7 +25,7 @@ Rails.application.routes.draw do
   get "/datasources/:id", to: redirect("/services/%{id}")
   get "backoffice/datasources/:id", to: redirect("backoffice/services/%{id}")
 
-  resources :services, only: %i[index show], constraints: { id: %r{[^/]+} } do
+  resources :services, only: %i[index show], constraints: { id: pid_format_constraint } do
     scope module: :services do
       resources :offers, only: %i[index] do
         scope module: :offers do
@@ -46,6 +48,7 @@ Rails.application.routes.draw do
           resources :offers, only: %i[index new edit create update destroy] do
             resource :publish, controller: "offers/publishes", only: :create
             resource :draft, controller: "offers/drafts", only: :create
+            resource :summary, controller: "offers/summaries", only: %i[create update]
           end
           resources :bundles, only: %i[index new edit create update destroy] do
             resource :publish, controller: "bundles/publishes", only: :create
@@ -92,7 +95,7 @@ Rails.application.routes.draw do
 
   resource :profile, only: %i[show edit update destroy]
 
-  resources :providers, only: %i[index show], constraints: { id: %r{[^/]+} } do
+  resources :providers, only: %i[index show], constraints: { id: pid_format_constraint } do
     scope module: :providers do
       resource :question, only: %i[new create]
       resources :details, only: :index
@@ -119,6 +122,7 @@ Rails.application.routes.draw do
         resources :offers do
           resource :publish, controller: "offers/publishes", only: :create
           resource :draft, controller: "offers/drafts", only: :create
+          resource :summary, controller: "offers/summaries", only: %i[create update]
         end
         resources :bundles do
           resource :publish, controller: "bundles/publishes", only: :create
@@ -156,13 +160,15 @@ Rails.application.routes.draw do
     end
   end
 
-  post "/backoffice/services/:service_id/offers/:offer_id/duplicate", to: "backoffice/services/offers#duplicate", 
+  post "/backoffice/services/:service_id/offers/:offer_id/duplicate", to: "backoffice/services/offers#duplicate",
     as: :duplicate_offer
 
   post "/backoffice/services/:service_id/offers/fetch_subtypes", to: "backoffice/services/offers#fetch_subtypes"
 
-  post "/backoffice/services/:service_id/offers/:offer_id/submit", to: "backoffice/services/offers#submit_summary"
-  patch "/backoffice/services/:service_id/offers/:offer_id/submit", to: "backoffice/services/offers#submit_summary"
+  resource :executive, only: :show
+  namespace :executive do
+    resources :statistics, only: :index
+  end
 
   mount Rswag::Ui::Engine => "/api_docs/swagger"
   mount Rswag::Api::Engine => "/api_docs/swagger"
@@ -174,7 +180,7 @@ Rails.application.routes.draw do
     end
 
     namespace :v1 do
-      resources :resources, only: %i[index show], constraints: { id: %r{[^/]+} } do
+      resources :resources, only: %i[index show], constraints: { id: pid_format_constraint } do
         resources :offers, only: %i[index create show destroy update], module: :resources
       end
       resources :oms, controller: :omses, only: %i[index show update] do
@@ -185,8 +191,8 @@ Rails.application.routes.draw do
         end
       end
       namespace :ess do
-        resources :services, only: %i[index show], constraints: { id: %r{[^/]+} }
-        resources :datasources, only: %i[index show], constraints: { id: %r{[^/]+} }
+        resources :services, only: %i[index show], constraints: { id: pid_format_constraint }
+        resources :datasources, only: %i[index show], constraints: { id: pid_format_constraint }
         resources :providers, only: %i[index show]
         resources :catalogues, only: %i[index show]
         resources :offers, only: %i[index show]
@@ -221,7 +227,7 @@ Rails.application.routes.draw do
   resource :tour_feedbacks, only: :create
 
   direct :overview_tour_first_service do |params|
-    service = Service.where(status: %i[published errored]).order(:name).first
+    service = Service.where(status: %i[published unverified errored]).order(:name).first
     service_path(service, params)
   end
 
