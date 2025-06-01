@@ -62,6 +62,8 @@ class ProjectItem::Create < ApplicationService
           ProjectItem::ReadyJob.perform_later(project_item, @message)
           ProjectItemMailer.added_to_project(project_item).deliver_later
         end
+
+        Bos::CreateOrderJob.perform_later(project_item)
       end
 
       updated_project = Project.find_by(id: @project.id)

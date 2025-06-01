@@ -99,5 +99,9 @@ module Mp
     config.enable_external_search = ActiveModel::Type::Boolean.new.cast(ENV.fetch("MP_ENABLE_EXTERNAL_SEARCH", false))
     config.analytics_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("ANALYTICS_ENABLED", false))
     config.whitelabel = ENV.fetch("MP_WHITELABEL", true)
+
+    config.bos_base_url = ENV.fetch("BOS_API_URL", "http://localhost:8000")
+    config.bos_api_key = ENV.fetch("BOS_API_KEY", "")
+    config.bos_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("BOS_ENABLED", false))
   end
 end
