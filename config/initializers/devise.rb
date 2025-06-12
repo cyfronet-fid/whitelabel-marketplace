@@ -261,22 +261,14 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   checkin_host = ENV.fetch("CHECKIN_HOST", "aai.eosc-portal.eu")
   root_url = ENV.fetch("ROOT_URL", "http://localhost:#{ENV["PORT"] || 3000}")
-  old_endpoints = {
-    issuer: "oidc",
-    authorize: "/oidc/authorize",
-    token: "/oidc/token",
-    userinfo: "/oidc/userinfo",
-    jwk: "/oidc/jwk"
-  }
-  new_endpoints = {
-    issuer: "auth/realms/core",
-    authorize: "/auth/realms/core/protocol/openid-connect/auth",
-    token: "/auth/realms/core/protocol/openid-connect/token",
-    userinfo: "/auth/realms/core/protocol/openid-connect/userinfo",
-    jwk: "/auth/realms/core/protocol/openid-connect/certs"
-  }
   creds = Rails.application.credentials.checkin
-  endpoints = ENV.fetch("OIDC_AAI_NEW_API", true) ? new_endpoints : old_endpoints
+  endpoints = {
+    issuer: ENV.fetch("CHECKIN_ISSUER_ENDPOINT", "auth/realms/core"),
+    authorize: ENV.fetch("CHECKIN_AUTHORIZE_ENDPOINT", "/auth/realms/core/protocol/openid-connect/auth"),
+    token: ENV.fetch("CHECKIN_TOKEN_ENDPOINT", "/auth/realms/core/protocol/openid-connect/token"),
+    userinfo: ENV.fetch("CHECKIN_USERINFO_ENDPOINT", "/auth/realms/core/protocol/openid-connect/userinfo"),
+    jwk: ENV.fetch("CHECKIN_JWK_ENDPOINT", "/auth/realms/core/protocol/openid-connect/certs")
+  }
   scope = ENV["CHECKIN_SCOPE"].nil? ? %w[openid profile email aarc offline_access] : ENV["CHECKIN_SCOPE"].split(",")
   config.omniauth :openid_connect,
                   name: :checkin,
