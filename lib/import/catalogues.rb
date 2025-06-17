@@ -35,8 +35,7 @@ class Import::Catalogues
     log "EOSC Registry - all catalogues #{total_catalogue_count}"
 
     @request_catalogues.each do |external_data|
-      external_catalogue_data = external_data["catalogue"]
-      parsed_catalogue_data = Importers::Catalogue.new(external_catalogue_data, Time.now.to_i, "rest").call
+      parsed_catalogue_data = Importers::Catalogue.call(external_data["catalogue"], Time.now.to_i)
       parsed_catalogue_data["status"] = object_status(external_data["active"], external_data["suspended"])
       current_catalogue = Catalogue.find_by(pid: parsed_catalogue_data[:pid])
 
@@ -45,38 +44,30 @@ class Import::Catalogues
       if current_catalogue.blank?
         log "[INFO] Adding [NEW] catalogue: #{parsed_catalogue_data[:name]}, eid: #{parsed_catalogue_data[:pid]}"
         catalogue = Catalogue.new(parsed_catalogue_data)
-        set_logo(catalogue, external_catalogue_data["logo"])
+        set_logo(catalogue, external_data.dig("catalogue", "logo"))
         catalogue.save!
         log "[INFO] Catalogue: #{parsed_catalogue_data[:name]}, eid: #{parsed_catalogue_data[:pid]} added successfully"
       else
         log "[INFO] Updating [EXISTING] catalogue: #{parsed_catalogue_data[:name]}, eid: #{parsed_catalogue_data[:pid]}"
-        current_catalogue.update(parsed_catalogue_data)
-        set_logo(current_catalogue, external_catalogue_data["logo"])
+        current_catalogue.update!(parsed_catalogue_data)
+        set_logo(current_catalogue, external_data.dig("catalogue", "logo"))
         current_catalogue.save!
         log "[INFO] Catalogue: #{parsed_catalogue_data[:name]}, " +
               "eid: #{parsed_catalogue_data[:pid]} updated successfully"
       end
-    rescue ActiveRecord::RecordInvalid => e
-      log "[WARN] Catalogue #{name(external_data)},
-            eid: #{eid(external_data)} cannot be updated.
-            Errors: #{e.errors.full_messages.join(", ")}"
+    rescue ActiveRecord::RecordInvalid
+      log "[WARN] Catalogue #{parsed_catalogue_data[:name]},
+            eid: #{parsed_catalogue_data[:pid]} cannot be updated.
+            Errors: #{catalogue.errors.full_messages.join(", ")}"
     rescue StandardError => e
-      log "[WARN] Unexpected #{e}! Catalogue #{name(external_data)},
-                eid: #{eid(external_data)} cannot be updated"
+      log "[WARN] Unexpected #{e}! Catalogue #{parsed_catalogue_data[:name]},
+                eid: #{parsed_catalogue_data[:pid]} cannot be updated"
     end
 
     File.open(@filepath, "w") { |file| file << JSON.pretty_generate(@request_catalogues) } unless @filepath.nil?
   end
 
   private
-
-  def name(external_data)
-    external_data.dig("provider", "name")
-  end
-
-  def eid(external_data)
-    external_data.dig("provider", "id")
-  end
 
   def log(msg)
     @logger.call(msg)
@@ -89,7 +80,7 @@ class Import::Catalogues
     rescue Errno::ECONNREFUSED, Importers::Token::RequestError => e
       abort("import exited with errors - could not connect to #{@eosc_registry_base_url} \n #{e.message}")
     end
-    rp.body["results"]
+    Array(rp.body["results"])
   end
 
   def set_logo(catalogue, logo)
