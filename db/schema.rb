@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_10_072744) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_18_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -373,6 +373,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_10_072744) do
     t.index ["offer_id"], name: "index_observed_user_offers_on_offer_id"
     t.index ["user_id", "offer_id"], name: "index_observed_user_offers_on_user_id_and_offer_id", unique: true
     t.index ["user_id"], name: "index_observed_user_offers_on_user_id"
+  end
+
+  create_table "offer_links", force: :cascade do |t|
+    t.bigint "source_id", null: false
+    t.bigint "target_id", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.index ["source_id", "target_id"], name: "index_offer_links_on_source_id_and_target_id", unique: true
+    t.index ["source_id"], name: "index_offer_links_on_source_id"
+    t.index ["target_id"], name: "index_offer_links_on_target_id"
   end
 
   create_table "offer_vocabularies", force: :cascade do |t|
@@ -1018,6 +1028,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_10_072744) do
   add_foreign_key "data_administrators", "users"
   add_foreign_key "observed_user_offers", "offers"
   add_foreign_key "observed_user_offers", "users"
+  add_foreign_key "offer_links", "offers", column: "source_id"
+  add_foreign_key "offer_links", "offers", column: "target_id"
   add_foreign_key "offer_vocabularies", "offers"
   add_foreign_key "offer_vocabularies", "vocabularies"
   add_foreign_key "offers", "omses", column: "primary_oms_id"
