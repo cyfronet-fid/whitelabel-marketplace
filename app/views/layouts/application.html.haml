@@ -18,6 +18,7 @@
     = turbo_frame_tag "modal"
     = render "layouts/confirm_modal"
     %header
+      = render "layouts/navbar/sections"
       = render "layouts/navbar",
         categories: @siblings || @root_categories,
         query_params: @query_params || {}
