@@ -232,7 +232,7 @@ class Provider < ApplicationRecord
     io = File.open(assets_path + "/" + default_logo_name)
 
     # This should be fixed by allowing svg extension in the db
-    image = convert_to_png(io, extension)
+    image = convert_to_png(io)
     logo.attach(io: image, filename: SecureRandom.uuid + extension, content_type: "image/#{extension.delete(".", "")}")
   end
 

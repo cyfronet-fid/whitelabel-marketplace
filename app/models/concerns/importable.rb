@@ -22,6 +22,10 @@ module Importable
     Category.where(eid: categories)
   end
 
+  def map_nodes(nodes)
+    Vocabulary::Node.where(eid: nodes)
+  end
+
   def map_research_activity_ids(research_activities)
     research_activities.present? ? Vocabulary::ResearchActivity.where(eid: research_activities).map(&:id) : []
   end
