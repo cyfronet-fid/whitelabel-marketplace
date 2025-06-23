@@ -25,12 +25,9 @@ module LogoAttachable
     img = Vips::Image.new_from_buffer(logo.read, "")
     logo.rewind
 
-    img = Vips::Image.thumbnail(img, 800, height: 800, size: :down)
-    img.write_to_buffer(".png")
+    scale = [800.0 / img.width, 800.0 / img.height].min
+    img = img.resize(scale)
 
-    logo = StringIO.new
-    logo.write(img)
-    logo.rewind
-    logo
+    StringIO.new(img.write_to_buffer(".png"))
   end
 end
