@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
-## [3.59.0] 2025-06-23
+## [3.59.1]
+
+### Fixed
+
+- Styles in backoffice and landing page (@jarekzet)
+- Login prompt in ordering scope (@goreck888)
+
+## [3.59.0] 2025-06-18
 
 ### Added
 
@@ -90,12 +97,36 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Postgres update from 14.1 to 16.4 (@goreck888)
 - Remove most of services from database (@maria-j-k)
 
-## [3.57.0]
+## [3.58.1]
+
+### Changed
+
+- Customizable eosc helpdesk link (@goreck888)
+
+## [3.58.0] 2025-04-01
+
+### Added
+
+- Add save as draft feature to offers form (@maria-j-k, @jarekzet)
+- Add duplicate offer feature to offers form (@maria-j-k)
+- Readme section about manual dev setup (@Michal-Kolomanski)
 
 ### Added
 - Handling data administrator scope in the backoffice (@goreck888)
 - Statuses changes for providers and catalogues (@goreck888)
 - Delete button for services (@goreck888)
+
+### Fixed
+
+- Fitting to EOSC SQA requirements (@goreck888)
+- Log in in the ordering scope (@goreck888)
+- Update EOSC Beyond logo and style improvements (@goreck888, @jarekzet)
+
+### Security
+
+- Update dependencies (@goreck888)
+
+## [3.57.0]
 
 ### Changed
 
