@@ -12,6 +12,7 @@ class Bos::Client
         f.request :json
         f.response :raise_error
         f.response :json, content_type: /\bjson$/
+        f.use FaradayMiddleware::FollowRedirects
         f.headers["x-key"] = Rails.configuration.bos_api_key
         f.headers["Content-Type"] = "application/json"
         f.headers["Accept"] = "application/json"
