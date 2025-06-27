@@ -115,6 +115,10 @@ module ServiceHelper
     end
   end
 
+  def similar_services_title
+    _("Similar services")
+  end
+
   def related_services_title
     _("Suggested compatible services")
   end
