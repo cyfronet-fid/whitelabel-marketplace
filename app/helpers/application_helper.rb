@@ -99,13 +99,17 @@ module ApplicationHelper
     Rails.configuration.whitelabel
   end
 
+  def raid_on
+    Rails.configuration.raid_on
+  end
+
   def render_turbo_stream_flash
     turbo_stream.prepend "flash", partial: "layouts/flash"
   end
 
-  def recaptcha_tags(options = {})
+  def recaptcha_tags(_options = {})
     return unless Rails.application.config.recaptcha_enabled
-    super
+    super({})
   end
 
   def unescaped_link_to(name = nil, raw_url = nil, html_options = nil)
