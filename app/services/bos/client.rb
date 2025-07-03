@@ -2,13 +2,21 @@
 
 require "faraday"
 require "json"
+require "uri"
 
 class Bos::Client
   def initialize
     @bos_enabled = Rails.configuration.bos_enabled
 
+    uri = URI.parse(Rails.configuration.bos_base_url)
+    domain = "#{uri.scheme}://#{uri.host}"
+    domain += ":#{uri.port}" if uri.port != uri.default_port
+
+    raw_path = uri.path.presence || "/"
+    @path = raw_path.chomp("/") == "/" ? "" : raw_path.chomp("/")
+
     @conn =
-      Faraday.new(url: Rails.configuration.bos_base_url) do |f|
+      Faraday.new(url: domain) do |f|
         f.request :json
         f.response :raise_error
         f.response :json, content_type: /\bjson$/
@@ -20,7 +28,7 @@ class Bos::Client
 
   def create_order(project_item)
     post(
-      "/api/orders",
+      "#{@path}/api/orders",
       {
         external_ref: project_item.iid.to_s,
         project_ref: project_item.project_id.to_s,
@@ -40,7 +48,7 @@ class Bos::Client
 
   def create_message(message)
     post(
-      "/api/messages",
+      "#{@path}/api/messages",
       {
         content: message.message,
         scope: "public",
@@ -54,12 +62,12 @@ class Bos::Client
     user_type = ["mp_user"]
     user_type.push("provider_manager") if user.data_administrator?
 
-    post("/api/users", { name: user.full_name, email: user.email, user_type: user_type })
+    post("#{@path}/api/users", { name: user.full_name, email: user.email, user_type: user_type })
   end
 
   def create_provider(provider)
     post(
-      "/api/providers",
+      "#{@path}/api/providers",
       {
         name: provider.name,
         website: provider.website,
