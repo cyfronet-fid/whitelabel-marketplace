@@ -113,6 +113,7 @@ Rails.application.routes.draw do
   resource :backoffice, only: :show
   namespace :backoffice do
     namespace :statuses do
+      resources :services, only: %i[create]
       resources :providers, only: %i[create]
       resources :catalogues, only: %i[create]
     end
@@ -129,7 +130,7 @@ Rails.application.routes.draw do
           resource :draft, controller: "bundles/drafts", only: :create
         end
         resource :publish, only: :create
-        resource :draft, only: :create
+        resource :unpublish, only: :create
       end
     end
     get "service_autocomplete", to: "services#autocomplete", as: :service_autocomplete

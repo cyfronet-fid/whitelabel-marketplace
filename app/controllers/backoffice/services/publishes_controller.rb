@@ -4,12 +4,18 @@ class Backoffice::Services::PublishesController < Backoffice::ApplicationControl
   before_action :find_and_authorize
 
   def create
-    if Service::Publish.call(@service)
-      flash[:notice] = _("Service published successfully")
-    else
-      flash[:alert] = "Service not published. Reason: #{@service.errors.full_messages.join(", ")}"
+    respond_to do |format|
+      if Service::Publish.call(@service)
+        type = :notice
+        msg = _("Service published successfully")
+      else
+        type = :alert
+        msg = "Service not published. Reason: #{@service.errors.full_messages.join(", ")}"
+      end
+      flash.now[type] = msg
+      format.turbo_stream
+      format.html { redirect_to backoffice_service_offers_path(@service) }
     end
-    redirect_to backoffice_service_offers_path(@service)
   end
 
   private

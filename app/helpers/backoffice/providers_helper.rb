@@ -1,9 +1,38 @@
 # frozen_string_literal: true
 
 module Backoffice::ProvidersHelper
-  PROFILE_4_ENABLED = Rails.configuration.profile_4_enabled.freeze
   BASIC_STEPS = %w[profile location contacts managers summary].freeze
   EXTENDED_STEPS = %w[profile classification location contacts maturity dependencies managers other].freeze
+
+  TAB_PARAMS = {
+    profile: [
+      :name,
+      :abbreviation,
+      :website,
+      :logo,
+      :legal_entity,
+      :legal_atatus,
+      :hosting_legal_entity,
+      alternative_identifier_atrributes: %i[identifier_type value]
+    ],
+    classification: %i[scientific_domain_ids tag_list stucture_type_ids],
+    location: %i[street_name_and_number postal_code city region country],
+    contacts: [
+      main_contact_attributes: %i[id first_name last_name email country_phone_code phone position],
+      public_contacts_attributes: %i[id first_name last_name email country_phone_code phone position _destroy]
+    ],
+    maturity: %i[provider_life_cycle_status certifications],
+    dependencies: %i[participating_countries affiliations network_ids catalogue_id],
+    managers: [data_administrators_attributes: %i[id first_name last_name email _destroy]],
+    other: %i[
+      esfri_domain_ids
+      esfri_type
+      meril_scientific_domain_ids
+      area_of_activity_ids
+      societal_grand_challenge_ids
+      national_roadmaps
+    ]
+  }.freeze
 
   def cant_edit(attribute)
     !policy([:backoffice, @provider]).permitted_attributes.include?(attribute)
@@ -19,26 +48,6 @@ module Backoffice::ProvidersHelper
 
   def partial_path(step, extended_form: false)
     "backoffice/providers/#{form_directory(extended_form)}/#{step}"
-  end
-
-  def hosting_legal_entity_input(form)
-    if PROFILE_4_ENABLED
-      form.input :hosting_legal_entity,
-                 collection: Vocabulary.where(type: "Vocabulary::HostingLegalEntity"),
-                 disabled: cant_edit(:hosting_legal_entity),
-                 label_method: :name,
-                 value_method: :id,
-                 input_html: {
-                   multiple: false,
-                   data: {
-                     choice: true
-                   }
-                 }
-    else
-      form.input :hosting_legal_entity_string,
-                 label: "Hosting Legal Entity",
-                 disabled: cant_edit(:hosting_legal_entity_string)
-    end
   end
 
   def next_title
@@ -66,7 +75,7 @@ module Backoffice::ProvidersHelper
   end
 
   def exit_confirm_details
-    summary_step = link_to "summary step", "javascript:;", data: { action: "click->form#goToSummary" }
+    summary_step = link_to "summary step", "#", data: { action: "click->form-redirect#goToSummary" }
     _("If you leave, you will lose your changes, go to the #{summary_step} and save them")
   end
 end

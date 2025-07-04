@@ -43,6 +43,7 @@ export default class extends Controller {
     "pcPosition",
     "pcCode",
     "tab",
+    "toggler",
   ];
 
   initialize() {
@@ -72,6 +73,10 @@ export default class extends Controller {
     this.tabTargets.forEach((el) => {
       el.classList.remove("active");
     });
+    this.togglerTargets.forEach((el) => {
+      el.classList.remove("active");
+    });
+    event.target.classList.add("active");
     const toDisplay = document.getElementById(event.target.dataset.target);
     toDisplay.classList.add("active");
   }
@@ -188,10 +193,6 @@ export default class extends Controller {
 
     const child = this.formTarget.querySelector("[class*=" + childId + "]");
     this._hasInputValue(event.target) ? child.classList.remove("d-none") : child.classList.add("d-none");
-  }
-
-  goToSummary(event) {
-    document.getElementById("summary-step-link").click();
   }
 
   _hasInputValue(input) {

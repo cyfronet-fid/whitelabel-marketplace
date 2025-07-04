@@ -10,10 +10,10 @@
       %div
       %div
   %body{ class: ("main" if current_page?("/")) }
+    = render "layouts/flash"
     - if current_page?("/")
       .main-elements
     = render "layouts/badge" if ENV["MP_INSTANCE"]
-    = render "layouts/flash"
     = render "layouts/welcome_modal"
     = turbo_frame_tag "modal"
     = render "layouts/confirm_modal"

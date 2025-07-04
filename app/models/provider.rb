@@ -216,7 +216,7 @@ class Provider < ApplicationRecord
   end
 
   def managed_services
-    Service.left_joins(:service_providers).where("status = 'published' AND resource_organisation_id = #{id}")
+    Service.left_joins(:service_providers).where("resource_organisation_id = #{id}")
   end
 
   def services

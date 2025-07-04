@@ -100,7 +100,7 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash
-    turbo_stream.prepend "flash", partial: "layouts/flash"
+    turbo_stream.prepend "flash-messages", partial: "layouts/flash"
   end
 
   def recaptcha_tags(options = {})
@@ -111,7 +111,6 @@ module ApplicationHelper
   def unescaped_link_to(name = nil, raw_url = nil, html_options = nil)
     parser = URI::Parser.new
     url = parser.unescape(url_target(name, raw_url))
-    puts "ELO #{raw_url.class}"
     link_to(name, url, html_options)
   end
 end
