@@ -1,9 +1,8 @@
 :ruby
-  content_for :title, _("New Provider")
+  content_for :title, @provider.persisted? ? _("Edit Provider") : _("New Provider")
   dynamic_bc = @provider.persisted? ? :backoffice_provider_edit : :backoffice_provider_new
   breadcrumb dynamic_bc, @provider
 
-.container{ "data-controller": "form" }
-  #form-container
-    = turbo_frame_tag "provider-form" do
-      = render_step(@provider.current_step, @provider, false)
+#form-container.container{ "data-controller": "form" }
+  = turbo_frame_tag "provider-form" do
+    = render_step(@provider.current_step, @provider, false)

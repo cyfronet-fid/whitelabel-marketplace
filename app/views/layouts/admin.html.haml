@@ -2,10 +2,10 @@
 %html{ lang: "en" }
   = render "layouts/head"
   %body
+    = render "layouts/flash"
     %header.pb-2.white-bg
       = render "layouts/badge" if ENV["MP_INSTANCE"]
       = render "layouts/admin/navbar"
-      = render partial: "layouts/flash"
       = render "layouts/confirm_modal"
     %main
 

@@ -82,7 +82,6 @@ module Mp
     config.eosc_commons_env = ENV.fetch("EOSC_COMMONS_ENV", "production")
     config.user_actions_target = ENV.fetch("USER_ACTIONS_TARGET", "all")
 
-    config.profile_4_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("PROFILE_4_ENABLED", false))
     config.home_page_external_links_enabled = ActiveModel::Type::Boolean.new.cast(
       ENV.fetch("HOME_PAGE_EXTERNAL_LINKS_ENABLED", false))
     config.search_service_base_url = ENV.fetch("SEARCH_SERVICE_BASE_URL", "https://search.marketplace.eosc-portal.eu")

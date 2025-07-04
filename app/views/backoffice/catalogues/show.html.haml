@@ -2,18 +2,18 @@
 - breadcrumb :backoffice_catalogue, @catalogue
 
 .container.p-0.backoffice
-  .title-row-wrapper
-    .title-column
-      %h1
-        %span Catalogue:
-        = @catalogue.name
-    = render Presentable::StatusActionsComponent.new(object: @catalogue,
-        publish: policy([:backoffice, @catalogue]).publish?,
-        suspend: policy([:backoffice, @catalogue]).suspend?,
-        unpublish: policy([:backoffice, @catalogue]).unpublish?,
-        destroy: policy([:backoffice, @catalogue]).destroy?)
+  = render Presentable::StatusActionsComponent.new(object: @catalogue,
+      publish: policy([:backoffice, @catalogue]).publish?,
+      suspend: policy([:backoffice, @catalogue]).suspend?,
+      unpublish: policy([:backoffice, @catalogue]).unpublish?,
+      destroy: policy([:backoffice, @catalogue]).destroy?)
 
   .service-box.p-4.mt-3.backoffice-form.catalogue
+    .title-column
+    %h1
+      %span Catalogue:
+      = @catalogue.name
+
     .logo-wrapper
       %span.helper
       - if @catalogue.logo.attached? && @catalogue.logo.variable?

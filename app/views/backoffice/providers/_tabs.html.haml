@@ -3,7 +3,13 @@
     %ul#my-tab.nav.nav-tabs.row.pl-3{ role: "tablist" }
       - extended_steps.each_with_index do |tab, i|
         %li.nav-item
-          = link_to _(tab.capitalize), { tab: tab },
-            class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) }",
-            role: "tab",
-            data: { e2e: "provider-#{tab}-btn", turbo_stream: true }
+          - if tab == "profile"
+            = link_to _(tab.capitalize), { tab: tab },
+              class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) }",
+              role: "tab",
+              data: { e2e: "provider-#{tab}-btn", src: backoffice_provider_path(provider, tab: tab), turbo_frame: "tab_content" }
+          - else
+            = link_to _(tab.capitalize), edit_backoffice_provider_path(provider, step: tab),
+              class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) }",
+              role: "tab",
+              data: { e2e: "provider-#{tab}-btn", turbo: false }

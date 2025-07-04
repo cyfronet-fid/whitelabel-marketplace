@@ -9212,10 +9212,11 @@ footer {
 .breadcrumbs-backoffice-wrapper {
   background: linear-gradient(0deg, $alert-bg 0%, $palette-white 100%);
   padding: 20px 0;
+  margin-top: 0;
 
   .breadcrumbs {
     .data-probe {
-      padding: 0;
+      padding-left: 3em;
       border: 0;
     }
   }

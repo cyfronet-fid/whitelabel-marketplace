@@ -11,4 +11,10 @@ export default class extends Controller {
       Turbo.visit(fetchResponse.response.url);
     }
   }
+
+  goToSummary(event) {
+    event.preventDefault();
+    document.getElementById("dismiss-btn").click();
+    document.getElementById("summary-step-link").click();
+  }
 }

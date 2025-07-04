@@ -103,7 +103,18 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
     @provider.update_logo!(@logo) if @logo.present?
     action = session.delete(:wizard_action)
     clear_session_data
-    redirect_to backoffice_providers_path(format: :html), notice: "Provider #{action}d successfully"
+    if action == "create"
+      render turbo_stream:
+               turbo_stream.update(
+                 "modal",
+                 partial: "common_parts/modals/become_provider_modal",
+                 locals: {
+                   provider_id: @provider.pid.present? ? @provider.pid : @provider.id
+                 }
+               )
+    else
+      redirect_to backoffice_providers_path, format: :html, notice: "Provider #{action}d successfully"
+    end
   end
 
   def prepare_step(step_to_set)

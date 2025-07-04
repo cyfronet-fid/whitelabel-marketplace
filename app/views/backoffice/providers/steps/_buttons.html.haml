@@ -7,7 +7,8 @@
       = link_to "Exit", backoffice_provider_exit_path(params[:provider_id].present? ? params[:provider_id] : params[:id]),
             data: { turbo_confirm: "Exit provider editor",
             confirm_details: exit_confirm_details,
-            confirm_button: "Exit", turbo_method: :post, turbo_frame: "_top" }, class: "btn btn-back"
+            confirm_cancel: _("Go back to edition"),
+            confirm_button: _("Exit without saving"), turbo_method: :post, turbo_frame: "_top" }, class: "btn btn-back"
     .col-2
       - if current_step_index == 4 && params[:provider_id] != "new"
         = link_to _("Delete"),
