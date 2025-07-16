@@ -24,6 +24,8 @@ jobs:
         node-version: '20.12.2'
         check-latest: true
         cache: yarn
+    - name: Install Yarn
+      run: npm install -g yarn
     - run: yarn install
     - name: Install foreman
       run: |
