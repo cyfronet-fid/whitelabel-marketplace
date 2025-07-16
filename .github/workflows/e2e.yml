@@ -2,8 +2,9 @@ name: Integration Test
 on: [push]
 jobs:
   cypress:
-    runs-on: ubuntu-latest
-        
+    runs-on: self-hosted
+    env:
+      COMPOSE_PROJECT_NAME: ${{ github.event.repository.name }}-${{ github.run_id }}
     steps:
     - name: Configure sysctl limits
       run: |
@@ -24,6 +25,8 @@ jobs:
         node-version: '20.12.2'
         check-latest: true
         cache: yarn
+    - name: Install Yarn
+      run: npm install -g yarn
     - run: yarn install
     - name: Install foreman
       run: |
