@@ -3,6 +3,8 @@ on: [push]
 jobs:
   rspec:
     runs-on: self-hosted
+    env:
+      COMPOSE_PROJECT_NAME: ${{ github.event.repository.name }}-${{ github.run_id }}
         
     steps:
     - name: Configure sysctl limits
