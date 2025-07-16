@@ -2,7 +2,7 @@ name: Manager's frontend tests
 on: [push]
 jobs:
   rspec:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Configure sysctl limits
