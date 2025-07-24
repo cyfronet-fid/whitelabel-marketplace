@@ -26,7 +26,14 @@ module Viewable
     def analytics
       return { views: "GA Inactive", redirects: "GA Inactive" } unless ENV.fetch("ANALYTICS_ENABLED", false)
       @client =
-        !@client.respond_to?(:credentials) || @client&.credentials&.expires_at&.blank? ? Google::Analytics.new : @client
+        (
+          if !@client.respond_to?(:credentials) ||
+               (@client&.credentials.present? && @client.credentials&.expires_at&.blank?)
+            Google::Analytics.new
+          else
+            @client
+          end
+        )
       Rails
         .cache
         .fetch("#{self.class.name}-#{id}-analytics", expires_in: Mp::Application.config.resource_cache_ttl) do
