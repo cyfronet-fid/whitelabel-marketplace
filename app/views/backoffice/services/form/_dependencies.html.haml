@@ -26,4 +26,5 @@
                                disabled: cant_edit([platform_ids: []])
       = f.input :catalogue_id, disabled: cant_edit(:catalogue_id),
             input_html: { multiple: false, data: { choice: true } },
-            collection: catalogues, selected: service.resource_organisation&.catalogue&.id || nil
+            collection: catalogues,
+            selected: service.resource_organisation.present? ? service.resource_organisation&.catalogue&.id : nil

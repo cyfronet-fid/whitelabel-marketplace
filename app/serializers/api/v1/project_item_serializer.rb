@@ -16,6 +16,7 @@ class Api::V1::ProjectItemSerializer < ActiveModel::Serializer
     { value: object.status, type: object.status_type }
   end
 
+  # rubocop:disable Style/SafeNavigationChainLength
   def attribute_extractor
     hash = {
       category: object.service&.categories&.first&.name,
@@ -29,6 +30,7 @@ class Api::V1::ProjectItemSerializer < ActiveModel::Serializer
     hash[:supplied_voucher_id] = object.voucher_id if object.voucher_id.present?
     hash
   end
+  # rubocop:enable Style/SafeNavigationChainLength
 
   def oms_params
     object.offer.oms_params
