@@ -45,6 +45,11 @@ class ApplicationController < ActionController::Base
     @report = Report.new
   end
 
+  def load_root_categories!
+    @root_categories = Category.roots.order(:name)
+    @research_activities = Vocabulary::ResearchActivity.where.not(description: nil || "")
+  end
+
   def not_authorized_message(exception)
     policy_name = exception.policy.class.to_s.underscore
     I18n.t "#{policy_name}.#{exception.query}", scope: :pundit, default: :default
