@@ -6,7 +6,7 @@
     .col-12
       #provider-edit
         .service-box-redesign
-          = render "backoffice/providers/form/tabs", active_tab: tab
+          = render "backoffice/providers/form/tabs", active_tab: tab, provider: provider
         .tab-content{ role: "tablist" }
           - extended_steps.each do |step|
             = render "backoffice/providers/form/#{step}", f: f, provider: provider, catalogues: catalogues,
