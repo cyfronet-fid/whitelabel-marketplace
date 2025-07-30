@@ -15,6 +15,6 @@ export default class extends Controller {
   goToSummary(event) {
     event.preventDefault();
     document.getElementById("dismiss-btn").click();
-    document.getElementById("summary-step-link").click();
+    document.getElementById("summary-button").click();
   }
 }

@@ -129,6 +129,7 @@ Rails.application.routes.draw do
           resource :publish, controller: "offers/publishes", only: :create
           resource :draft, controller: "offers/drafts", only: :create
           resource :summary, controller: "offers/summaries", only: %i[create update]
+          post :exit
         end
         resources :bundles do
           resource :publish, controller: "bundles/publishes", only: :create

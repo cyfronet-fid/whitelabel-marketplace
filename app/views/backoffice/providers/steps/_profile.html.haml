@@ -8,7 +8,7 @@
       .col-lg-7.pl-0
         %h4 Provider's profile
         .offer-section-wrapper
-          = f.input :name, label: "Provider's name"
+          = f.input :name, label: "Provider's name", input_html: { data: { exit_target: "formNameInput" } }
           = f.input :abbreviation
           = f.input :description, rows: 10
           = f.input :website, label: "Website URL"
@@ -17,5 +17,5 @@
                     disabled: cant_edit(:legal_entity),
                     boolean_style: :inline,
                     label: "Is the provider a legal entity?"
-        = render "backoffice/providers/steps/buttons", f: f
+        = render "backoffice/providers/steps/buttons", provider: provider, f: f
       = render "backoffice/providers/more_information"

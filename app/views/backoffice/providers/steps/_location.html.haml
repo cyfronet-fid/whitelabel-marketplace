@@ -4,6 +4,7 @@
   method: :put do |f|
   = render "backoffice/providers/steps/simple_navbar", provider: provider, f: f
   .new-offer-form
+    = f.hidden_field :name, value: provider.name, data: { exit_target: "formNameInput" }
     .row
       .col-lg-7.pl-0
         %h4 Address details
@@ -17,5 +18,5 @@
           = f.input :region, disabled: cant_edit(:region)
           = f.input :country, disabled: cant_edit(:country), as: :select,
               collection: Country.options.map { |c| [ c.iso_short_name, "value" => c.alpha2 ] }
-        = render "backoffice/providers/steps/buttons", f: f
+        = render "backoffice/providers/steps/buttons", provider: provider, f: f
       = render "backoffice/providers/more_information"

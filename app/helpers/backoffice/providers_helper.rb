@@ -2,7 +2,7 @@
 
 module Backoffice::ProvidersHelper
   BASIC_STEPS = %w[profile location contacts managers summary].freeze
-  EXTENDED_STEPS = %w[profile classification location contacts maturity dependencies managers other].freeze
+  EXTENDED_STEPS = %w[basic_information legal_status multimedia categories dependencies maturity other].freeze
 
   TAB_PARAMS = {
     profile: [

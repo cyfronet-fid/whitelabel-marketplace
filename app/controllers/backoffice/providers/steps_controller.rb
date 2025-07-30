@@ -3,6 +3,8 @@
 class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   include Backoffice::ProvidersHelper
   include UrlHelper
+  include ExitHelper
+
   skip_before_action :backoffice_authorization!
   before_action :validate_wizard_action, only: :show
   before_action :current_step, only: :show
@@ -32,11 +34,18 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   end
 
   def update
+    save_as_draft = params[:commit] == save_as_draft_title
     saved_params = session[session_key]
     provider_attrs = saved_params.merge permitted_step_attributes
     @provider.assign_attributes provider_attrs.except("logo")
     provider_attrs["logo"] = logo(provider_attrs) if provider_attrs["logo"].present? && current_step_index.zero?
-    if @provider.valid?
+    if save_as_draft
+      @provider.name = params[:name]
+      Provider::CreateAsDraft.call(@provider)
+      redirect_to backoffice_provider_path(@provider, page: params[:page]),
+                  notice: "Provider saved successfully as a draft"
+      session.delete(session_key)
+    elsif @provider.valid?
       session[session_key] = provider_attrs
       redirect_to_next_step(params[:commit])
     else

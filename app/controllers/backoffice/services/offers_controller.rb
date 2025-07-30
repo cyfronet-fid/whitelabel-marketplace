@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Backoffice::Services::OffersController < Backoffice::ApplicationController
-  include Backoffice::OffersHelper
+  include ExitHelper
 
   before_action :find_service
   before_action :find_offer_and_authorize, only: %i[edit update]
@@ -65,6 +65,10 @@ class Backoffice::Services::OffersController < Backoffice::ApplicationController
     else
       render :edit, status: :bad_request
     end
+  end
+
+  def exit
+    redirect_to backoffice_service_offers_path(params[:service_id]), status: :see_other
   end
 
   def fetch_subtypes
