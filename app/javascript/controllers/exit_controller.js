@@ -2,14 +2,17 @@ import { Controller } from "@hotwired/stimulus";
 import { Turbo } from "@hotwired/turbo-rails";
 
 export default class extends Controller {
-  static targets = ["modal", "modalNameInput", "formNameInput"];
+  static targets = ["display", "modal", "modalContent", "modalNameInput", "formNameInput"];
 
   connect() {}
 
-  showModal(event) {
-    event.preventDefault();
+  showModal(e) {
     this.modalTarget.classList.remove("d-none");
     this.modalNameInputTarget.value = this.formNameInputTarget.value;
+  }
+
+  hideModal(e) {
+    this.modalTarget.classList.add("d-none");
   }
 
   recirectToProvider(event) {
@@ -18,5 +21,26 @@ export default class extends Controller {
 
   redirectToExtendedForm(event) {
     Turbo.visit(`/backoffice/providers/${event.target.dataset.providerId}/edit?step=classification`);
+  }
+
+  // hide modal when clicking ESC
+  // action: "keyup@window->turbo-modal#closeWithKeyboard"
+  closeWithKeyboard(e) {
+    if (e.code == "Escape") {
+      this.hideModal();
+    }
+  }
+
+  // hide modal when clicking outside of modal
+  // action: "click@window->turbo-modal#closeBackground"
+  closeBackground(e) {
+    if (
+      this.hasDisplayTarget &&
+      e &&
+      (this.displayTarget.contains(e.target) || this.modalContentTarget.contains(e.target))
+    ) {
+      return;
+    }
+    this.hideModal(e);
   }
 }

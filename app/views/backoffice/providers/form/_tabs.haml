@@ -3,11 +3,12 @@
     %ul#my-tab.nav.nav-tabs.row.pl-3{ role: "tablist" }
       - extended_steps.each do |step|
         %li.nav-item{ role: "presentation" }
-          - if step == "profile"
-            = link_to _(step.capitalize), backoffice_provider_path(provider),
+          - if step == "basic_information"
+            = link_to _(step.humanize), backoffice_provider_path(provider),
                 class: "nav-link #{"active" if step == active_tab}",
                 id: "#{step}-tab"
           - else
             %button.nav-link{ id: "#{step}-tab", type: "button", role: "tab", class: "nav-link #{"active" if step == active_tab}",
                 aria: { controls: "provider-edit-form" },
-                data: { action: "click->form#toggleTab", form_target: "toggler", toggle: "tab", target: "#{step}" } }= _(step.capitalize)
+                data: { action: "click->form#toggleTab", form_target: "toggler", toggle: "tab",
+                target: "#{step.dasherize}" } }= _(step.humanize)

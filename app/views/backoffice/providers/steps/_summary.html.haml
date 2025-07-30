@@ -5,6 +5,7 @@
   method: :put, data: { turbo_frame: :_top }  do |f|
   = render "backoffice/providers/steps/simple_navbar", provider: provider, f: f
   .new-offer-form
+    = f.hidden_field :name, value: provider.name, data: { exit_target: "formNameInput" }
     %h4 Summary
 
     .container
@@ -97,4 +98,4 @@
                 - provider.data_administrators.each do |manager|
                   = render "backoffice/providers/steps/summary_manager_section", manager: manager
 
-      = render "backoffice/providers/steps/buttons", f: f
+      = render "backoffice/providers/steps/buttons", provider: provider, f: f

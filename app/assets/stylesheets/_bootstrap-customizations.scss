@@ -7781,25 +7781,25 @@ abbr[title] {
       }
     }
 
-    &#step-two-button {
+    &#order-parameters-button {
       &:before {
         content: "2";
       }
     }
 
-    &#step-three-button {
+    &#offer-parameters-button {
       &:before {
         content: "3";
       }
     }
 
-    &#step-four-button {
+    &#offer-description-button {
       &:before {
         content: "4";
       }
     }
 
-    &#step-five-button {
+    &#summary-button {
       &:before {
         content: "5";
       }
@@ -7987,7 +7987,7 @@ abbr[title] {
 .new-offer-form-controls {
   margin-top: 90px;
 
-  .btn-primary {
+  .btn-primary:not(.btn-sm) {
     padding: 16px 62px;
     font-size: 18px;
 

@@ -4,6 +4,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   include Backoffice::ProvidersHelper
   include UrlHelper
   include ApplicationHelper
+  include ExitHelper
 
   before_action :find_and_authorize, only: %i[show edit update destroy]
   before_action :catalogue_scope
@@ -31,11 +32,16 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def create
+    save_as_draft = params[:commit] == save_as_draft_title
     permitted_attributes = permitted_attributes(Provider)
     @provider = Provider.new(**permitted_attributes, status: :unpublished)
     authorize(@provider)
 
-    if valid_model_and_urls? && @provider.save(validate: false)
+    if save_as_draft
+      @provider.name = params[:name]
+      Provider::CreateAsDraft.call(@provider)
+      redirect_to backoffice_provider_path(@provider, page: params[:page]), notice: "New provider created successfully"
+    elsif valid_model_and_urls? && @provider.save(validate: false)
       if current_user.providers.published.empty? && !current_user.coordinator?
         ar = ApprovalRequest.new(approvable: @provider, user: current_user, status: :published)
         ar.save

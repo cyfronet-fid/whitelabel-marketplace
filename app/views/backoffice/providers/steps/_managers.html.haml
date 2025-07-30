@@ -4,6 +4,7 @@
   method: :put do |f|
   = render "backoffice/providers/steps/simple_navbar", provider: provider, f: f
   .new-offer-form
+    = f.hidden_field :name, value: provider.name, data: { exit_target: "formNameInput" }
     .row
       .col-lg-7.pl-0
         .row.service-contact-emails{ data: { controller: "administrator", administrator_target: "dataAdministrators" } }
@@ -20,5 +21,5 @@
                       action: "click->administrator#addAdmin",
                       fields: f.fields_for(:data_administrators, DataAdministrator.new,
                       child_index: "new_field") { |da_form| render_data_administrator(da_form, provider) } }
-        = render "backoffice/providers/steps/buttons", f: f
+        = render "backoffice/providers/steps/buttons", provider: provider, f: f
       = render "backoffice/providers/more_information"

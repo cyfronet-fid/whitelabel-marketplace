@@ -27,4 +27,4 @@
     = public_contact_form.hidden_field :_destroy, "data-form-target": "destroy"
     .text-right
       = link_to _("Delete contact"), "#", id: "public-contact-delete-#{public_contact_form.index}",
-      class: "float-right remove-button", "data-action": "click->form#removeField"
+      class: "btn-special delete-button float-right", "data-action": "click->form#removeField"

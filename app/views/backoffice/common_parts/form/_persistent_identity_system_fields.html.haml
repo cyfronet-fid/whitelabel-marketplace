@@ -6,4 +6,4 @@
   = link_form.hidden_field :_destroy, "data-form-target": "destroy"
   .text-right
     = link_to _("Delete #{name.humanize}"), "#", id: "persistent-identity-system-delete-#{link_form.index}",
-    class: "btn-sm disablable btn-danger", "data-action": "click->form#removeField"
+    class: "btn-special delete-button disablable", "data-action": "click->form#removeField"

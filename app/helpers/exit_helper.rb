@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Backoffice::OffersHelper
+module ExitHelper
   def save_as_draft_title
     "Save as draft"
   end
