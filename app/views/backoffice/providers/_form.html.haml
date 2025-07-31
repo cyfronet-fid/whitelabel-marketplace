@@ -1,5 +1,5 @@
 = simple_form_for [:backoffice, provider],
-  html: { data: { controller: "form", form_target: "form",
+  html: { data: { controller: "form exit", form_target: "form",
   disabled: provider.upstream_id.present? } } do |f|
   = f.error_notification
   .row
@@ -20,7 +20,4 @@
           confirm_cancel: _("Go back to edition"), confirm_button: _("Save changes") }
           = link_to "Go back to provider", backoffice_provider_exit_path(provider),
             class: "text-left flex-grow-1 text-uppercase mobile-bottom-margin",
-            data: { turbo_confirm: "Exit provider editor",
-            confirm_details: exit_confirm_details,
-            confirm_cancel: _("Go back to edition"),
-            confirm_button: _("Exit without saving"), turbo_method: :post, turbo_frame: "_top" }
+            data: { exit_target: "display", confirm_details: exit_confirm_details, turbo_method: :post, turbo_frame: "_top" }

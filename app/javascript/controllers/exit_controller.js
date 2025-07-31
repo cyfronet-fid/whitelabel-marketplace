@@ -4,7 +4,9 @@ import { Turbo } from "@hotwired/turbo-rails";
 export default class extends Controller {
   static targets = ["display", "modal", "modalContent", "modalNameInput", "formNameInput"];
 
-  connect() {}
+  connect() {
+    document.addEventListener("change", (event) => this.addAlert(event));
+  }
 
   showModal(e) {
     this.modalTarget.classList.remove("d-none");
@@ -16,7 +18,9 @@ export default class extends Controller {
   }
 
   addAlert(event) {
-    this.displayTarget.innerHTML = event.detail.message;
+    this.displayTarget.dataset.turboConfirm = "Exit provider editor";
+    this.displayTarget.dataset.confirmCancel = "Go back to edition";
+    this.displayTarget.dataset.confirmButton = "Exit without saving";
   }
 
   recirectToProvider(event) {
