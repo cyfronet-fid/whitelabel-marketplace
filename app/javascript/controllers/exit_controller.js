@@ -15,12 +15,16 @@ export default class extends Controller {
     this.modalTarget.classList.add("d-none");
   }
 
+  addAlert(event) {
+    this.displayTarget.innerHTML = event.detail.message;
+  }
+
   recirectToProvider(event) {
     Turbo.visit(`/backoffice/providers/${event.target.dataset.providerId}`);
   }
 
   redirectToExtendedForm(event) {
-    Turbo.visit(`/backoffice/providers/${event.target.dataset.providerId}/edit?step=classification`);
+    Turbo.visit(`/backoffice/providers/${event.target.dataset.providerId}/edit?step=legal_status`);
   }
 
   // hide modal when clicking ESC
