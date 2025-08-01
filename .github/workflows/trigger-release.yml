@@ -2,27 +2,73 @@ on: workflow_dispatch
 
 name: trigger-release
 jobs:
-  release-please:
+  create-release-pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Check if there are changes between development and master
+        id: check_changes
+        run: |
+          git fetch origin master development
+          CHANGES=$(git diff --name-only origin/master...origin/development)
+          if [ -z "$CHANGES" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No changes found between development and master"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes found:"
+            echo "$CHANGES"
+          fi
+      
       - name: Set Git bot config
+        if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-      - name: Merge changes from development to master
+      
+      - name: Generate changelog
+        if: steps.check_changes.outputs.has_changes == 'true'
+        id: changelog
         run: |
-          git checkout master
-          git merge origin/development 
-          git push
-      - uses: google-github-actions/release-please-action@v3
-        id: release
+          CHANGELOG=$(git log origin/master..origin/development --pretty=format:"- %s (%h)" --no-merges)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create Pull Request from development to master
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v5
         with:
-          bump-minor-pre-major: true
-          bump-patch-for-minor-pre-major: true
-          version-file: 'VERSION'
-          release-type: simple
-          package-name: release-please-action
-          default-branch: master
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: master
+          head: development
+          title: "Release: Merge development to master"
+          body: |
+            ## Release Pull Request
+            
+            This PR contains changes from the `development` branch ready for release to `master`.
+            
+            ### Changes in this release:
+            ${{ steps.changelog.outputs.changelog }}
+            
+            ### What will happen after merge:
+            - Automatic creation of a new release
+            - Application version bump
+            - Changelog generation
+            
+            ---
+            *This PR was created automatically by GitHub Actions*
+          draft: false
+          delete-branch: false
+          labels: |
+            release
+            automated-pr
+      
+      - name: No changes found
+        if: steps.check_changes.outputs.has_changes == 'false'
+        run: |
+          echo "::notice::No changes found between development and master. PR was not created."
