@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.59.2](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/3.59.1...v3.59.2) (2025-08-01)
+
+
+### Bug Fixes
+
+* [[#195](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/195)] Provider form fix ([b42a3cb](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/b42a3cb5100a7da18d412ac1145ca0792fa8907f))
+* Loading root categories on the home-page ([503ba46](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/503ba46057b32b5ab73b1e248e09d5ce0440eb84))
+
 ## [3.59.1]
 
 ### Added
