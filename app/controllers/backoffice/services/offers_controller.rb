@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Backoffice::Services::OffersController < Backoffice::ApplicationController
-  include Backoffice::OffersHelper
+  include ExitHelper
 
   before_action :find_service
   before_action :find_offer_and_authorize, only: %i[edit update]
@@ -33,17 +33,11 @@ class Backoffice::Services::OffersController < Backoffice::ApplicationController
       @offer = Offer::Create.call(template)
     end
 
-    if @offer.persisted?
-      redirect_to backoffice_service_offers_path(@service), notice: "New offer created successfully"
-    else
+    if @offer.invalid?
       render :new, status: :bad_request
+    else
+      redirect_to backoffice_service_offers_path(@service), notice: "New offer created successfully"
     end
-  end
-
-  def submit_summary
-    template = offer_template
-    authorize(template)
-    render partial: "backoffice/services/offers/steps/summary", locals: { offer: template }
   end
 
   def edit
@@ -71,6 +65,10 @@ class Backoffice::Services::OffersController < Backoffice::ApplicationController
     else
       render :edit, status: :bad_request
     end
+  end
+
+  def exit
+    redirect_to backoffice_service_offers_path(params[:service_id]), status: :see_other
   end
 
   def fetch_subtypes

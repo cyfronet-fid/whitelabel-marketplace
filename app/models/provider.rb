@@ -20,7 +20,7 @@ class Provider < ApplicationRecord
   searchkick word_middle: [:provider_name]
 
   def search_data
-    { provider_id: id, provider_name: name, service_ids: service_ids }
+    { provider_id: id, provider_name: name, service_ids: service_ids, node_names: nodes.map(&:name) }
   end
 
   before_save { self.catalogue = Catalogue.find(catalogue_id) if catalogue_id.present? }
@@ -52,6 +52,7 @@ class Provider < ApplicationRecord
   has_many :scientific_domains, through: :provider_scientific_domains
   has_many :data_administrators, through: :provider_data_administrators, dependent: :destroy, autosave: true
   has_many :provider_vocabularies, dependent: :destroy
+  has_many :nodes, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::Node"
   has_many :hosting_legal_entities,
            through: :provider_vocabularies,
            source: :vocabulary,
@@ -215,7 +216,7 @@ class Provider < ApplicationRecord
   end
 
   def managed_services
-    Service.left_joins(:service_providers).where("status = 'published' AND resource_organisation_id = #{id}")
+    Service.left_joins(:service_providers).where("resource_organisation_id = #{id}")
   end
 
   def services
@@ -232,13 +233,13 @@ class Provider < ApplicationRecord
     io = File.open(assets_path + "/" + default_logo_name)
 
     # This should be fixed by allowing svg extension in the db
-    image = convert_to_png(io, extension)
+    image = convert_to_png(io)
     logo.attach(io: image, filename: SecureRandom.uuid + extension, content_type: "image/#{extension.delete(".", "")}")
   end
 
   def owned_by?(user)
     data_administrators&.map(&:user_id)&.include?(user&.id) ||
-      catalogue&.data_administrators&.map(&:user_id)&.include?(user.id)
+      (catalogue.present? && catalogue.data_administrators&.map(&:user_id)&.include?(user.id))
   end
 
   def valid_urls?

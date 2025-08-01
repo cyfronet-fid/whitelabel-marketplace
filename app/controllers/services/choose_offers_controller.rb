@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class Services::ChooseOffersController < Services::ApplicationController
-  skip_before_action :authenticate_user!
-
   def show
+    pi_init = params[:customizable_project_item]
+    update if pi_init && (pi_init[:offer_id] || pi_init[:bundle_id])
     init_step_data
 
     unless step.visible?
@@ -12,7 +12,6 @@ class Services::ChooseOffersController < Services::ApplicationController
       elsif @bundles.published.size.positive?
         params[:customizable_project_item] = { bundle_id: @bundles.published.first.iid }
       end
-
       update
     end
   end

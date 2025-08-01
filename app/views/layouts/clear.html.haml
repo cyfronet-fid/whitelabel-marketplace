@@ -10,9 +10,8 @@
       %div
       %div
   %body{ class: "#{@action}" }
+    = render "layouts/flash"
     = render "layouts/badge" if ENV["MP_INSTANCE"]
-    #flash-messages.flash
-      = render "layouts/flash"
     = turbo_frame_tag "modal"
     = render "layouts/confirm_modal"
     %header

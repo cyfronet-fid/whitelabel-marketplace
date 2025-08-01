@@ -15,4 +15,20 @@ import TC from "@rolemodel/turbo-confirm";
 
 window.$ = window.jQuery = jquery;
 
-TC.start({ activeClass: "d-flex" });
+TC.start({
+  activeClass: "d-flex",
+  contentSlots: {
+    body: {
+      contentAttribute: "confirm-details",
+      slotSelector: "#confirm-body",
+    },
+    acceptText: {
+      contentAttribute: "confirm-button",
+      slotSelector: "#confirm-accept",
+    },
+    rejectText: {
+      contentAttribute: "confirm-cancel",
+      slotSelector: "#dismiss-btn",
+    },
+  },
+});

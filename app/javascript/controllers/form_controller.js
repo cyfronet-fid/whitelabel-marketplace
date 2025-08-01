@@ -43,6 +43,7 @@ export default class extends Controller {
     "pcPosition",
     "pcCode",
     "tab",
+    "toggler",
   ];
 
   initialize() {
@@ -50,7 +51,31 @@ export default class extends Controller {
     this.disableFormButtons();
     this.handleRelatedFields();
     initChoices();
+    this.formChanged = false;
+    document.querySelectorAll("a").forEach((input) => {
+      input.addEventListener("input", this._markChanged);
+    });
+    window.addEventListener("beforeunload", this.beforeUnloadHandler);
   }
+  disconnect() {
+    this.inputTargets.forEach((input) => {
+      input.removeEventListener("input", this._markChanged);
+    });
+    window.removeEventListener("beforeunload", this.beforeUnloadHandler);
+  }
+
+  _markChanged = () => {
+    console.log(this.formChanged);
+    console.log("changed");
+    this.formChanged = true;
+  };
+
+  beforeUnloadHandler = (event) => {
+    if (this.formChanged) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  };
 
   onScroll(event) {
     event.preventDefault();
@@ -72,6 +97,10 @@ export default class extends Controller {
     this.tabTargets.forEach((el) => {
       el.classList.remove("active");
     });
+    this.togglerTargets.forEach((el) => {
+      el.classList.remove("active");
+    });
+    event.target.classList.add("active");
     const toDisplay = document.getElementById(event.target.dataset.target);
     toDisplay.classList.add("active");
   }
@@ -133,14 +162,14 @@ export default class extends Controller {
 
     const removeLink = document.createElement("a");
 
-    const linkText = document.createTextNode("Remove");
+    const linkText = document.createTextNode(`Remove`);
 
     removeLink.id = "remove_" + lastArrayField.id;
     removeLink.dataset.target = event.target;
     removeLink.dataset.action = "click->form#removeArrayField";
     removeLink.dataset.value = lastArrayField.id;
     removeLink.appendChild(linkText);
-    removeLink.classList.add("btn-sm", "btn-danger", "remove", "float-right");
+    removeLink.classList.add("btn-special", "delete-button", "remove", "float-right");
 
     parent.appendChild(lastArrayField);
     parent.appendChild(removeLink);
@@ -188,10 +217,6 @@ export default class extends Controller {
 
     const child = this.formTarget.querySelector("[class*=" + childId + "]");
     this._hasInputValue(event.target) ? child.classList.remove("d-none") : child.classList.add("d-none");
-  }
-
-  goToSummary(event) {
-    document.getElementById("summary-step-link").click();
   }
 
   _hasInputValue(input) {

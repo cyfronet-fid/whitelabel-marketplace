@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "image_processing/mini_magick"
+require "image_processing/vips"
 
 class Service::PcCreateOrUpdate
   class ConnectionError < StandardError
@@ -20,7 +20,6 @@ class Service::PcCreateOrUpdate
         "service_sources.source_type": @source_type,
         "service_sources.eid": [eosc_registry_service["id"]]
       )
-    eosc_registry_service["status"] = @status
     @service_hash = Importers::Service.call(eosc_registry_service, modified_at, eosc_registry_base_url, token)
     @new_update_available = Service::PcCreateOrUpdate.new_update_available(@mp_service, modified_at)
   end
@@ -64,7 +63,7 @@ class Service::PcCreateOrUpdate
     Rails.logger.warn error_message
     validatable_service = Service.new(service_hash)
     service_errors = validatable_service&.errors&.to_hash if validatable_service.invalid?
-    mp_service&.sources&.first&.update(eid: service_hash["pid"], errored: service_errors)
+    mp_service.sources&.first&.update(eid: service_hash["pid"], errored: service_errors)
   end
 
   def self.create_service(service_hash, logo)

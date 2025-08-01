@@ -63,6 +63,7 @@ class Service < ApplicationRecord
   has_many :link_use_cases_urls, as: :linkable, dependent: :destroy, autosave: true, class_name: "Link::UseCasesUrl"
   has_many :link_multimedia_urls, as: :linkable, dependent: :destroy, autosave: true, class_name: "Link::MultimediaUrl"
   has_many :service_vocabularies, dependent: :destroy
+  has_many :nodes, through: :service_vocabularies, source: :vocabulary, source_type: "Vocabulary::Node"
   has_many :service_categories,
            through: :service_vocabularies,
            source: :vocabulary,
@@ -250,6 +251,7 @@ class Service < ApplicationRecord
             }
   validates :trls, length: { maximum: 1 }
   validates :life_cycle_statuses, length: { maximum: 1 }
+  validates :nodes, length: { maximum: 1 }
   validates :geographical_availabilities,
             presence: true,
             length: {
@@ -307,25 +309,29 @@ class Service < ApplicationRecord
   end
 
   def owned_by?(user)
-    resource_organisation&.data_administrators&.map(&:user_id)&.include?(user.id) ||
-      catalogue&.data_administrators&.map(&:user_id)&.include?(user.id)
+    (resource_organisation.present? && resource_organisation.data_administrators&.map(&:user_id)&.include?(user.id)) ||
+      (catalogue.present? && catalogue.data_administrators&.map(&:user_id)&.include?(user.id))
   end
 
   def organisation_search_link(target, default_path = nil)
-    _provider_search_link(target, "resource_organisation", default_path)
+    _search_link(target, "resource_organisation", default_path)
+  end
+
+  def node_search_link(target, default_path = nil)
+    _search_link(target, "node", default_path)
   end
 
   def provider_search_link(target, default_path = nil)
-    _provider_search_link(target, "providers", default_path)
+    _search_link(target, "providers", default_path)
   end
 
   def geographical_availabilities_link(gcap)
-    _provider_search_link(gcap, "geographical_availabilities", services_path(geographical_availabilities: gcap))
+    _search_link(gcap, "geographical_availabilities", services_path(geographical_availabilities: gcap))
   end
 
   private
 
-  def _provider_search_link(target_name, filter_query, default_path = nil)
+  def _search_link(target_name, filter_query, default_path = nil)
     search_base_url = Mp::Application.config.search_service_base_url
     enable_external_search = Mp::Application.config.enable_external_search
     if enable_external_search

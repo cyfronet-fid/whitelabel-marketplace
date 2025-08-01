@@ -4,10 +4,9 @@
   .spinner-background
     .spinner
   %body
+    = render "layouts/flash"
     %header.pb-2.white-bg
       = render "layouts/badge" if ENV["MP_INSTANCE"]
-      #flash-messages.flash
-        = render "layouts/flash"
       = turbo_frame_tag "modal"
       = render "layouts/confirm_modal"
       = render "layouts/backoffice/navbar"

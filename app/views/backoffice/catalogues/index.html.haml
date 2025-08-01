@@ -1,5 +1,5 @@
 - content_for :title, _("Catalogues")
-- breadcrumb :backoffice_catalogues
+- breadcrumb :backoffice_catalogues, params[:page].presence
 
 .container.p-0.backoffice
   - if @catalogues.blank?

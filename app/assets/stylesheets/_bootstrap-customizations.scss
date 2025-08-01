@@ -3633,7 +3633,6 @@ label[data-multicheckbox].small {
     dt {
       width: auto;
       padding-right: 5px;
-      flex: 0 0 95px;
     }
 
     dd {
@@ -7800,7 +7799,7 @@ abbr[title] {
       }
     }
 
-    &#step-five-button {
+    &#summary-button {
       &:before {
         content: "5";
       }
@@ -7988,7 +7987,7 @@ abbr[title] {
 .new-offer-form-controls {
   margin-top: 90px;
 
-  .btn-primary {
+  .btn-primary:not(.btn-sm) {
     padding: 16px 62px;
     font-size: 18px;
 
@@ -9213,10 +9212,11 @@ footer {
 .breadcrumbs-backoffice-wrapper {
   background: linear-gradient(0deg, $alert-bg 0%, $palette-white 100%);
   padding: 20px 0;
+  margin-top: 0;
 
   .breadcrumbs {
     .data-probe {
-      padding: 0;
+      padding-left: 3em;
       border: 0;
     }
   }

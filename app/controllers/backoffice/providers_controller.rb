@@ -3,6 +3,8 @@
 class Backoffice::ProvidersController < Backoffice::ApplicationController
   include Backoffice::ProvidersHelper
   include UrlHelper
+  include ApplicationHelper
+  include ExitHelper
 
   before_action :find_and_authorize, only: %i[show edit update destroy]
   before_action :catalogue_scope
@@ -16,22 +18,9 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def show
-    respond_to do |format|
-      current_tab = params[:tab]
-      partial = current_tab&.in?(extended_steps) ? current_tab : "profile"
-      format.turbo_stream do
-        render turbo_stream:
-                 turbo_stream.replace(
-                   "tab_content",
-                   partial: "backoffice/providers/tabs/wrapper",
-                   locals: {
-                     tab: partial,
-                     provider: @provider
-                   }
-                 )
-      end
-      format.html
-    end
+    @pagy, @services = pagy(@provider.managed_services.order(:name))
+    current_tab = params[:tab]
+    @tab = current_tab&.in?(extended_steps) ? current_tab : "profile"
   end
 
   def new
@@ -43,11 +32,16 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def create
+    save_as_draft = params[:commit] == save_as_draft_title
     permitted_attributes = permitted_attributes(Provider)
     @provider = Provider.new(**permitted_attributes, status: :unpublished)
     authorize(@provider)
 
-    if valid_model_and_urls? && @provider.save(validate: false)
+    if save_as_draft
+      @provider.name = params[:name]
+      Provider::CreateAsDraft.call(@provider)
+      redirect_to backoffice_provider_path(@provider, page: params[:page]), notice: "New provider created successfully"
+    elsif valid_model_and_urls? && @provider.save(validate: false)
       if current_user.providers.published.empty? && !current_user.coordinator?
         ar = ApprovalRequest.new(approvable: @provider, user: current_user, status: :published)
         ar.save
@@ -61,21 +55,16 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
 
   def edit
     session[:wizard_action] = "update"
-    tab = session[:provider_step] = params[:step] || basic_steps.first
-    if tab.in?(basic_steps)
-      redirect_to backoffice_provider_wizard_path(@provider)
-    else
-      add_missing_nested_models
-      render turbo_stream:
-               turbo_stream.replace(
-                 "tab_content",
-                 partial: "backoffice/providers/form",
-                 locals: {
-                   provider: @provider,
-                   catalogues: @catalogues,
-                   tab: tab
-                 }
-               )
+    @tab = session[:provider_step] = params[:step] || basic_steps.first
+    respond_to do |format|
+      if @tab == basic_steps.first
+        format.html { redirect_to backoffice_provider_wizard_path(@provider) }
+        format.turbo_stream { redirect_to backoffice_provider_wizard_path(@provider) }
+      else
+        add_missing_nested_models
+        format.turbo_stream
+        format.html
+      end
     end
   end
 
@@ -105,7 +94,8 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     else
       catalogue_scope
       add_missing_nested_models
-      render :edit, status: :bad_request
+      @tab = errored_tab(@provider)
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -126,7 +116,12 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
 
   def exit
     clear_session_data
-    redirect_to backoffice_providers_path
+    if params[:provider_id] == "new"
+      redirect_to backoffice_providers_path, status: :see_other
+    else
+      @provider = Provider.friendly.find(params[:provider_id])
+      redirect_to backoffice_provider_path(@provider), status: :see_other
+    end
   end
 
   private
@@ -173,24 +168,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
     valid
   end
 
-  def create_provider_hash(provider)
-    to_except = %i[id created_at updated_at]
-    contact_except = to_except + %i[contactable_type contactable_id]
-
-    data_administrators_attributes =
-      provider.data_administrators.map.with_index { |dm, i| { i.to_s => dm.as_json(except: to_except) } }
-    public_contacts_attributes =
-      provider.public_contacts.map.with_index { |pc, i| { i.to_s => pc.as_json(except: contact_except) } }
-
-    provider_hash = provider.as_json(except: to_except)
-    provider_hash["country"] = provider_hash["country"]["country_data_or_code"]
-    if @provider.main_contact
-      provider_hash["main_contact_attributes"] = @provider.main_contact.as_json(except: contact_except)
-    end
-
-    provider_hash["public_contacts_attributes"] = public_contacts_attributes.reduce({}, :merge)
-    provider_hash["data_administrators_attributes"] = data_administrators_attributes.reduce({}, :merge)
-    provider_hash
+  def errored_tab(provider)
   end
 
   def clear_session_data

@@ -7,11 +7,35 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
-## [3.59.0]
+## [3.59.1]
 
 ### Added
 
+- Possibility to run concurrent tests (@goreck888)
+
+### Fixed
+
+- Styles in backoffice and landing page (@jarekzet)
+- Login prompt in ordering scope (@goreck888)
+- Category selection in the backoffice search (@goreck888)
+- Github actions on workflow dispatch (@goreck888)
+- Optimization of categories query (@goreck888)
+
+### Deprecated
+
+- environment variable `HOME_PAGE_EXTERNAL_LINKS_ENABLED` (@goreck888)
+
+## [3.59.0] 2025-06-18
+
+### Added
+
+- Add save as draft feature to offers form (@maria-j-k, @jarekzet)
+- Add duplicate offer feature to offers form (@maria-j-k)
+- Readme section about manual dev setup (@Michal-Kolomanski)
+- Simplify project creation form (@wujuu)
+- Offer recommendations in project view (@wujuu)
 - New provider wizard form (@maria-j-k, @goreck888, @jarekzet)
+- Node information (@goreck888)
 
 ### Deprecated
 
@@ -35,7 +59,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Default link to the Explore service (@goreck888)
 - Provider and catalogue backoffice view (@jarekzet)
 - Dropdown menu mods (@jarekzet)
-
 
 ## [3.58.0] 2025-01-22
 
@@ -85,12 +108,36 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Postgres update from 14.1 to 16.4 (@goreck888)
 - Remove most of services from database (@maria-j-k)
 
-## [3.57.0]
+## [3.58.1]
+
+### Changed
+
+- Customizable eosc helpdesk link (@goreck888)
+
+## [3.58.0] 2025-04-01
+
+### Added
+
+- Add save as draft feature to offers form (@maria-j-k, @jarekzet)
+- Add duplicate offer feature to offers form (@maria-j-k)
+- Readme section about manual dev setup (@Michal-Kolomanski)
 
 ### Added
 - Handling data administrator scope in the backoffice (@goreck888)
 - Statuses changes for providers and catalogues (@goreck888)
 - Delete button for services (@goreck888)
+
+### Fixed
+
+- Fitting to EOSC SQA requirements (@goreck888)
+- Log in in the ordering scope (@goreck888)
+- Update EOSC Beyond logo and style improvements (@goreck888, @jarekzet)
+
+### Security
+
+- Update dependencies (@goreck888)
+
+## [3.57.0]
 
 ### Changed
 

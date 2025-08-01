@@ -4,8 +4,8 @@ module FormsHelper
   def link_to_add_array_field(model, field_name)
     content_tag(
       :a,
-      "Add new " + t("simple_form.add_new_array_item.#{model}.#{field_name}"),
-      class: "btn btn-sm btn-primary disablable",
+      "+ add " + t("simple_form.add_new_array_item.#{model}.#{field_name}"),
+      class: "btn btn-back disablable",
       data: {
         action: "click->form#addNewArrayField",
         wrapper: "#{model}_#{field_name}",
@@ -46,6 +46,10 @@ module FormsHelper
       .accessible
       .reject { |item| item.id.in? offer_ids }
       .map { |item| ["#{item.service.name} > #{item.name}", item.id] }
+  end
+
+  def render_alternative_identifier(form, object)
+    render "backoffice/common_parts/form/alternative_identifier_fields", identifier_form: form, object: object
   end
 
   def render_data_administrator(form, object)

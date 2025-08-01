@@ -1,11 +1,12 @@
 = simple_form_for [:backoffice, provider],
-  html: { data: { controller: "form", form_target: "form",
+  html: { data: { controller: "form exit", form_target: "form",
   disabled: provider.upstream_id.present? } } do |f|
   = f.error_notification
   .row
     .col-12
       #provider-edit
-        = render "backoffice/providers/form/tabs", active_tab: tab
+        .service-box-redesign
+          = render "backoffice/providers/form/tabs", active_tab: tab, provider: provider
         .tab-content{ role: "tablist" }
           - extended_steps.each do |step|
             = render "backoffice/providers/form/#{step}", f: f, provider: provider, catalogues: catalogues,
@@ -14,6 +15,9 @@
       .row.mt-5
         .col-12
           = f.button :submit, class: "btn btn-primary pl-5 pr-5 mr-5 mobile-bottom-margin",
-          data: { e2e: "create-provider-btn" }
-          - link = provider.persisted? ? backoffice_provider_path(provider) : backoffice_providers_path
-          = link_to "Go back to provider", link, class: "text-left flex-grow-1 text-uppercase mobile-bottom-margin"
+          data: { e2e: "create-provider-btn", turbo_confirm: "Save changes",
+          confirm_details: "Your changes will be saved. Do you want to continue?",
+          confirm_cancel: _("Go back to edition"), confirm_button: _("Save changes") }
+          = link_to "Go back to provider", backoffice_provider_exit_path(provider),
+            class: "text-left flex-grow-1 text-uppercase mobile-bottom-margin",
+            data: { exit_target: "display", confirm_details: exit_confirm_details, turbo_method: :post, turbo_frame: "_top" }

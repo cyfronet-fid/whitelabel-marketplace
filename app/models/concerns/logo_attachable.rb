@@ -21,19 +21,13 @@ module LogoAttachable
     logo.attach(io: io, filename: SecureRandom.uuid + extension, content_type: "image/#{extension.delete(".", "")}")
   end
 
-  def convert_to_png(logo, extension)
-    img = MiniMagick::Image.read(logo, extension)
-    img.format "png" do |convert|
-      convert.args.unshift "800x800"
-      convert.args.unshift "-resize"
-      convert.args.unshift "1200"
-      convert.args.unshift "-density"
-      convert.args.unshift "none"
-      convert.args.unshift "-background"
-    end
-    logo = StringIO.new
-    logo.write(img.to_blob)
-    logo.seek(0)
-    logo
+  def convert_to_png(logo)
+    img = Vips::Image.new_from_buffer(logo.read, "")
+    logo.rewind
+
+    scale = [800.0 / img.width, 800.0 / img.height].min
+    img = img.resize(scale)
+
+    StringIO.new(img.write_to_buffer(".png"))
   end
 end

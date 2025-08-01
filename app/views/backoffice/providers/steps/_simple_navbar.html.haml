@@ -9,5 +9,5 @@
         = f.button :submit, step.capitalize
       - else
         = link_to step.capitalize, backoffice_provider_wizard_path(params[:provider_id], step: step)
-  #step-five-button.offer-step{ class: ("active-button" if csi > 3) }
+  #summary-button.offer-step{ class: ("active-button" if csi > 3) }
     = f.button :submit, "Summary", id: "summary-step-link"

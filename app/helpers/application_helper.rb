@@ -100,11 +100,17 @@ module ApplicationHelper
   end
 
   def render_turbo_stream_flash
-    turbo_stream.prepend "flash", partial: "layouts/flash"
+    turbo_stream.replace "flash-messages", partial: "layouts/flash"
   end
 
   def recaptcha_tags(options = {})
     return unless Rails.application.config.recaptcha_enabled
     super
+  end
+
+  def unescaped_link_to(name = nil, raw_url = nil, html_options = nil)
+    parser = URI::Parser.new
+    url = parser.unescape(url_target(name, raw_url))
+    link_to(name, url, html_options)
   end
 end

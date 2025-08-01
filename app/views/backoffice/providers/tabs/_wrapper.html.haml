@@ -3,7 +3,9 @@
     = render "backoffice/providers/tabs", provider: provider, current_tab: tab
   .row.justify-content-between
     %main.col-12.col-xl-9.pr-4.pt-4
-      = render "backoffice/providers/tabs/#{tab}", provider: provider
+
+      = render "backoffice/providers/tabs/#{tab}", provider: provider, services: local_assigns[:services],
+      pagy: local_assigns[:pagy]
     %sidebar.col-12.col-xl-3.pt-4
       #actions
         - if policy([:backoffice, provider]).edit?

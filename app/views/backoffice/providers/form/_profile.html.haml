@@ -1,4 +1,4 @@
-.tab-pane{ id: "profile", class: "#{"active" if active}", role: "tabpanel", "aria-labelledby": "profile-header", "data-form-target": "tab" }
+#profile.tab-pane{ class: "#{"active" if active}", role: "tabpanel", "aria-labelledby": "profile-header", "data-form-target": "tab" }
   .card-body
     .row
       .col-lg-7.pl-0
@@ -16,7 +16,12 @@
           input_html: { multiple: false, data: { choice: true } }
         .row
           .col-12
-            = hosting_legal_entity_input(f)
+            = f.input :hosting_legal_entity,
+                 collection: Vocabulary.where(type: "Vocabulary::HostingLegalEntity"),
+                 disabled: cant_edit(:hosting_legal_entity),
+                 label_method: :name,
+                 value_method: :id,
+                 input_html: { multiple: false, data: { choice: true } }
         .row.service-contact-emails
           -# rubocop:disable Style/BlockDelimiters
           .col-12

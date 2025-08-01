@@ -69,8 +69,8 @@ module ServiceHelper
   end
 
   def order_type(orderable)
-    types = ([orderable&.order_type] + orderable&.offers&.published&.map(&:order_type)).compact.uniq
-    types.size > 1 ? "various" : orderable&.order_type || "other"
+    types = ([orderable&.order_type] + orderable.offers&.published&.map(&:order_type)).compact.uniq
+    types.size > 1 ? "various" : orderable.order_type || "other"
   end
 
   def highlighted_for(field, model, highlights)
@@ -113,6 +113,10 @@ module ServiceHelper
     else
       edit_backoffice_service_bundle_path(service, bundle)
     end
+  end
+
+  def similar_services_title
+    _("Similar services")
   end
 
   def related_services_title

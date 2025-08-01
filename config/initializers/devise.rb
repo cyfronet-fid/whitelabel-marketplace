@@ -9,7 +9,7 @@ Devise.setup do |config|
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
   # config.secret_key = 'a6d3c687f41d5ba8b5f84d17b444ef4af8b4cc1bc2463cac9b1dcd4296f8c3dd86352bee5477c6c6eaf99855726432486d267139cbfc10207409994238f54ca4'
-  config.secret_key = ENV.fetch("SECRET_KEY_BASE", Rails.application.credentials.secret_key_base)
+  config.secret_key = Rails.application.secret_key_base
 
   # ==> Controller configuration
   # Configure the parent class to the devise controllers.
@@ -261,22 +261,14 @@ Devise.setup do |config|
   # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
   checkin_host = ENV.fetch("CHECKIN_HOST", "aai.eosc-portal.eu")
   root_url = ENV.fetch("ROOT_URL", "http://localhost:#{ENV["PORT"] || 3000}")
-  old_endpoints = {
-    issuer: "oidc",
-    authorize: "/oidc/authorize",
-    token: "/oidc/token",
-    userinfo: "/oidc/userinfo",
-    jwk: "/oidc/jwk"
-  }
-  new_endpoints = {
-    issuer: "auth/realms/core",
-    authorize: "/auth/realms/core/protocol/openid-connect/auth",
-    token: "/auth/realms/core/protocol/openid-connect/token",
-    userinfo: "/auth/realms/core/protocol/openid-connect/userinfo",
-    jwk: "/auth/realms/core/protocol/openid-connect/certs"
-  }
   creds = Rails.application.credentials.checkin
-  endpoints = ENV.fetch("OIDC_AAI_NEW_API", true) ? new_endpoints : old_endpoints
+  endpoints = {
+    issuer: ENV.fetch("CHECKIN_ISSUER_ENDPOINT", "auth/realms/core"),
+    authorize: ENV.fetch("CHECKIN_AUTHORIZE_ENDPOINT", "/auth/realms/core/protocol/openid-connect/auth"),
+    token: ENV.fetch("CHECKIN_TOKEN_ENDPOINT", "/auth/realms/core/protocol/openid-connect/token"),
+    userinfo: ENV.fetch("CHECKIN_USERINFO_ENDPOINT", "/auth/realms/core/protocol/openid-connect/userinfo"),
+    jwk: ENV.fetch("CHECKIN_JWK_ENDPOINT", "/auth/realms/core/protocol/openid-connect/certs")
+  }
   scope = ENV["CHECKIN_SCOPE"].nil? ? %w[openid profile email aarc offline_access] : ENV["CHECKIN_SCOPE"].split(",")
   config.omniauth :openid_connect,
                   name: :checkin,

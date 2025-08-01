@@ -1,9 +1,10 @@
 = simple_form_for [:backoffice, provider],
   url: backoffice_provider_wizard_path(params[:provider_id]),
-  html: { "data-form-target": "form" },
+  html: { data: { form_target: "form" } },
   method: :put do |f|
   = render "backoffice/providers/steps/simple_navbar", provider: provider, f: f
   .new-offer-form
+    = f.hidden_field :name, value: provider.name, data: { exit_target: "formNameInput" }
     .row
       .col-lg-7.pl-0
         .service-contact-emails
@@ -51,5 +52,5 @@
               value: "publicContacts",
               fields: f.fields_for(:public_contacts, PublicContact.new,
               child_index: "new_field") { |pcf| render_public_contact(pcf, provider) } }
-        = render "backoffice/providers/steps/buttons", f: f, current_step: provider.current_step
+        = render "backoffice/providers/steps/buttons", provider: provider, f: f, current_step: provider.current_step
       = render "backoffice/providers/more_information"
