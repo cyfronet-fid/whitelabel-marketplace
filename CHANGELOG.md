@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.59.2] (2025-08-01)
+
+### Bug Fixes
+
+* Fix Docker images not building if SECRET_KEY_BASE is nil
+* [[#172](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/172)] Fix provider form
+
 ## [3.59.1]
 
 ### Added
