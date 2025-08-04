@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.59.3](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.59.2...v3.59.3) (2025-08-04)
+
+
+### Bug Fixes
+
+* Fix previous user counter decrementation ([54543f5](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/54543f5b1997389af468d0428d1e1a23b0068b88))
+
 ## [3.59.2](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/3.59.1...v3.59.2) (2025-08-01)
 
 ### Bug Fixes
