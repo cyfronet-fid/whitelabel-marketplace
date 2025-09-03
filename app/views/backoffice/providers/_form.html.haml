@@ -11,13 +11,13 @@
           - extended_steps.each do |step|
             = render "backoffice/providers/form/#{step}", f: f, provider: provider, catalogues: catalogues,
             active: step == tab
-      %hr.bottom-hr.mt-5.mb-4
-      .row.mt-5
-        .col-12
-          = f.button :submit, class: "btn btn-primary pl-5 pr-5 mr-5 mobile-bottom-margin",
+
+      .col-12.row.new-offer-form-controls.d-flex.justify-content-between
+        .back-link-wrapper
+          = link_to "<- Back to providers list", backoffice_provider_exit_path(provider),
+              class: "text-left flex-grow-1 mobile-bottom-margin",
+              data: { exit_target: "display", confirm_details: exit_confirm_details, turbo_method: :post, turbo_frame: "_top" }
+        = f.button :submit, class: "btn btn-primary pl-5 pr-5 mobile-bottom-margin",
           data: { e2e: "create-provider-btn", turbo_confirm: "Save changes",
           confirm_details: "Your changes will be saved. Do you want to continue?",
           confirm_cancel: _("Go back to edition"), confirm_button: _("Save changes") }
-          = link_to "Go back to provider", backoffice_provider_exit_path(provider),
-            class: "text-left flex-grow-1 text-uppercase mobile-bottom-margin",
-            data: { exit_target: "display", confirm_details: exit_confirm_details, turbo_method: :post, turbo_frame: "_top" }
