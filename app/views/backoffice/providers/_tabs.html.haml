@@ -5,7 +5,7 @@
         %li.nav-item
           - if tab == "basic_information"
             = link_to _(tab.humanize), { tab: tab },
-              class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) }",
+              class: "nav-link #{"active" if current_tab == tab || (current_tab.blank? && i.zero?) } active",
               role: "tab",
               data: { e2e: "provider-#{tab}-btn", src: backoffice_provider_path(provider, tab: tab), turbo_frame: "tab_content" }
           - else
