@@ -6833,6 +6833,8 @@ abbr[title] {
 
     .buttons-row {
       margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
       width: 100%;
 
       .btn-sm {
@@ -7824,6 +7826,7 @@ abbr[title] {
   .offer-section-wrapper {
     border: 1px solid $custom-17;
     border-radius: 8px;
+    overflow: hidden;
     padding: 24px;
 
     .offer-info-box {
@@ -7958,13 +7961,13 @@ abbr[title] {
       background: url("icon-trash.svg") no-repeat;
       padding-left: 22px;
     }
+  }
 
-    .btn-simple {
-      color: $custom-16;
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 28px;
-    }
+  .btn-simple {
+    color: $custom-16;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
   }
 }
 
@@ -7985,7 +7988,8 @@ abbr[title] {
 }
 
 .new-offer-form-controls {
-  margin-top: 90px;
+  margin-top: 70px;
+  align-items: center;
 
   .btn-primary:not(.btn-sm) {
     padding: 16px 62px;
@@ -8001,7 +8005,6 @@ abbr[title] {
   }
 
   .btn-back {
-    padding: 16px 0;
     color: $custom-16;
     font-size: 18px;
     font-weight: 600;
@@ -8017,6 +8020,12 @@ abbr[title] {
       font-weight: 600;
       line-height: 28px;
     }
+  }
+
+  .btn-primary {
+    padding: 0.9rem 2rem;
+    font-size: 18px;
+    font-weight: 600;
   }
 }
 
@@ -8289,6 +8298,7 @@ abbr[title] {
       border-radius: 4px;
       border: 1px solid $custom-17;
       padding: 0;
+      background: $palette-white;
       margin: 0;
 
       .nav-tabs {
@@ -9643,18 +9653,12 @@ footer {
 }
 
 .btn-special {
-  padding: 6px 26px;
-  border-radius: 8px;
-  border: 1px solid $custom-12;
   color: $custom-12;
-  background: $alert-bg;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
 
   &:hover {
-    color: $palette-white;
-    background: $custom-12;
-    border-color: $custom-12;
+    color: $palette-black;
   }
 
   &.no-border {

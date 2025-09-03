@@ -46,7 +46,7 @@
             = f.fields_for :public_contacts, disabled: provider.upstream_id.present?, multiple: true, as: :array,
                       wrapper_html: { "data-form-target" => "publicContact" } do |public_contact_form|
               = render_public_contact(public_contact_form, provider)
-            = link_to _("+ Add additional public contact"), "javascript:", class: "btn-simple disablable",
+          = link_to _("+ Add additional public contact"), "javascript:", class: "btn-simple disablable mt-3 d-block",
               data: { form: { target: "addField" },
               action: "click->form#addField",
               value: "publicContacts",
