@@ -2861,7 +2861,7 @@ label[data-multicheckbox].small {
 
   .nav-tabs {
     background: none;
-    margin-top: 35px;
+    margin: 35px 0 15px;
     border-bottom: 1px solid $palette-solid-10;
 
     .nav-link {
@@ -2875,7 +2875,7 @@ label[data-multicheckbox].small {
         margin-bottom: 0;
         font-weight: 500;
         color: $palette-blue;
-        border-bottom: 1px solid $palette-blue;
+        border-bottom: 3px solid $palette-blue;
       }
 
       &:focus {
@@ -7810,6 +7810,15 @@ abbr[title] {
 }
 
 .new-offer-form {
+  h3 {
+    color: $custom-16;
+    border: none;
+    padding: 0;
+    margin: 0 0 13px;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
   h4 {
     color: $custom-16;
     border: none;
@@ -7826,7 +7835,6 @@ abbr[title] {
   .offer-section-wrapper {
     border: 1px solid $custom-17;
     border-radius: 8px;
-    overflow: hidden;
     padding: 24px;
 
     .offer-info-box {
@@ -7928,6 +7936,8 @@ abbr[title] {
       border-radius: 8px;
       min-height: 53px;
       background: #fff;
+      display: flex;
+      align-items: center;
     }
 
     .form-group {
@@ -7960,6 +7970,11 @@ abbr[title] {
       font-size: 14px;
       background: url("icon-trash.svg") no-repeat;
       padding-left: 22px;
+    }
+
+    .was-validated .form-check-input:valid ~ .form-check-label,
+    .form-check-input.is-valid ~ .form-check-label {
+      color: $body-color;
     }
   }
 
@@ -9653,9 +9668,13 @@ footer {
 }
 
 .btn-special {
+  padding: 6px 26px;
+  border-radius: 8px;
+  border: 1px solid $custom-12;
   color: $custom-12;
+  background: $alert-bg;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
 
   &:hover {
     color: $palette-black;
@@ -9695,5 +9714,11 @@ footer {
       margin-right: 10px;
       font-weight: 600;
     }
+  }
+
+  &.clean {
+    border: none;
+    background: none;
+    padding: 0;
   }
 }

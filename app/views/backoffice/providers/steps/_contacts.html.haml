@@ -38,7 +38,7 @@
         .service-contact-emails{ "data-service-target": "publicContacts" }
           %h4.mt-5
             = _("Public contacts")
-          .offer-section-wrapper
+          .offer-section-wrapper.overflow-hidden
             = link_to "Copy data form the main contact", "javascript:",
                     class: "btn btn-primary pl-5 pr-5 d-flex justify-content-center mb-4",
                     data: { action: "click->form#duplicateContact" }
