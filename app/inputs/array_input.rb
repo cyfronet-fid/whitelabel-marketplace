@@ -17,7 +17,7 @@ class ArrayInput < SimpleForm::Inputs::TextInput
             :a,
             "Remove",
             id: "remove_#{object_name}_#{attribute_name}_#{index}",
-            class: "btn-special delete-button remove float-right disablable mt-2",
+            class: "btn-special clean delete-button remove float-right disablable mt-2",
             "data-target": attribute_name.to_s,
             "data-action": "click->form#removeArrayField",
             "data-value": "#{object_name}_#{attribute_name}_#{index}"
@@ -36,7 +36,7 @@ class ArrayInput < SimpleForm::Inputs::TextInput
                             :a,
                             "Remove",
                             id: "remove-#{object_name}_#{attribute_name}_#{number}",
-                            class: "btn-special delete-button remove float-right disablable mt-2",
+                            class: "btn-special clean delete-button remove float-right disablable mt-2",
                             "data-target": attribute_name.to_s,
                             "data-action": "click->form#removeArrayField",
                             "data-value": "#{object_name}_#{attribute_name}_#{number}"

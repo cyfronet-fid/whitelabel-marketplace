@@ -4,8 +4,8 @@ module FormsHelper
   def link_to_add_array_field(model, field_name)
     content_tag(
       :a,
-      "+ add " + t("simple_form.add_new_array_item.#{model}.#{field_name}"),
-      class: "btn btn-back disablable",
+      "+ Add " + t("simple_form.add_new_array_item.#{model}.#{field_name}"),
+      class: "btn-simple disablable mt-3 d-block",
       data: {
         action: "click->form#addNewArrayField",
         wrapper: "#{model}_#{field_name}",

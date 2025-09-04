@@ -2816,6 +2816,17 @@ label[data-multicheckbox].small {
   overflow: hidden;
   position: relative;
 
+  &.provider {
+    .abbreviation,
+    .resource-row {
+      display: none;
+    }
+
+    .subtitle-row {
+      margin-top: 10px;
+    }
+  }
+
   .img-service-detail {
     justify-content: center;
   }
@@ -2863,6 +2874,7 @@ label[data-multicheckbox].small {
     background: none;
     margin: 35px 0 15px;
     border-bottom: 1px solid $palette-solid-10;
+    justify-content: space-around;
 
     .nav-link {
       text-transform: none;
@@ -2875,7 +2887,7 @@ label[data-multicheckbox].small {
         margin-bottom: 0;
         font-weight: 500;
         color: $palette-blue;
-        border-bottom: 3px solid $palette-blue;
+        border-bottom: 3px solid $palette-blue !important;
       }
 
       &:focus {
@@ -7832,6 +7844,15 @@ abbr[title] {
     margin: 0 !important;
   }
 
+  .provider_affiliations,
+  .provider_national_roadmaps,
+  .provider_certifications {
+    textarea {
+      margin-top: 20px;
+      display: inline;
+    }
+  }
+
   .offer-section-wrapper {
     border: 1px solid $custom-17;
     border-radius: 8px;
@@ -7936,8 +7957,13 @@ abbr[title] {
       border-radius: 8px;
       min-height: 53px;
       background: #fff;
-      display: flex;
-      align-items: center;
+    }
+
+    .choices[data-type*="select-one"] {
+      .choices__inner {
+        display: flex;
+        align-items: center;
+      }
     }
 
     .form-group {
