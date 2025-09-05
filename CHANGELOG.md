@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.60.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.59.3...v3.60.0) (2025-09-05)
+
+
+### Features
+
+* [[#215](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/215)] Subscription on multiple Catalogues ([6bd0d87](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/6bd0d873e6d4f3185ddf10f0ae4c3f5621ff91e1))
+* [[#3493](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/3493)] Add user roles API endpoint ([f80a2b6](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/f80a2b6ad1e8065acd42fd27ec63162442062106))
+
+
+### Bug Fixes
+
+* Add missing assets ([f80a2b6](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/f80a2b6ad1e8065acd42fd27ec63162442062106))
+
 ## [3.59.3](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.59.2...v3.59.3) (2025-08-04)
 
 
