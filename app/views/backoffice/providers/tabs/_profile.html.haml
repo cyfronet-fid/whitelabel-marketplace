@@ -1,12 +1,13 @@
 .new-offer-form
   .row
     .col-lg-12.pl-0
+      %h3 Description
       = render Presentable::DescriptionComponent.new(object: provider,
                                   question: nil,
                                   preview: provider.suspended? || local_assigns[:preview])
     - if services.size.positive?
       .col-lg-12.pl-0
-        %h1 Services
+        %h3 Services
         = turbo_frame_tag "checkbox_form" do
           = render "backoffice/statuses/form", collection: services, pagy: pagy,
             form_path: backoffice_statuses_services_path

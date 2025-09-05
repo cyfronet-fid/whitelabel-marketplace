@@ -1,7 +1,7 @@
 - content_for :title, provider.name
 - breadcrumb :backoffice_provider, provider
 
-.container.p-0.backoffice
+.container.p-0.backoffice.provider-wrapper
   = render Presentable::StatusActionsComponent.new(object: provider,
         publish: policy([:backoffice, provider]).publish?,
         suspend: policy([:backoffice, provider]).suspend?,
@@ -19,4 +19,7 @@
 
   = render "backoffice/providers/tabs/wrapper", provider: provider, tab: params.fetch(:step, "profile"),
   services: services, pagy: pagy
-  = link_to _("<- Go back to providers list"), backoffice_providers_path, class: "backoffice-back-link mt-4 font-weight-bold"
+
+  .col-12.row.new-offer-form-controls.mt-5
+    .back-link-wrapper
+      = link_to _("<- Back to providers list"), backoffice_providers_path
