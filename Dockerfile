@@ -59,8 +59,7 @@ FROM ruby:${RUBY_VERSION}-alpine
 # Setting environment variables
 ENV RAILS_ENV=production \
     RACK_ENV=production \
-    RAILS_SERVE_STATIC_FILES=true \
-    RAILS_LOG_TO_STDOUT=true
+    RAILS_SERVE_STATIC_FILES=true
 
 # Installing only required production packages
 RUN apk add --no-cache \
