@@ -78,6 +78,7 @@ module Mp
 
     config.similar_services_host = ENV["SIMILAR_SERVICES_HOST"] || "http://149.156.182.238:8081"
     config.recommender_host = ENV.fetch("RECOMMENDER_HOST", nil)
+    config.user_actions_target = ENV.fetch("USER_ACTIONS_TARGET", "all")
     config.recommendation_engine = ENV["RECOMMENDATION_ENGINE"] || "RL"
     config.auth_mock = ActiveModel::Type::Boolean.new.cast(ENV.fetch("AUTH_MOCK", false))
 
@@ -108,5 +109,7 @@ module Mp
     config.bos_base_url = ENV.fetch("BOS_API_URL", "http://localhost:8000")
     config.bos_api_key = ENV.fetch("BOS_API_KEY", "")
     config.bos_enabled = ActiveModel::Type::Boolean.new.cast(ENV.fetch("BOS_ENABLED", false))
+
+    config.federation_api_base_url = ENV.fetch("FEDERATION_API_BASE_URL", "http://localhost:3015/api/v1/services")
   end
 end
