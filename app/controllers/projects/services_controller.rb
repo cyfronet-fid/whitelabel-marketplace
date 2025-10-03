@@ -20,7 +20,7 @@ class Projects::ServicesController < ApplicationController
     authorize(@project_item)
   end
 
-  def tour_disabled
+  def tour_disabled?
     true
   end
 
