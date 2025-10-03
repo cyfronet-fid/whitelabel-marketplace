@@ -6,7 +6,7 @@
         %h3 Legal status
         .offer-section-wrapper.pt-0
           = f.input :legal_entity, as: :boolean, include_hidden: true,
-                    disabled: cant_edit(:legal_entity),
+                    disabled: cant_edit?(:legal_entity),
                     boolean_style: :inline,
                     label: "Is the provider a legal entity?",
                     input_html: {  data: { action: "change->form#refreshRelatedFields", "child-field": "legal_status" } }
