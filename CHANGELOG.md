@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.61.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.60.0...v3.61.0) (2025-10-03)
+
+
+### Features
+
+* [[#221](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/221)] Expose search API ([c4146e2](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/c4146e2229cabcb71bf95c05ecf345802d34f7b5))
+
+
+### Bug Fixes
+
+* add auto_strip to email field ([3ad5242](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/3ad52427a7d2798f78e2abfdcae3eac1c4323027))
+
 ## [3.60.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.59.3...v3.60.0) (2025-09-05)
 
 
