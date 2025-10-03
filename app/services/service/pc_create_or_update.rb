@@ -21,7 +21,7 @@ class Service::PcCreateOrUpdate
         "service_sources.eid": [eosc_registry_service["id"]]
       )
     @service_hash = Importers::Service.call(eosc_registry_service, modified_at, eosc_registry_base_url, token)
-    @new_update_available = Service::PcCreateOrUpdate.new_update_available(@mp_service, modified_at)
+    @new_update_available = Service::PcCreateOrUpdate.new_update_available?(@mp_service, modified_at)
   end
 
   def call
@@ -54,7 +54,7 @@ class Service::PcCreateOrUpdate
     raise ConnectionError, "[WARN] Connection refused."
   end
 
-  def self.new_update_available(service, modified_at)
+  def self.new_update_available?(service, modified_at)
     return true unless service&.synchronized_at.present?
     modified_at >= service.synchronized_at
   end

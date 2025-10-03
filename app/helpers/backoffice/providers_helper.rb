@@ -34,7 +34,7 @@ module Backoffice::ProvidersHelper
     ]
   }.freeze
 
-  def cant_edit(attribute)
+  def cant_edit?(attribute)
     !policy([:backoffice, @provider]).permitted_attributes.include?(attribute)
   end
 

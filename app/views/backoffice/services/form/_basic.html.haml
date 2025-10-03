@@ -16,18 +16,18 @@
             class: ("show" unless collapsed?(service, [:name, :abbreviation, :resource_organisation,
                                                        :providers, :webpage_url])) }
     .card-body
-      = f.input :name, disabled: cant_edit(:name)
-      = f.input :abbreviation, disabled: cant_edit(:abbreviation)
+      = f.input :name, disabled: cant_edit?(:name)
+      = f.input :abbreviation, disabled: cant_edit?(:abbreviation)
       = f.association :nodes, label: "Node", collection: Vocabulary::Node.all,
         input_html: { multiple: false, data: { choice: true } }
       = f.association :resource_organisation,
-                      disabled: cant_edit(:resource_organisation_id),
+                      disabled: cant_edit?(:resource_organisation_id),
                       label: "Service organisation",
                       collection: providers.order(:name)
       = f.association :providers, multiple: true, input_html: { data: { choice: true } },
-                      disabled: cant_edit([provider_ids: []]),
+                      disabled: cant_edit?([provider_ids: []]),
                       collection: Provider.active.sort_by { |e| e.name.strip.downcase }
-      = f.input :webpage_url, disabled: cant_edit(:webpage_url)
+      = f.input :webpage_url, disabled: cant_edit?(:webpage_url)
       .row.service-contact-emails
         .col-12
           %h3= _("Alternative Identifiers")
