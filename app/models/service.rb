@@ -9,6 +9,7 @@ class Service < ApplicationRecord
   include Viewable
   include Service::Search
   include Statusable
+  include Favoritable
 
   extend FriendlyId
   friendly_id :name, use: :slugged
@@ -96,9 +97,6 @@ class Service < ApplicationRecord
   accepts_nested_attributes_for :public_contacts, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :link_multimedia_urls, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :link_use_cases_urls, reject_if: :all_blank, allow_destroy: true
-
-  has_many :user_services, dependent: :destroy
-  has_many :favourite_users, through: :user_services, source: :user, class_name: "User"
 
   has_many :source_relationships,
            class_name: "ServiceRelationship",
