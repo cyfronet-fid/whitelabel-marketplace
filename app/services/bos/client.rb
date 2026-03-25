@@ -54,7 +54,8 @@ class Bos::Client
         content: message.message,
         scope: "public",
         user_email: message.author.email,
-        order_external_ref: message.project_item.iid.to_s
+        order_external_ref: message.project_item.iid.to_s,
+        project_ref: message.project_item.project_id.to_s
       }
     )
   end
