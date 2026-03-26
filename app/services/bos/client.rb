@@ -39,6 +39,7 @@ class Bos::Client
         resource_ref: project_item.offer.service.friendly_id,
         resource_type: project_item.offer.order_type,
         resource_name: project_item.offer.service.name,
+        owner_email: project_item.user.email,
         provider_pids:
           project_item.offer.service.providers.map(&:pid).presence ||
             [project_item.offer.service.resource_organisation.pid]
@@ -53,7 +54,8 @@ class Bos::Client
         content: message.message,
         scope: "public",
         user_email: message.author.email,
-        order_external_ref: message.project_item.iid.to_s
+        order_external_ref: message.project_item.iid.to_s,
+        project_ref: message.project_item.project_id.to_s
       }
     )
   end
