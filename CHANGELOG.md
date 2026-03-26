@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.61.1](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.61.0...v3.61.1) (2026-03-26)
+
+
+### Bug Fixes
+
+* [[#238](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/238)] change meta descriptions ([9fd6cc6](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/9fd6cc61823ba3988715f4448ac00b331ac9b249))
+* [AdHoc] Add owner_email to BOS orders call ([e902f0d](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/e902f0d153b01033005f06e7f5beaa3c2621d292))
+* [AdHoc] Add project ref to the BOS message api ([f6575ee](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/f6575ee6eeb1ea449d27b76a317282642693218d))
+
 ## [3.61.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.60.0...v3.61.0) (2025-10-03)
 
 
