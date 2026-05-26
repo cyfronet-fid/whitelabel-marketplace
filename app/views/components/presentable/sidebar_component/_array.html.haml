@@ -13,8 +13,12 @@
       - object.send(field).each do |element|
         %li.list-group-item
           - if nested.present? && nested[field.to_sym].present?
+            - value = element.respond_to?(nested[field.to_sym]) ? element.send(nested[field.to_sym]) : element
             %span
-              = element.send(nested[field.to_sym])
+              - if nested[field.to_sym] == "email"
+                = mail_to value, value
+              - else
+                = value
           - else
             %span
               = element

@@ -15,8 +15,6 @@ class Provider < ApplicationRecord
   extend FriendlyId
   friendly_id :pid
 
-  acts_as_taggable
-
   searchkick word_middle: [:provider_name]
 
   def search_data
@@ -32,8 +30,34 @@ class Provider < ApplicationRecord
   scope :catalogue_managed_by, ->(user) { where(catalogues: { data_administrators: { user_id: user&.id } }) }
 
   attr_accessor :catalogue_id
+  V6_REMOVED_ARRAY_FIELDS = %i[
+    certifications
+    participating_countries
+    affiliations
+    national_roadmaps
+    public_contacts
+    scientific_domains
+    provider_life_cycle_statuses
+    networks
+    structure_types
+    esfri_domains
+    esfri_types
+    meril_scientific_domains
+    areas_of_activity
+    societal_grand_challenges
+  ].freeze
+  V6_REMOVED_SCALAR_FIELDS = %i[
+    street_name_and_number
+    postal_code
+    city
+    region
+    tagline
+    hosting_legal_entity_string
+    main_contact
+    provider_life_cycle_status
+    esfri_type
+  ].freeze
 
-  serialize :participating_countries, coder: Country::Array
   serialize :country, coder: Country
 
   has_one_attached :logo
@@ -48,8 +72,6 @@ class Provider < ApplicationRecord
   has_many :bundles, foreign_key: "resource_organisation_id"
   has_many :categories, through: :categorizations
   has_many :provider_data_administrators
-  has_many :provider_scientific_domains, dependent: :destroy
-  has_many :scientific_domains, through: :provider_scientific_domains
   has_many :data_administrators, through: :provider_data_administrators, dependent: :destroy, autosave: true
   has_many :provider_vocabularies, dependent: :destroy
   has_many :nodes, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::Node"
@@ -58,34 +80,8 @@ class Provider < ApplicationRecord
            source: :vocabulary,
            source_type: "Vocabulary::HostingLegalEntity"
   has_many :legal_statuses, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::LegalStatus"
-  has_many :provider_life_cycle_statuses,
-           through: :provider_vocabularies,
-           source: :vocabulary,
-           source_type: "Vocabulary::ProviderLifeCycleStatus"
-  has_many :networks, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::Network"
-  has_many :structure_types,
-           through: :provider_vocabularies,
-           source: :vocabulary,
-           source_type: "Vocabulary::StructureType"
-  has_many :esfri_domains, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::EsfriDomain"
-  has_many :esfri_types, through: :provider_vocabularies, source: :vocabulary, source_type: "Vocabulary::EsfriType"
-  has_many :meril_scientific_domains,
-           through: :provider_vocabularies,
-           source: :vocabulary,
-           source_type: "Vocabulary::MerilScientificDomain"
-  has_many :areas_of_activity,
-           through: :provider_vocabularies,
-           source: :vocabulary,
-           source_type: "Vocabulary::AreaOfActivity"
-  has_many :societal_grand_challenges,
-           through: :provider_vocabularies,
-           source: :vocabulary,
-           source_type: "Vocabulary::SocietalGrandChallenge"
   has_many :oms_providers, dependent: :destroy
   has_many :omses, through: :oms_providers
-
-  has_one :main_contact, as: :contactable, dependent: :destroy, autosave: true
-  has_many :public_contacts, as: :contactable, dependent: :destroy, autosave: true
 
   has_many :sources, class_name: "ProviderSource", dependent: :destroy
 
@@ -96,8 +92,6 @@ class Provider < ApplicationRecord
 
   accepts_nested_attributes_for :link_multimedia_urls, reject_if: :all_blank, allow_destroy: true
   accepts_nested_attributes_for :alternative_identifiers, allow_destroy: true
-  accepts_nested_attributes_for :main_contact, allow_destroy: true
-  accepts_nested_attributes_for :public_contacts, allow_destroy: true
   accepts_nested_attributes_for :sources, allow_destroy: true
   accepts_nested_attributes_for :data_administrators, allow_destroy: true
 
@@ -106,16 +100,8 @@ class Provider < ApplicationRecord
   auto_strip_attributes :abbreviation, nullify: false
   auto_strip_attributes :website, nullify: false
   auto_strip_attributes :description, nullify: false
-  auto_strip_attributes :street_name_and_number, nullify: false
-  auto_strip_attributes :postal_code, nullify: false
-  auto_strip_attributes :city, nullify: false
-  auto_strip_attributes :region, nullify: false
-  auto_strip_attributes :hosting_legal_entity_string, nullify: false
   auto_strip_attributes :status, nullify: false
-  auto_strip_attributes :certifications, nullify_array: false
-  auto_strip_attributes :affiliations, nullify_array: false
-  auto_strip_attributes :national_roadmaps, nullify_array: false
-  auto_strip_attributes :tag_list, nullify_array: false
+  auto_strip_attributes :public_contact_emails, nullify_array: false
 
   before_validation do
     remove_empty_array_fields
@@ -133,15 +119,16 @@ class Provider < ApplicationRecord
   end
 
   with_options if: -> { required_for_step?("location") } do
-    validates :street_name_and_number, presence: true
-    validates :postal_code, presence: true
-    validates :city, presence: true
     validates :country, presence: true
   end
 
   with_options if: -> { required_for_step?("contacts") } do
-    validates :main_contact, presence: true
-    validates :public_contacts, presence: true, length: { minimum: 1, message: "are required. Please add at least one" }
+    validates :public_contact_emails,
+              presence: true,
+              length: {
+                minimum: 1,
+                message: "are required. Please add at least one"
+              }
   end
 
   with_options if: -> { required_for_step?("manager") } do
@@ -153,10 +140,8 @@ class Provider < ApplicationRecord
               }
   end
 
-  validates :provider_life_cycle_statuses, length: { maximum: 1 }
-
   validate :logo_variable, on: %i[create update]
-  validate :validate_array_values_uniqueness
+  validate :public_contact_emails_format
   validate :catalogue_published
 
   def legal_status=(status_id)
@@ -179,40 +164,26 @@ class Provider < ApplicationRecord
     hosting_legal_entities[0].id
   end
 
-  def esfri_type=(type_id)
-    self.esfri_types = type_id.blank? ? [] : [Vocabulary.find(type_id)]
-  end
-
-  def esfri_type
-    return nil if esfri_types.blank?
-
-    esfri_types[0].id
-  end
-
-  def provider_life_cycle_status=(status_id)
-    self.provider_life_cycle_statuses = status_id.blank? ? [] : [Vocabulary.find(status_id)]
-  end
-
-  def provider_life_cycle_status
-    return nil if provider_life_cycle_statuses.blank?
-
-    provider_life_cycle_statuses[0].id
-  end
-
-  def participating_countries=(value)
-    super(value&.map { |v| Country.for(v) })
-  end
-
   def country=(value)
     super(Country.for(value))
   end
 
-  def postal_code_and_city
-    "#{postal_code} #{city}"
-  end
+  (V6_REMOVED_ARRAY_FIELDS + V6_REMOVED_SCALAR_FIELDS).each do |field|
+    define_method(field) do
+      if has_attribute?(field)
+        self[field]
+      else
+        instance_variable_get(:"@#{field}") || (V6_REMOVED_ARRAY_FIELDS.include?(field) ? [] : nil)
+      end
+    end
 
-  def address
-    "#{street_name_and_number} <br> #{postal_code} #{city} <br> #{region} #{country}"
+    define_method(:"#{field}=") do |value|
+      if has_attribute?(field)
+        self[field] = value
+      else
+        instance_variable_set(:"@#{field}", value)
+      end
+    end
   end
 
   def managed_services
@@ -232,7 +203,6 @@ class Provider < ApplicationRecord
     extension = ".svg"
     io = File.open(assets_path + "/" + default_logo_name)
 
-    # This should be fixed by allowing svg extension in the db
     image = convert_to_png(io)
     logo.attach(io: image, filename: SecureRandom.uuid + extension, content_type: "image/#{extension.delete(".", "")}")
   end
@@ -250,8 +220,8 @@ class Provider < ApplicationRecord
     true
   end
 
-  def steps(basic: true)
-    basic ? basic_steps : extended_steps
+  def steps(*)
+    basic_steps
   end
 
   def remove_empty_array_fields
@@ -261,22 +231,11 @@ class Provider < ApplicationRecord
         administrator.attributes["created_at"].blank? && administrator.attributes.all? { |_, value| value.blank? }
       end
     )
-    send(
-      :public_contacts=,
-      public_contacts.reject do |contact|
-        contact.attributes["created_at"].blank? &&
-          contact.attributes.except("contactable_type", "type", "contactable_id").all? { |_, value| value.blank? }
-      end
-    )
   end
 
-  def validate_array_values_uniqueness
-    errors.add(:tag_list, "has duplicates, please remove them to continue") if tag_list.uniq.length != tag_list.length
-    if certifications.uniq.length != certifications.length
-      errors.add(:certifications, "has duplicates, please remove them to continue")
-    end
-    if national_roadmaps.uniq.length != national_roadmaps.length
-      errors.add(:national_roadmaps, "has duplicates, please remove them to continue")
+  def public_contact_emails_format
+    Array(public_contact_emails).each do |email|
+      errors.add(:public_contact_emails, "#{email} is not a valid email") unless email =~ URI::MailTo::EMAIL_REGEXP
     end
   end
 

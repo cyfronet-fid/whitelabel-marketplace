@@ -13,7 +13,11 @@ class Offer < ApplicationRecord
   searchkick word_middle: %i[offer_name description], highlight: %i[offer_name description]
 
   def search_data
-    { offer_name: name, description: description, service_id: service_id, order_type: order_type }
+    { offer_name: name, description: description, service_id: resource_id, order_type: order_type }
+  end
+
+  def resource_id
+    orderable_id
   end
 
   def should_index?
@@ -21,11 +25,14 @@ class Offer < ApplicationRecord
   end
 
   scope :bundle_exclusive, -> { where(bundle_exclusive: true, status: :published) }
+  JOIN_SERVICE_SQL =
+    "INNER JOIN services ON services.id = offers.orderable_id " \
+      "AND offers.orderable_type = 'Service'"
+
+  scope :join_service, -> { joins(JOIN_SERVICE_SQL) }
   scope :inclusive,
         -> do
-          joins(:service).where(
-            bundle_exclusive: false,
-            status: :published,
+          where(bundle_exclusive: false, status: :published).join_service.where(
             services: {
               status: Statusable::PUBLIC_STATUSES
             }
@@ -41,16 +48,37 @@ class Offer < ApplicationRecord
             0
           )
         end
-  scope :accessible, -> { joins(:service).where(status: :published, services: { status: Statusable::PUBLIC_STATUSES }) }
+  scope :accessible,
+        -> { where(status: :published).join_service.where(services: { status: Statusable::PUBLIC_STATUSES }) }
   scope :manageable, -> { where(status: Statusable::MANAGEABLE_STATUSES) }
 
-  counter_culture :service,
-                  column_name: proc { |model| model.published? ? "offers_count" : nil },
+  counter_culture :orderable,
+                  column_name:
+                    proc { |model| model.published? && model.orderable_type == "Service" ? "offers_count" : nil },
                   column_names: {
-                    ["offers.status = ?", "published"] => "offers_count"
+                    ["offers.status = ? AND offers.orderable_type = ?", "published", "Service"] => "offers_count"
                   }
 
-  belongs_to :service
+  belongs_to :orderable, polymorphic: true
+  belongs_to :service, foreign_key: :orderable_id
+
+  def service
+    orderable if orderable_type == "Service"
+  end
+
+  def service=(value)
+    self.orderable = value
+  end
+
+  def service_id
+    orderable_id if orderable_type == "Service"
+  end
+
+  def service_id=(value)
+    self.orderable_type = "Service"
+    self.orderable_id = value
+  end
+
   belongs_to :primary_oms, class_name: "OMS", optional: true
   has_many :project_items, dependent: :restrict_with_error
 
@@ -110,7 +138,7 @@ class Offer < ApplicationRecord
     raise ArgumentError, "must be a string" unless slug_iid.is_a?(String)
     split = slug_iid.split("/")
     raise ArgumentError, "must have the two components separated with a forward slash '/'" if split.length != 2
-    Offer.find_by!(service: Service.find_by!(slug: split[0]), iid: split[1].to_i)
+    Offer.find_by!(orderable: Service.find_by!(slug: split[0]), iid: split[1].to_i)
   end
 
   private

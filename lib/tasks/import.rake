@@ -61,7 +61,8 @@ namespace :import do
       ids: ENV.fetch("IDS", "").split(","),
       default_upstream: ENV.fetch("UPSTREAM", "eosc_registry").to_sym,
       filepath: ENV.fetch("OUTPUT", nil),
-      token: ENV.fetch("MP_IMPORT_TOKEN", nil)
+      token: ENV.fetch("MP_IMPORT_TOKEN", nil),
+      rescue_mode: ActiveModel::Type::Boolean.new.cast(ENV.fetch("MP_IMPORT_RESCUE_MODE", false))
     ).call
   end
 

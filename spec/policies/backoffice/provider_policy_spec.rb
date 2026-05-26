@@ -5,6 +5,14 @@ require "rails_helper"
 RSpec.describe Backoffice::ProviderPolicy, backend: true do
   subject { described_class }
 
+  context "permitted_attributes" do
+    it "permits scalar and array node ids" do
+      attrs = described_class.new(build(:user, roles: [:coordinator]), build(:provider)).permitted_attributes
+
+      expect(attrs).to include(:node_ids, [node_ids: []])
+    end
+  end
+
   permissions :edit?, :destroy? do
     it "grants access for service portfolio manager" do
       expect(subject).to permit(build(:user, roles: [:coordinator]), build(:provider))

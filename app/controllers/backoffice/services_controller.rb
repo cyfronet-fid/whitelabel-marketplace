@@ -52,7 +52,7 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
     @offers = policy_scope(@service.offers).order(:created_at)
     @bundles = policy_scope(@service.bundles).order(:created_at)
     @similar_services = fetch_similar(@service.id, current_user&.id)
-    @related_services = @service.related_services
+    @related_services = []
     @question = Service::Question.new(service: @service)
   end
 
@@ -65,6 +65,8 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
   end
 
   def create
+    normalize_public_contact_emails_param
+    normalize_research_product_types
     attrs = temp_attrs || permitted_attributes(Service)
     if params[:commit] == "Preview"
       @service = Service.new(**attrs, status: :unpublished)
@@ -92,6 +94,8 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
   end
 
   def update
+    normalize_public_contact_emails_param
+    normalize_research_product_types
     attrs = temp_attrs || permitted_attributes(@service)
     if params[:commit] == "Preview"
       @service.assign_attributes(attrs) if attrs
@@ -127,25 +131,14 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
   private
 
   def add_missing_nested_models(service)
-    %i[
-      alternative_identifiers
-      public_contacts
-      link_multimedia_urls
-      link_use_cases_urls
-      link_research_product_license_urls
-      link_research_product_metadata_license_urls
-      persistent_identity_systems
-    ].each { |association| service.send(association).build if service.send(association).empty? }
+    %i[alternative_identifiers].each do |association|
+      service.send(association).build if service.send(association).empty?
+    end
     service.sources.build source_type: "eosc_registry" if service.sources.empty?
-    service.build_main_contact if service.main_contact.blank?
   end
 
   def perform_preview(error_view)
     store_attrs!(permitted_attributes(@service || Service))
-
-    if @service.public_contacts.present? && @service.public_contacts.all?(&:marked_for_destruction?)
-      @service.public_contacts[0].reload
-    end
 
     if @service.invalid?
       remove_temp_data!
@@ -161,7 +154,7 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
     end
 
     @offers = @service.offers.where(status: :published).order(:created_at).reject(&:bundle?)
-    @related_services = @service.target_relationships
+    @related_services = []
     @bundles = policy_scope(@service.bundles.published)
     @bundled = @service.offers.select(&:bundled?) ? @service.offers.select(&:bundled?).map(&:bundles).flatten.uniq : []
     @service.monitoring_status = "OK"
@@ -212,5 +205,41 @@ class Backoffice::ServicesController < Backoffice::ApplicationController
 
   def datasource_scope
     policy_scope(Datasource).with_attached_logo
+  end
+
+  def permitted_attributes(record, action = action_name)
+    normalize_public_contact_emails(super)
+  end
+
+  def normalize_public_contact_emails(attributes)
+    return attributes unless attributes.key?(:public_contact_emails)
+
+    emails =
+      Array(attributes[:public_contact_emails])
+        .flat_map { |value| value.to_s.split(/[\n,;]/) }
+        .map(&:strip)
+        .reject(&:blank?)
+
+    attributes.merge(public_contact_emails: emails)
+  end
+
+  def normalize_public_contact_emails_param
+    return unless params.dig(:service, :public_contact_emails).is_a?(String)
+
+    params[:service][:public_contact_emails] = params[:service][:public_contact_emails]
+      .split(/\r?\n/)
+      .map(&:strip)
+      .reject(&:blank?)
+  end
+
+  def normalize_research_product_types
+    return unless params.dig(:service, :research_product_types_as_text)
+
+    params[:service][:research_product_types] = params[:service][:research_product_types_as_text]
+      .to_s
+      .split(/\r?\n/)
+      .map(&:strip)
+      .reject(&:blank?)
+    params[:service].delete(:research_product_types_as_text)
   end
 end
