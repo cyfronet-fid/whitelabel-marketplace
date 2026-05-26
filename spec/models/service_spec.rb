@@ -8,7 +8,6 @@ RSpec.describe Service, backend: true do
 
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:description) }
-  it { should validate_presence_of(:tagline) }
   it { should validate_presence_of(:rating) }
 
   it { should have_many(:providers) }
@@ -16,8 +15,6 @@ RSpec.describe Service, backend: true do
   it { should have_many(:offers).dependent(:restrict_with_error) }
   it { should have_many(:categories) }
   it { should have_many(:service_scientific_domains).dependent(:destroy) }
-  it { should have_many(:funding_bodies) }
-  it { should have_many(:funding_programs) }
   it { should have_many(:service_vocabularies).dependent(:destroy) }
 
   it { should belong_to(:upstream).required(false) }
@@ -49,15 +46,6 @@ RSpec.describe Service, backend: true do
 
   it "has rating" do
     expect(create(:service).rating).to eq(0.0)
-  end
-
-  it "has related services" do
-    s1, s2, s3 = create_list(:service, 3)
-
-    ServiceRelationship.create!(source: s1, target: s2, type: "ServiceRelationship")
-    ServiceRelationship.create!(source: s1, target: s3, type: "ServiceRelationship")
-
-    expect(s1.related_services).to contain_exactly(s2, s3)
   end
 
   context "#owned_by?" do

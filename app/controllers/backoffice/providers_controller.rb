@@ -20,7 +20,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   def show
     @pagy, @services = pagy(@provider.managed_services.order(:name))
     current_tab = params[:tab]
-    @tab = current_tab&.in?(extended_steps) ? current_tab : "profile"
+    @tab = current_tab&.in?(provider_tabs) ? current_tab : "profile"
   end
 
   def new
@@ -33,6 +33,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
 
   def create
     save_as_draft = params[:commit] == save_as_draft_title
+    normalize_public_contact_emails_param
     permitted_attributes = permitted_attributes(Provider)
     @provider = Provider.new(**permitted_attributes, status: :unpublished)
     authorize(@provider)
@@ -69,11 +70,11 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def current_step_index
-    extended_steps.index(@provider.current_step)
+    basic_steps.index(@provider.current_step)
   end
 
   def total_steps
-    extended_steps.size
+    basic_steps.size
   end
 
   def update
@@ -81,6 +82,7 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
 
     # IMPORTANT!!! Writing upstream_id from params is required to inject context to policy
     provider_duplicate.upstream_id = params[:provider][:upstream_id]
+    normalize_public_contact_emails_param
     permitted_attributes = permitted_attributes(provider_duplicate)
     if provider_duplicate.published? && provider_duplicate.catalogue.present? &&
          !provider_duplicate.catalogue.published?
@@ -136,10 +138,34 @@ class Backoffice::ProvidersController < Backoffice::ApplicationController
   end
 
   def add_missing_nested_models
-    %i[alternative_identifiers data_administrators public_contacts link_multimedia_urls].each do |association|
+    %i[alternative_identifiers data_administrators link_multimedia_urls].each do |association|
       @provider.send(association).build if @provider.send(association).empty?
     end
-    @provider.build_main_contact if @provider.main_contact.blank?
+  end
+
+  def permitted_attributes(record, action = action_name)
+    normalize_public_contact_emails(super)
+  end
+
+  def normalize_public_contact_emails(attributes)
+    return attributes unless attributes.key?(:public_contact_emails)
+
+    emails =
+      Array(attributes[:public_contact_emails])
+        .flat_map { |value| value.to_s.split(/[\n,;]/) }
+        .map(&:strip)
+        .reject(&:blank?)
+
+    attributes.merge(public_contact_emails: emails)
+  end
+
+  def normalize_public_contact_emails_param
+    return unless params.dig(:provider, :public_contact_emails).is_a?(String)
+
+    params[:provider][:public_contact_emails] = params[:provider][:public_contact_emails]
+      .split(/\r?\n/)
+      .map(&:strip)
+      .reject(&:blank?)
   end
 
   def valid_model_and_urls?

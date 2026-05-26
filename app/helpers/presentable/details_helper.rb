@@ -3,29 +3,15 @@
 module Presentable::DetailsHelper
   include Backoffice::ServicesHelper
 
-  def service_details_columns(object)
-    [
-      [pid, analytics, classification, marketing, dependencies, attribution, order, geographic_locations],
-      [public_contacts, maturity_information, financial_information(object)].compact,
-      [changelog]
-    ]
+  def service_details_columns(_object)
+    [[pid, analytics, classification, service_urls, order], [service_public_contact_emails, service_dates].compact, []]
   end
 
   def datasource_details_columns(object)
     [
-      [pid, analytics, classification, marketing, dependencies, attribution, geographic_locations, order],
-      [public_contacts, maturity_information, financial_information(object)].compact,
-      [
-        version_control,
-        changelog,
-        datasource_policies,
-        persistent_identity_systems,
-        datasource_content,
-        research_product_licensing,
-        research_product_access_policies,
-        research_product_metadata_licensing,
-        research_product_metadata_access_policies
-      ]
+      [pid, analytics, classification, marketing, order],
+      [service_public_contact_emails, maturity_information, financial_information(object)].compact,
+      [version_control, datasource_content]
     ]
   end
 
@@ -34,11 +20,7 @@ module Presentable::DetailsHelper
   end
 
   def provider_details_columns
-    [
-      [provider_maturity_information, provider_classification, esfri_types, esfri_domains, meril_scientific_domains],
-      [networks, areas_of_activity, affiliations, certifications, catalogue],
-      [hosting_legal_entity, structure_types, societal_grand_challenges, national_roadmaps]
-    ]
+    [[provider_maturity_information, provider_nodes, catalogue], [hosting_legal_entity, provider_public_contact_emails]]
   end
 
   private
@@ -101,13 +83,12 @@ module Presentable::DetailsHelper
   def classification
     {
       name: "classification",
-      template: "array",
-      fields: %w[service_categories research_activities access_types access_modes],
+      template: "list",
+      fields: %w[access_types jurisdiction],
       with_desc: true,
       nested: {
-        research_activities: "name",
         access_types: "name",
-        access_modes: "name"
+        jurisdiction: "name"
       },
       active_when_suspended: false
     }
@@ -117,7 +98,7 @@ module Presentable::DetailsHelper
     {
       name: "datasource_content",
       template: "array",
-      fields: %w[jurisdiction datasource_classification research_entity_types thematic],
+      fields: %w[jurisdiction datasource_classification thematic research_product_types],
       with_desc: true
     }
   end
@@ -158,12 +139,8 @@ module Presentable::DetailsHelper
     { name: "esfri_type", template: "list", fields: %w[esfri_types], with_desc: true, nested: { esfri_types: "name" } }
   end
 
-  def financial_information(object)
-    if object.payment_model_url.present?
-      { name: "financial_information", template: "links", fields: %w[payment_model_url] }
-    else
-      {}
-    end
+  def financial_information(_object)
+    {}
   end
 
   def geographic_locations
@@ -192,24 +169,17 @@ module Presentable::DetailsHelper
   end
 
   def marketing
-    {
-      name: "marketing",
-      template: "links",
-      fields: %w[link_multimedia_urls link_use_cases_urls],
-      type: "array",
-      active_when_suspended: false
-    }
+    { name: "marketing", template: "links", fields: [], type: "array", active_when_suspended: false }
   end
 
   def maturity_information
     {
       name: "maturity_information",
       template: "array",
-      fields: %w[trls life_cycle_statuses certifications standards open_source_technologies version last_update],
+      fields: %w[trls],
       with_desc: true,
       nested: {
-        trls: "name",
-        life_cycle_statuses: "name"
+        trls: "name"
       },
       active_when_suspended: false
     }
@@ -263,7 +233,12 @@ module Presentable::DetailsHelper
   end
 
   def pid(type = "Service")
-    { name: "#{type} Identifiers", template: "object", clazz: "alternative_identifiers", fields: %w[value] }
+    {
+      name: "#{type == "Provider" ? "Organisation" : type} Identifiers",
+      template: "object",
+      clazz: "alternative_identifiers",
+      fields: %w[value]
+    }
   end
 
   def provider_classification
@@ -274,11 +249,10 @@ module Presentable::DetailsHelper
     {
       name: "maturity_information",
       template: "array",
-      fields: %w[legal_statuses provider_life_cycle_statuses],
+      fields: %w[legal_statuses],
       with_desc: true,
       nested: {
-        legal_statuses: "name",
-        provider_life_cycle_statuses: "name"
+        legal_statuses: "name"
       }
     }
   end
@@ -295,6 +269,26 @@ module Presentable::DetailsHelper
       },
       active_when_suspended: true
     }
+  end
+
+  def provider_nodes
+    { name: "nodes", template: "list", fields: %w[nodes], nested: { nodes: "name" } }
+  end
+
+  def provider_public_contact_emails
+    { name: "public_contacts", template: "list", fields: %w[public_contact_emails] }
+  end
+
+  def service_public_contact_emails
+    { name: "public_contacts", template: "list", fields: %w[public_contact_emails] }
+  end
+
+  def service_urls
+    { name: "links", template: "list", fields: %w[urls] }
+  end
+
+  def service_dates
+    { name: "dates", template: "list", fields: %w[publishing_date] }
   end
 
   def research_product_access_policies
