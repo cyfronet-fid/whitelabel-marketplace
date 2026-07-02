@@ -117,4 +117,9 @@ class ApplicationController < ActionController::Base
   def external_search_enabled?
     EXTERNAL_SEARCH_ENABLED
   end
+
+  def publish_user_actions_to_jms?
+    Mp::Application.config.mp_stomp_publisher_enabled &&
+      %w[all jms].include?(Mp::Application.config.user_actions_target)
+  end
 end
