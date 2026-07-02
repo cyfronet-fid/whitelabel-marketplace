@@ -22,8 +22,19 @@ RSpec.describe UserActionController, type: :controller, end_user_backend: true d
 
   it "sends a probe and jms publish jobs if user_actions_target is set to all" do
     allow(Mp::Application.config).to receive(:user_actions_target).and_return("all")
+    allow(Mp::Application.config).to receive(:mp_stomp_publisher_enabled).and_return(true)
 
     expect(Jms::PublishJob).to receive(:perform_later).with(any_args, :user_actions)
+    expect(Probes::ProbesJob).to receive(:perform_later)
+
+    post :create, params: user_action_params
+  end
+
+  it "does not send a jms publish job if the stomp publisher is disabled" do
+    allow(Mp::Application.config).to receive(:user_actions_target).and_return("all")
+    allow(Mp::Application.config).to receive(:mp_stomp_publisher_enabled).and_return(false)
+
+    expect(Jms::PublishJob).not_to receive(:perform_later)
     expect(Probes::ProbesJob).to receive(:perform_later)
 
     post :create, params: user_action_params
@@ -40,6 +51,7 @@ RSpec.describe UserActionController, type: :controller, end_user_backend: true d
 
   it "sends a JMS job to the user_actions topic only if user_actions_target is set to jms" do
     allow(Mp::Application.config).to receive(:user_actions_target).and_return("jms")
+    allow(Mp::Application.config).to receive(:mp_stomp_publisher_enabled).and_return(true)
 
     expect(Jms::PublishJob).to receive(:perform_later).with(any_args, :user_actions)
     expect(Probes::ProbesJob).not_to receive(:perform_later)
