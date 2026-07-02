@@ -20,6 +20,7 @@
     "compression-webpack-plugin": "^11.0.0",
     "cookieconsent": "^3.1.1",
     "css-loader": "^7.1.1",
+    "esbuild": "^0.27.3",
     "esbuild-loader": "^4.0.3",
     "fuse.js": "^3.4.5",
     "highcharts": "^9.0.0",
