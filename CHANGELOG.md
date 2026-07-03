@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.62.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.61.1...v3.62.0) (2026-07-03)
+
+
+### Features
+
+* build and publish docker image to GHCR ([73cfaee](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/73cfaeec7a480576301d619d33ae1ecd789d868a))
+* migrate marketplace to v6 [[#245](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/245)] ([e068709](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/e068709273fdfdf7cedbbca26be3de35b5dbf8ad))
+
+
+### Bug Fixes
+
+* [[#249](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/249)] adjust federated search ([cc84227](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/cc842274922994f46a7ee300f7063ead80155c1c))
+* [[#3711](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/3711)] default datasource order type ([0b1013b](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/0b1013badfe859b514c25e010cfd54549a614224))
+* change service redirection to be dynamic ([#256](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/256)) ([2e8518f](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/2e8518f753571bbe67f3a03813818b81d6362a66))
+* correct latest-tag condition and add PR tag rule for docker image ([25c9c7d](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/25c9c7df7de3058e0e390ccdcb3ae47f12a5184f))
+* make disabling user actions possible ([9b878aa](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/9b878aa3435ea8f9db98a957c4329a139792d2db))
+* port V6 scientific domain import fixes ([f89cfea](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/f89cfea29edf8b80527158df1ed035cf39d080de))
+* restore service page compatibility ([f316a7e](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/f316a7ed7dfae9c1ced45bf3836d11c9d9348148))
+
 ## [3.61.1](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.61.0...v3.61.1) (2026-03-26)
 
 
