@@ -55,7 +55,6 @@ namespace :dev do
         legal_entity: hash["legal_entity"],
         description: hash["description"],
         link_multimedia_urls: hash["multimedia"].map { |h| Link::MultimediaUrl.new(url: h) },
-        tag_list: hash["tags"],
         street_name_and_number: hash["street_name_and_number"],
         postal_code: hash["postal_code"],
         city: hash["city"],
@@ -100,7 +99,7 @@ namespace :dev do
       scientific_domains: samples_of(ScientificDomain),
       legal_status: Vocabulary::LegalStatus.all.sample.id,
       participating_countries: samples_of(Country),
-      public_contacts: [PublicContact.new(email: "example#{provider.id}@mail.com")],
+      public_contact_emails: ["example-#{provider.pid}@mail.com"],
       data_administrators: [
         DataAdministrator.new(
           first_name: "John#{provider.id}",
@@ -237,6 +236,11 @@ namespace :dev do
   end
 
   def create_relations(relations_hash)
+    unless ActiveRecord::Base.connection.data_source_exists?(:service_relationships)
+      puts "Skipping service relations: service_relationships table is not present in V6 profile"
+      return
+    end
+
     puts "Generating service relations from yaml (remove all relations and crating new one):"
     ServiceRelationship.delete_all
 

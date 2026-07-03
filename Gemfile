@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "3.3.6"
 
-gem "rails", "~> 7.2.2.2"
+gem "rails", "~> 7.2.3"
 gem "pg", "~> 1.5", "< 2.0"
 gem "puma"
 gem "nori"
@@ -80,7 +80,7 @@ gem "savon", "~> 2.15"
 
 gem "google-apis-analyticsreporting_v4", "~> 0.5"
 
-gem "sidekiq"
+gem "sidekiq", ">= 8.0.9"
 gem "sidekiq-limit_fetch", "~>4.4"
 
 gem "stomp"

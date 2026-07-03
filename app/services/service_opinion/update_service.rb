@@ -15,7 +15,10 @@ class ServiceOpinion::UpdateService
   attr_reader :service, :project_item
 
   def sum
-    ServiceOpinion.joins(project_item: :offer).where(offers: { service_id: service }).sum(:service_rating)
+    ServiceOpinion
+      .joins(project_item: :offer)
+      .where(offers: { orderable_type: "Service", orderable_id: service.id })
+      .sum(:service_rating)
   end
 
   def count

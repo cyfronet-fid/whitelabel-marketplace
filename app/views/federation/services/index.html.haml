@@ -1,8 +1,8 @@
-- content_for :title, "Federation Services Search"
+- content_for :title, "Federated Search"
 .container
   .row
     .col-12
-      %h1 Federation Services Search
+      %h1 Federated Search
 
       %form#search-form.mb-4{ method: "get", action: federation_services_path,
       data: { controller: "federation-filters", federation_filters_target: "form" } }
@@ -34,16 +34,27 @@
                   %h6.filter-title.mb-3
                     Federation Nodes
                   .filter-options
+                    -# - raise
                     - @available_nodes.each do |node|
                       .form-check.mb-2
-                        %input.form-check-input.node-checkbox{ type: "checkbox",
-                          value: node[:name],
-                          id: "node_#{sanitize_for_id(node[:name])}",
-                          checked: Array(params[:nodes]).include?(node[:name]),
-                          data: { node_name: node[:name] }
-                        }
-                        %label.form-check-label{ for: "node_#{sanitize_for_id(node[:name])}" }
-                          = node[:name]
+                        - if @aggregator_type == "pc"
+                          %input.form-check-input.node-checkbox{ type: "checkbox",
+                            value: node[:value],
+                            id: "node_#{sanitize_for_id(node[:value])}",
+                            checked: Array(params[:nodes]).include?(node[:value]),
+                            data: { node_name: node[:value] }
+                          }
+                          %label.form-check-label{ for: "node_#{sanitize_for_id(node[:value])}" }
+                            = node[:name]
+                        - elsif @aggregator_type == "mp"
+                          %input.form-check-input.node-checkbox{ type: "checkbox",
+                                  value: node[:name],
+                                  id: "node_#{sanitize_for_id(node[:name])}",
+                                  checked: Array(params[:nodes]).include?(node[:name]),
+                                  data: { node_name: node[:name] }
+                                }
+                          %label.form-check-label{ for: "node_#{sanitize_for_id(node[:name])}" }
+                            = node[:name]
               = render "federation/filters", filters: @facets
 
           .col-lg-9.col-md-12
@@ -66,7 +77,8 @@
                   for "#{params[:q]}"
 
               = render partial: "federation/services/service", collection: @json_data["results"], as: :service,
-              locals: { highlights: @highlights }
+              locals: { highlights: @highlights, nodes: @available_nodes, aggregator_type: @aggregator_type,
+                urls: @json_data["node_urls"]}
 
               = render "federation/services/pagination", pagination: @json_data["pagination"]
 

@@ -33,38 +33,9 @@ class Import::Providers
 
   def call
     log "Importing providers from EOSC Registry #{@eosc_registry_base_url}..."
-    @request_providers = external_providers_data.select { |pro| @ids.empty? || @ids.include?(pro["provider"]["id"]) }
+    @request_providers = external_providers_data.select { |provider| @ids.empty? || @ids.include?(provider["id"]) }
 
-    @request_providers.each do |external_data|
-      external_provider_data = external_data["provider"]
-      eid = external_provider_data["id"]
-      parsed_provider_data = Importers::Provider.new(external_provider_data, Time.now.to_i, "rest").call
-      parsed_provider_data["status"] = object_status(external_data["active"], external_data["suspended"])
-      eosc_registry_provider =
-        Provider.joins(:sources).find_by("provider_sources.source_type": "eosc_registry", "provider_sources.eid": eid)
-      current_provider = eosc_registry_provider || Provider.find_by(pid: parsed_provider_data[:pid])
-
-      provider_source = ProviderSource.find_by(source_type: "eosc_registry", eid: eid)
-
-      next if @dry_run
-
-      if current_provider.blank?
-        create_provider(parsed_provider_data, external_provider_data["logo"], eid)
-      elsif provider_source.present? && provider_source.id == current_provider.upstream_id
-        update_provider(current_provider, parsed_provider_data, external_provider_data["logo"])
-      end
-      if @default_upstream == :eosc_registry && provider_source.present?
-        current_provider.update(upstream_id: provider_source.id)
-      end
-    rescue ActiveRecord::RecordInvalid
-      log "[WARN] Provider #{name(external_data)},
-                eid: #{eid(external_data)} cannot be updated. #{current_provider.errors.full_messages}"
-    rescue StandardError => e
-      log "[WARN] Unexpected #{e}! Provider #{name(external_data)},
-                eid: #{eid(external_data)} cannot be updated"
-    ensure
-      log_status(current_provider, parsed_provider_data, provider_source)
-    end
+    @request_providers.each { |external_data| import_provider(external_data) }
 
     Provider.reindex
 
@@ -78,15 +49,68 @@ class Import::Providers
   private
 
   def name(external_data)
-    external_data.dig("provider", "name")
+    external_data["name"]
   end
 
   def eid(external_data)
-    external_data.dig("provider", "id")
+    external_data["id"]
   end
 
   def log(msg)
     @logger.call(msg)
+  end
+
+  def import_provider(external_data)
+    current_provider = nil
+    parsed_provider_data = nil
+    provider_source = nil
+    status_logged = false
+
+    eid = external_data["id"]
+    parsed_provider_data = parse_provider_data(external_data)
+    current_provider = find_current_provider(eid, parsed_provider_data)
+    provider_source = ProviderSource.find_by(source_type: "eosc_registry", eid: eid)
+
+    unless @dry_run
+      persist_provider(current_provider, parsed_provider_data, external_data["logo"], eid, provider_source)
+    end
+    log_status(current_provider, parsed_provider_data, provider_source)
+    status_logged = true
+  rescue ActiveRecord::RecordInvalid
+    log "[WARN] Provider #{name(external_data)},
+              eid: #{eid(external_data)} cannot be updated. #{current_provider.errors.full_messages}"
+  rescue StandardError => e
+    log "[WARN] Unexpected #{e}! Provider #{name(external_data)},
+              eid: #{eid(external_data)} cannot be updated"
+  ensure
+    if parsed_provider_data.present? && !status_logged
+      log_status(current_provider, parsed_provider_data, provider_source)
+    end
+  end
+
+  def parse_provider_data(external_data)
+    parsed_provider_data = Importers::Provider.call(external_data, Time.now.to_i)
+    if external_data.key?("active")
+      parsed_provider_data[:status] = object_status(external_data["active"], external_data["suspended"])
+    end
+    parsed_provider_data
+  end
+
+  def find_current_provider(eid, parsed_provider_data)
+    Provider.joins(:sources).find_by("provider_sources.source_type": "eosc_registry", "provider_sources.eid": eid) ||
+      Provider.find_by(pid: parsed_provider_data[:pid])
+  end
+
+  def persist_provider(current_provider, parsed_provider_data, image_url, eid, provider_source)
+    if current_provider.blank?
+      create_provider(parsed_provider_data, image_url, eid)
+    elsif provider_source.present? && provider_source.id == current_provider.upstream_id
+      update_provider(current_provider, parsed_provider_data, image_url)
+    end
+
+    if @default_upstream == :eosc_registry && provider_source.present?
+      current_provider.update(upstream_id: provider_source.id)
+    end
   end
 
   def log_status(current_provider, parsed_provider_data, provider_source)
@@ -133,8 +157,7 @@ class Import::Providers
   def external_providers_data
     begin
       @token ||= Importers::Token.new(faraday: @faraday).receive_token
-      rp =
-        Importers::Request.new(@eosc_registry_base_url, "public/provider/bundle", faraday: @faraday, token: @token).call
+      rp = Importers::Request.new(@eosc_registry_base_url, "public/organisation", faraday: @faraday, token: @token).call
     rescue Errno::ECONNREFUSED, Importers::Token::RequestError => e
       abort("import exited with errors - could not connect to #{@eosc_registry_base_url} \n #{e.message}")
     end

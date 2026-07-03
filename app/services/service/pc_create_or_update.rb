@@ -15,12 +15,12 @@ class Service::PcCreateOrUpdate
     @status = status
     @is_active = status == :published
     @source_type = "eosc_registry"
+    @eid = eosc_registry_service["id"] || eosc_registry_service.dig("service", "id")
     @mp_service =
-      Service.joins(:sources).find_by(
-        "service_sources.source_type": @source_type,
-        "service_sources.eid": [eosc_registry_service["id"]]
-      )
+      Service.joins(:sources).find_by("service_sources.source_type": @source_type, "service_sources.eid": [@eid])
     @service_hash = Importers::Service.call(eosc_registry_service, modified_at, eosc_registry_base_url, token)
+    @service_hash.delete(:logo_url)
+    @service_hash[:status] = @status
     @new_update_available = Service::PcCreateOrUpdate.new_update_available?(@mp_service, modified_at)
   end
 
@@ -36,7 +36,7 @@ class Service::PcCreateOrUpdate
       return @mp_service
     end
     update_valid = Service::Update.call(@mp_service, @service_hash)
-    source.update(eid: @service_hash["pid"])
+    source.update(eid: @service_hash[:pid])
     unless update_valid
       Service::PcCreateOrUpdate.handle_invalid_data(@mp_service, @service_hash, @error_message)
       return @mp_service
@@ -63,7 +63,7 @@ class Service::PcCreateOrUpdate
     Rails.logger.warn error_message
     validatable_service = Service.new(service_hash)
     service_errors = validatable_service&.errors&.to_hash if validatable_service.invalid?
-    mp_service.sources&.first&.update(eid: service_hash["pid"], errored: service_errors)
+    mp_service.sources&.first&.update(eid: service_hash[:pid], errored: service_errors)
   end
 
   def self.create_service(service_hash, logo)

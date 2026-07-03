@@ -177,7 +177,7 @@ RSpec.describe Offer, backend: true do
       )
       expect { Offer.find_by_slug_iid!("test-slug/2") }.to raise_error(
         ActiveRecord::RecordNotFound,
-        "Couldn't find Offer with [WHERE \"offers\".\"service_id\" = $1 AND \"offers\".\"iid\" = $2]"
+        /Couldn't find Offer with \[WHERE "offers"\."orderable_type" = \$1 AND "offers"\."orderable_id" = \$2/
       )
     end
   end

@@ -6,16 +6,13 @@ class Api::V1::Search::ServiceSerializer < ApplicationSerializer
   attributes :pid,
              :name,
              :slug,
-             :tagline,
              :description,
              :rating,
              :score,
              :path,
              :logo,
              :scientific_domains,
-             :target_users,
-             :platforms,
-             :research_activities,
+             :jurisdiction,
              :resource_organisation,
              :providers,
              :source_node_url
@@ -45,10 +42,16 @@ class Api::V1::Search::ServiceSerializer < ApplicationSerializer
     object.providers.map { |p| Api::V1::Search::ProviderSerializer.new(p).as_json }
   end
 
-  %i[scientific_domains target_users platforms research_activities].each do |relation|
+  %i[scientific_domains].each do |relation|
     define_method(relation) do
       object.public_send(relation).map { |item| Api::V1::Search::FilterSerializer.new(item).as_json }
     end
+  end
+
+  def jurisdiction
+    return nil unless object.jurisdiction
+
+    Api::V1::Search::FilterSerializer.new(object.jurisdiction).as_json
   end
 
   private

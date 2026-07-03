@@ -20,11 +20,8 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
 
   FORM_STEPS = {
     profile: %i[name abbreviation description website logo legal_entity],
-    location: %i[street_name_and_number postal_code city region country],
-    contacts: [
-      main_contact_attributes: %i[id first_name last_name email country_phone_code phone position],
-      public_contacts_attributes: %i[id first_name last_name email country_phone_code phone position _destroy]
-    ],
+    location: %i[country],
+    contacts: [public_contact_emails: []],
     managers: [data_administrators_attributes: %i[id first_name last_name email _destroy]]
   }.freeze
 
@@ -129,9 +126,6 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   def prepare_step(step_to_set)
     find_and_authorize
     case step_to_set
-    when :contacts
-      @provider.build_main_contact if @provider.main_contact.blank?
-      @provider.public_contacts.build if @provider.public_contacts.empty?
     when :managers
       if @provider.data_administrators.blank?
         @provider.data_administrators << DataAdministrator.new(
@@ -163,11 +157,10 @@ class Backoffice::Providers::StepsController < Backoffice::ProvidersController
   end
 
   def permitted_step_attributes
-    if current_step_index + 1 < total_steps
-      params.require(:provider).permit(:current_step, *FORM_STEPS[@provider.current_step.to_sym])
-    else
-      {}
-    end
+    return {} unless current_step_index + 1 < total_steps
+
+    normalize_public_contact_emails_param
+    params.require(:provider).permit(:current_step, *FORM_STEPS[@provider.current_step.to_sym])
   end
 
   def validate_wizard_action

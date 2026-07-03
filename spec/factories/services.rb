@@ -36,11 +36,11 @@ FactoryBot.define do
     sequence(:geographical_availabilities) { |_n| ["EU"] }
     sequence(:dedicated_for) { |n| ["service #{n} dedicated for"] }
     sequence(:restrictions) { |n| "service #{n} restrictions" }
-    sequence(:scientific_domains) { |_n| [create(:scientific_domain)] }
-    sequence(:resource_organisation) { |_n| create(:provider) }
-    sequence(:providers) { |_n| [create(:provider)] }
-    sequence(:life_cycle_statuses) { |_n| [create(:life_cycle_status)] }
-    sequence(:categories) { |_n| [create(:category)] }
+    scientific_domains { [create(:scientific_domain)] }
+    resource_organisation { create(:provider) }
+    providers { [create(:provider)] }
+    life_cycle_statuses { [create(:life_cycle_status)] }
+    categories { [create(:category)] }
     sequence(:status) { :published }
     sequence(:version) { nil }
     sequence(:trls) { [create(:trl)] }
