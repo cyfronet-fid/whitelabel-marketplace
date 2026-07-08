@@ -5,13 +5,23 @@ require "sentry-ruby"
 namespace :import do
   desc "Imports services data from external providers"
 
-  task all: :environment do
+  task authorize: :environment do
+    if ENV["MP_IMPORT_TOKEN"].present?
+      next
+    elsif Importers::ClientCredentialsToken.partially_configured?
+      Importers::ClientCredentialsToken.new.receive_token
+    elsif Importers::ClientCredentialsToken.configured?
+      ENV["MP_IMPORT_TOKEN"] = Importers::ClientCredentialsToken.new.receive_token
+    end
+  end
+
+  task all: %i[environment authorize] do
     %w[vocabularies catalogues providers resources datasources guidelines].each do |collection|
       Rake::Task["import:#{collection}"].invoke
     end
   end
 
-  task resources: :environment do
+  task resources: %i[environment authorize] do
     Import::Resources.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),
@@ -23,7 +33,7 @@ namespace :import do
     ).call
   end
 
-  task providers: :environment do
+  task providers: %i[environment authorize] do
     Import::Providers.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),
@@ -35,7 +45,7 @@ namespace :import do
     ).call
   end
 
-  task vocabularies: :environment do
+  task vocabularies: %i[environment authorize] do
     Import::Vocabularies.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),
@@ -44,7 +54,7 @@ namespace :import do
     ).call
   end
 
-  task catalogues: :environment do
+  task catalogues: %i[environment authorize] do
     Import::Catalogues.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),
@@ -54,7 +64,7 @@ namespace :import do
     ).call
   end
 
-  task datasources: :environment do
+  task datasources: %i[environment authorize] do
     Import::Datasources.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),
@@ -66,7 +76,7 @@ namespace :import do
     ).call
   end
 
-  task guidelines: :environment do
+  task guidelines: %i[environment authorize] do
     Import::Guidelines.new(
       ENV.fetch("MP_IMPORT_EOSC_REGISTRY_URL", "https://integration.providers.sandbox.eosc-beyond.eu/api"),
       dry_run: ActiveModel::Type::Boolean.new.cast(ENV.fetch("DRY_RUN", false)),

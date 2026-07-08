@@ -326,6 +326,10 @@ We are currently using the following ENV variables:
 * `IMPORTER_AAI_BASE_URL` (Optional) - Base URL used to generate access token from a refresh token (default `ENV["CHECKIN_HOST"]` or "aai.eosc-portal.eu")
 * `IMPORTER_AAI_REFRESH_TOKEN` - The refresh token generated for specific instance of AAI
 * `IMPORTER_AAI_CLIENT_ID` (Optional) - The client id for the generated refresh token (default `ENV["CHECKIN_IDENTIFIER"]` or `Rails.application.credentials.checkin[:identifier]`)
+* `IMPORT_CLIENT_ID` (Optional) - Client id used by import rake tasks to automatically obtain an access token from `CHECKIN_TOKEN_ENDPOINT` with the client credentials flow. Set it together with `IMPORT_CLIENT_SECRET` when importing data from the Service Catalogue without manually exporting `MP_IMPORT_TOKEN`.
+* `IMPORT_CLIENT_SECRET` (Optional) - Client secret used by import rake tasks to automatically obtain an access token from `CHECKIN_TOKEN_ENDPOINT` with the client credentials flow. Set it together with `IMPORT_CLIENT_ID` when importing data from the Service Catalogue without manually exporting `MP_IMPORT_TOKEN`.
+
+Import rake tasks automatically obtain `MP_IMPORT_TOKEN` when `IMPORT_CLIENT_ID` and `IMPORT_CLIENT_SECRET` are set and no `MP_IMPORT_TOKEN` is already present. For Service Catalogue imports, configure `CHECKIN_HOST`, `CHECKIN_TOKEN_ENDPOINT`, `IMPORT_CLIENT_ID`, `IMPORT_CLIENT_SECRET`, and `MP_IMPORT_EOSC_REGISTRY_URL`, then run `bundle exec rake import:all`. `CHECKIN_TOKEN_ENDPOINT` can be either a full URL or a path relative to `CHECKIN_HOST`; paths without the `auth/` prefix are expanded to `https://CHECKIN_HOST/auth/CHECKIN_TOKEN_ENDPOINT`.
 
 
 ## Commits
