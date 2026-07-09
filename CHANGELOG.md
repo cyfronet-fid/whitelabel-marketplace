@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.63.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.62.0...v3.63.0) (2026-07-09)
+
+
+### Features
+
+* add automatic import token retrieval ([c78525b](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/c78525b0b883f947a41f7f5622fb6b13a8f9cb82))
+
 ## [3.62.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.61.1...v3.62.0) (2026-07-03)
 
 
