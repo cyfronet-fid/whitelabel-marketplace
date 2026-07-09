@@ -6,6 +6,13 @@ describe "import:resources", type: :task, backend: true do
   let(:resource_importer) { double("Import::Resources") }
   let(:provider_importer) { double("Import::Providers") }
 
+  around do |example|
+    preserve_env("MP_IMPORT_EOSC_REGISTRY_URL") do
+      ENV.delete("MP_IMPORT_EOSC_REGISTRY_URL")
+      example.run
+    end
+  end
+
   it "preloads the Rails environment" do
     expect(task.prerequisites).to include "environment"
   end
@@ -62,5 +69,67 @@ describe "import:resources", type: :task, backend: true do
     ).and_return(provider_importer)
 
     subject.invoke
+  end
+
+  def preserve_env(*keys)
+    original = keys.index_with { |key| ENV.key?(key) ? ENV[key] : nil }
+    yield
+  ensure
+    keys.each { |key| original[key].nil? ? ENV.delete(key) : ENV[key] = original[key] }
+  end
+end
+
+describe "import:authorize", type: :task, backend: true do
+  around do |example|
+    preserve_env("MP_IMPORT_TOKEN", "IMPORT_CLIENT_ID", "IMPORT_CLIENT_SECRET", "CHECKIN_TOKEN_ENDPOINT") do
+      example.run
+    end
+  end
+
+  after { task.reenable }
+
+  it "preloads the Rails environment" do
+    expect(task.prerequisites).to include "environment"
+  end
+
+  it "sets MP_IMPORT_TOKEN from import client credentials" do
+    ENV.delete("MP_IMPORT_TOKEN")
+    ENV["IMPORT_CLIENT_ID"] = "import-client"
+    ENV["IMPORT_CLIENT_SECRET"] = "import-secret"
+    ENV["CHECKIN_TOKEN_ENDPOINT"] = "https://checkin.example/token"
+
+    token_importer = instance_double(Importers::ClientCredentialsToken, receive_token: "received-token")
+    allow(Importers::ClientCredentialsToken).to receive(:new).and_return(token_importer)
+
+    task.invoke
+
+    expect(ENV.fetch("MP_IMPORT_TOKEN", nil)).to eq("received-token")
+  end
+
+  it "keeps an existing MP_IMPORT_TOKEN" do
+    ENV["MP_IMPORT_TOKEN"] = "manual-token"
+    ENV["IMPORT_CLIENT_ID"] = "import-client"
+    ENV["IMPORT_CLIENT_SECRET"] = "import-secret"
+
+    expect(Importers::ClientCredentialsToken).not_to receive(:new)
+
+    task.invoke
+
+    expect(ENV.fetch("MP_IMPORT_TOKEN", nil)).to eq("manual-token")
+  end
+
+  it "raises a configuration error for partial import client credentials" do
+    ENV.delete("MP_IMPORT_TOKEN")
+    ENV["IMPORT_CLIENT_ID"] = "import-client"
+    ENV.delete("IMPORT_CLIENT_SECRET")
+
+    expect { task.invoke }.to raise_error(Importers::ClientCredentialsToken::ConfigurationError)
+  end
+
+  def preserve_env(*keys)
+    original = keys.index_with { |key| ENV.key?(key) ? ENV[key] : nil }
+    yield
+  ensure
+    keys.each { |key| original[key].nil? ? ENV.delete(key) : ENV[key] = original[key] }
   end
 end
