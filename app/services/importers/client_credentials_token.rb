@@ -3,42 +3,16 @@
 require "uri"
 
 class Importers::ClientCredentialsToken
-  class ConfigurationError < StandardError
-  end
+  class RequestError < StandardError; end
 
-  class RequestError < StandardError
-  end
-
-  REQUIRED_ENV = %w[IMPORT_CLIENT_ID IMPORT_CLIENT_SECRET].freeze
-  CONFIGURATION_ERROR_MESSAGE =
-    "Missing CHECKIN_TOKEN_ENDPOINT or CHECKIN_HOST for import client credentials authentication"
-
-  def self.configured?
-    REQUIRED_ENV.all? { |key| ENV[key].present? }
-  end
-
-  def self.partially_configured?
-    REQUIRED_ENV.any? { |key| ENV[key].present? } && !configured?
-  end
+  attr_reader :faraday
 
   def initialize(faraday: Faraday)
     @faraday = faraday
   end
 
   def receive_token
-    validate_configuration!
-
-    response =
-      @faraday.post(
-        token_endpoint,
-        URI.encode_www_form(
-          grant_type: "client_credentials",
-          client_id: ENV.fetch("IMPORT_CLIENT_ID"),
-          client_secret: ENV.fetch("IMPORT_CLIENT_SECRET")
-        ),
-        "Content-Type" => "application/x-www-form-urlencoded"
-      )
-
+    response = faraday.post(token_url, token_query_params, request_headers)
     raise RequestError, "Access token response is empty" if response.blank? || response.body.blank?
 
     token = JSON.parse(response.body)["access_token"]
@@ -53,28 +27,27 @@ class Importers::ClientCredentialsToken
 
   private
 
-  def validate_configuration!
-    if self.class.partially_configured?
-      missing = REQUIRED_ENV.select { |key| ENV[key].blank? }.join(", ")
-      raise ConfigurationError, "Missing import client credentials: #{missing}"
-    end
+  def request_headers
+    { "Content-Type" => "application/x-www-form-urlencoded" }
+  end
 
-    return if ENV["CHECKIN_TOKEN_ENDPOINT"].present? && (absolute_token_endpoint? || ENV["CHECKIN_HOST"].present?)
+  def token_query_params
+    URI.encode_www_form(
+      grant_type: "client_credentials",
+      client_id: ENV.fetch("IMPORT_CLIENT_ID"),
+      client_secret: ENV.fetch("IMPORT_CLIENT_SECRET")
+    )
+  end
 
-    raise ConfigurationError, CONFIGURATION_ERROR_MESSAGE
+  def token_host
+    Devise.omniauth_configs[:checkin].options[:client_options][:host]
   end
 
   def token_endpoint
-    endpoint = ENV.fetch("CHECKIN_TOKEN_ENDPOINT")
-    return endpoint if absolute_token_endpoint?
-
-    endpoint = endpoint.delete_prefix("/")
-    endpoint = "auth/#{endpoint}" unless endpoint.start_with?("auth/")
-
-    "https://#{ENV.fetch("CHECKIN_HOST")}/#{endpoint}"
+    Devise.omniauth_configs[:checkin].options[:client_options][:token_endpoint]
   end
 
-  def absolute_token_endpoint?
-    ENV.fetch("CHECKIN_TOKEN_ENDPOINT", "").start_with?("http://", "https://")
+  def token_url
+    URI::HTTPS.build(host: token_host, path: token_endpoint).to_s
   end
 end
