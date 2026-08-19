@@ -3,7 +3,8 @@
 require "uri"
 
 class Importers::ClientCredentialsToken
-  class RequestError < StandardError; end
+  class RequestError < StandardError
+  end
 
   attr_reader :faraday
 

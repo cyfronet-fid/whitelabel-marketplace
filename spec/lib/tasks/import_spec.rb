@@ -80,11 +80,7 @@ describe "import:resources", type: :task, backend: true do
 end
 
 describe "import:authorize", type: :task, backend: true do
-  around do |example|
-    preserve_env("MP_IMPORT_TOKEN") do
-      example.run
-    end
-  end
+  around { |example| preserve_env("MP_IMPORT_TOKEN") { example.run } }
 
   after { task.reenable }
 
@@ -129,19 +125,16 @@ describe "import:authorize", type: :task, backend: true do
 
     token_importer = instance_double(Importers::ClientCredentialsToken)
     allow(Importers::ClientCredentialsToken).to receive(:new).and_return(token_importer)
-    
-    allow(token_importer)
-      .to receive(:receive_token)
-      .and_raise(
-        Importers::ClientCredentialsToken::RequestError, 
-        "Access token request failed: boom"
-      )
 
-    expect { task.invoke }
-      .to raise_error(
-        Importers::ClientCredentialsToken::RequestError, 
-        "Access token request failed: boom"
-      )
+    allow(token_importer).to receive(:receive_token).and_raise(
+      Importers::ClientCredentialsToken::RequestError,
+      "Access token request failed: boom"
+    )
+
+    expect { task.invoke }.to raise_error(
+      Importers::ClientCredentialsToken::RequestError,
+      "Access token request failed: boom"
+    )
   end
 
   def preserve_env(*keys)

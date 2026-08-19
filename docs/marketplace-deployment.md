@@ -122,7 +122,7 @@ volumes:
 ### Environment Configuration
 
 1. Create the `.env` file based on the example: `cp .env.example marketplace.env`
-2. Edit the `marketplace.env` file and fill in MANDATORY values with <YOUR_...> placeholders
+2. Edit the `marketplace.env` file and fill in MANDATORY values with <YOUR\_...> placeholders
 
 #### Service Catalogue Data Import
 

@@ -11,22 +11,18 @@ describe Importers::ClientCredentialsToken, backend: true do
   let(:token_endpoint) { "/auth/realms/core/protocol/openid-connect/token" }
   let(:token_url) { "https://#{token_host}#{token_endpoint}" }
 
-  around do |example|
-    preserve_env("IMPORT_CLIENT_ID", "IMPORT_CLIENT_SECRET") { example.run }
-  end
+  around { |example| preserve_env("IMPORT_CLIENT_ID", "IMPORT_CLIENT_SECRET") { example.run } }
 
   before do
     ENV["IMPORT_CLIENT_ID"] = client_id
     ENV["IMPORT_CLIENT_SECRET"] = client_secret
 
-    allow(Devise.omniauth_configs[:checkin])
-      .to receive(:options)
-      .and_return(
-        client_options: { 
-          host: token_host, 
-          token_endpoint: token_endpoint 
-        }
-      )
+    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(
+      client_options: {
+        host: token_host,
+        token_endpoint: token_endpoint
+      }
+    )
   end
 
   it "requests an access token with client credentials from the checkin token endpoint" do
@@ -45,17 +41,17 @@ describe Importers::ClientCredentialsToken, backend: true do
   end
 
   it "builds the token url from the checkin omniauth client options" do
-    allow(Devise.omniauth_configs[:checkin])
-      .to receive(:options)
-      .and_return(
-        client_options: { 
-          host: "core-proxy.sandbox.eosc-beyond.eu", 
-          token_endpoint: "/token" 
-        }
-      )
+    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(
+      client_options: {
+        host: "core-proxy.sandbox.eosc-beyond.eu",
+        token_endpoint: "/token"
+      }
+    )
 
-    stub_request(:post, "https://core-proxy.sandbox.eosc-beyond.eu/token")
-      .to_return(status: 200, body: { access_token: "received-token" }.to_json)
+    stub_request(:post, "https://core-proxy.sandbox.eosc-beyond.eu/token").to_return(
+      status: 200,
+      body: { access_token: "received-token" }.to_json
+    )
 
     expect(token_importer.receive_token).to eq("received-token")
   end
