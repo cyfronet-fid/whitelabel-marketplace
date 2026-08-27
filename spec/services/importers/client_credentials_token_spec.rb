@@ -9,19 +9,30 @@ describe Importers::ClientCredentialsToken, backend: true do
   let(:client_secret) { "import-secret" }
   let(:issuer) { "https://checkin.example/realms/core" }
   let(:token_endpoint) { "https://checkin.example/realms/core/protocol/openid-connect/token" }
-  
+  let(:discovery) { true }
+  let(:client_options) do
+    {
+      scheme: "https",
+      host: "checkin.example",
+      port: nil,
+      token_endpoint: "/realms/core/protocol/openid-connect/token"
+    }
+  end
+
   let(:oidc_config) do
-    instance_double(
-      OpenIDConnect::Discovery::Provider::Config::Response, 
-      token_endpoint: token_endpoint
-    )
+    instance_double(OpenIDConnect::Discovery::Provider::Config::Response, token_endpoint: token_endpoint)
   end
 
   before do
     allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_ID").and_return(client_id)
     allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_SECRET").and_return(client_secret)
 
-    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(issuer: issuer)
+    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(
+      discovery: discovery,
+      issuer: issuer,
+      client_options: client_options
+    )
+
     allow(OpenIDConnect::Discovery::Provider::Config).to receive(:discover!).with(issuer).and_return(oidc_config)
   end
 
@@ -56,6 +67,19 @@ describe Importers::ClientCredentialsToken, backend: true do
     end
   end
 
+  context "when discovery is disabled" do
+    let(:discovery) { false }
+
+    before do
+      expect(OpenIDConnect::Discovery::Provider::Config).not_to receive(:discover!)
+      stub_request(:post, token_endpoint).to_return(status: 200, body: { access_token: "received-token" }.to_json)
+    end
+
+    it "requests the token from the configured client_options endpoint" do
+      expect(token_importer.receive_token).to eq("received-token")
+    end
+  end
+
   context "when IMPORT_CLIENT_ID is missing" do
     before { allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_ID").and_raise(KeyError) }
 
@@ -73,13 +97,12 @@ describe Importers::ClientCredentialsToken, backend: true do
   end
 
   context "when the response does not include an access token" do
-    before do
-      stub_request(:post, token_endpoint).to_return(status: 200, body: { token_type: "Bearer" }.to_json)
-    end
+    before { stub_request(:post, token_endpoint).to_return(status: 200, body: { token_type: "Bearer" }.to_json) }
 
     it "raises a request error" do
       expect { token_importer.receive_token }.to raise_error(
-        described_class::RequestError, "Access token response does not include access_token"
+        described_class::RequestError,
+        "Access token response does not include access_token"
       )
     end
   end
@@ -89,7 +112,8 @@ describe Importers::ClientCredentialsToken, backend: true do
 
     it "raises a request error" do
       expect { token_importer.receive_token }.to raise_error(
-        described_class::RequestError, "Access token response is empty"
+        described_class::RequestError,
+        "Access token response is empty"
       )
     end
   end
@@ -99,7 +123,8 @@ describe Importers::ClientCredentialsToken, backend: true do
 
     it "raises a request error" do
       expect { token_importer.receive_token }.to raise_error(
-        described_class::RequestError, "Access token response is not valid JSON"
+        described_class::RequestError,
+        "Access token response is not valid JSON"
       )
     end
   end
@@ -109,7 +134,8 @@ describe Importers::ClientCredentialsToken, backend: true do
 
     it "raises a request error" do
       expect { token_importer.receive_token }.to raise_error(
-        described_class::RequestError, "Access token request failed: connection reset"
+        described_class::RequestError,
+        "Access token request failed: connection reset"
       )
     end
   end

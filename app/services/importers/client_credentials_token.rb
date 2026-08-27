@@ -13,7 +13,7 @@ class Importers::ClientCredentialsToken
   end
 
   def receive_token
-    response = faraday.post(oidc_config.token_endpoint, token_query_params, request_headers)
+    response = faraday.post(token_endpoint, token_query_params, request_headers)
     raise RequestError, "Access token response is empty" if response&.body.blank?
 
     token = JSON.parse(response.body)["access_token"]
@@ -40,8 +40,23 @@ class Importers::ClientCredentialsToken
     )
   end
 
+  def token_endpoint
+    return oidc_config.token_endpoint if provider.options[:discovery]
+
+    URI::Generic.build(
+      scheme: client_options[:scheme],
+      host: client_options[:host],
+      port: client_options[:port],
+      path: client_options[:token_endpoint]
+    ).to_s
+  end
+
   def oidc_config
     @oidc_config ||= OmniAuth::Strategies::OpenIDConnect.new(nil, provider.options).config
+  end
+
+  def client_options
+    provider.options[:client_options]
   end
 
   def provider
