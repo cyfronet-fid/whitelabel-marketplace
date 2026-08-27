@@ -13,8 +13,8 @@ class Importers::ClientCredentialsToken
   end
 
   def receive_token
-    response = faraday.post(token_url, token_query_params, request_headers)
-    raise RequestError, "Access token response is empty" if response.blank? || response.body.blank?
+    response = faraday.post(oidc_config.token_endpoint, token_query_params, request_headers)
+    raise RequestError, "Access token response is empty" if response&.body.blank?
 
     token = JSON.parse(response.body)["access_token"]
     return token if token.present?
@@ -40,15 +40,11 @@ class Importers::ClientCredentialsToken
     )
   end
 
-  def token_host
-    Devise.omniauth_configs[:checkin].options[:client_options][:host]
+  def oidc_config
+    @oidc_config ||= OmniAuth::Strategies::OpenIDConnect.new(nil, provider.options).config
   end
 
-  def token_endpoint
-    Devise.omniauth_configs[:checkin].options[:client_options][:token_endpoint]
-  end
-
-  def token_url
-    URI::HTTPS.build(host: token_host, path: token_endpoint).to_s
+  def provider
+    Devise.omniauth_configs[:checkin]
   end
 end

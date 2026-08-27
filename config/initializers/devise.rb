@@ -263,9 +263,9 @@ Devise.setup do |config|
                   name: :checkin,
                   response_type: :code,
                   issuer: ENV.fetch("CHECKIN_ISSUER_URI"),
-                  discovery: ENV.fetch("CHECKIN_DISCOVERY", "false") == "true",
-                  scope: ENV.fetch("CHECKIN_SCOPE", "openid").split(","),
-                  pkce: ENV.fetch("CHECKIN_PKCE", "false") == "true",
+                  discovery: ENV.fetch("CHECKIN_DISCOVERY", "true") == "true",
+                  scope: ENV.fetch("CHECKIN_SCOPE", "basic,profile,email,offline_access").split(","),
+                  pkce: ENV.fetch("CHECKIN_PKCE", "true") == "true",
                   client_options: {
                     port: nil,
                     scheme: "https",
@@ -277,9 +277,8 @@ Devise.setup do |config|
                     token_endpoint: ENV.fetch("CHECKIN_TOKEN_ENDPOINT", "/token"),
                     userinfo_endpoint: ENV.fetch("CHECKIN_USERINFO_ENDPOINT", "/userinfo"),
                     jwks_uri: ENV.fetch("CHECKIN_JWKS_URI", "/jwk"),
-                    end_session_endpoint: ENV.fetch("CHECKIN_END_SESSION_ENDPOINT", nil)
+                    end_session_endpoint: ENV.fetch("CHECKIN_END_SESSION_ENDPOINT", "/logout")
                   }
-
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

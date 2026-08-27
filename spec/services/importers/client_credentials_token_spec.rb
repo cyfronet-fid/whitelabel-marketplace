@@ -7,107 +7,110 @@ describe Importers::ClientCredentialsToken, backend: true do
 
   let(:client_id) { "import-client" }
   let(:client_secret) { "import-secret" }
-  let(:token_host) { "checkin.example" }
-  let(:token_endpoint) { "/auth/realms/core/protocol/openid-connect/token" }
-  let(:token_url) { "https://#{token_host}#{token_endpoint}" }
-
-  around { |example| preserve_env("IMPORT_CLIENT_ID", "IMPORT_CLIENT_SECRET") { example.run } }
+  let(:issuer) { "https://checkin.example/realms/core" }
+  let(:token_endpoint) { "https://checkin.example/realms/core/protocol/openid-connect/token" }
+  
+  let(:oidc_config) do
+    instance_double(
+      OpenIDConnect::Discovery::Provider::Config::Response, 
+      token_endpoint: token_endpoint
+    )
+  end
 
   before do
-    ENV["IMPORT_CLIENT_ID"] = client_id
-    ENV["IMPORT_CLIENT_SECRET"] = client_secret
+    allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_ID").and_return(client_id)
+    allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_SECRET").and_return(client_secret)
 
-    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(
-      client_options: {
-        host: token_host,
-        token_endpoint: token_endpoint
-      }
-    )
+    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(issuer: issuer)
+    allow(OpenIDConnect::Discovery::Provider::Config).to receive(:discover!).with(issuer).and_return(oidc_config)
   end
 
-  it "requests an access token with client credentials from the checkin token endpoint" do
-    stub_request(:post, token_url).with(
-      body: {
-        grant_type: "client_credentials",
-        client_id: client_id,
-        client_secret: client_secret
-      },
-      headers: {
-        "Content-Type" => "application/x-www-form-urlencoded"
-      }
-    ).to_return(status: 200, body: { access_token: "received-token" }.to_json)
+  context "when the token request succeeds" do
+    before do
+      stub_request(:post, token_endpoint).with(
+        body: {
+          grant_type: "client_credentials",
+          client_id: client_id,
+          client_secret: client_secret
+        },
+        headers: {
+          "Content-Type" => "application/x-www-form-urlencoded"
+        }
+      ).to_return(status: 200, body: { access_token: "received-token" }.to_json)
+    end
 
-    expect(token_importer.receive_token).to eq("received-token")
+    it "returns the access token" do
+      expect(token_importer.receive_token).to eq("received-token")
+    end
   end
 
-  it "builds the token url from the checkin omniauth client options" do
-    allow(Devise.omniauth_configs[:checkin]).to receive(:options).and_return(
-      client_options: {
-        host: "core-proxy.sandbox.eosc-beyond.eu",
-        token_endpoint: "/token"
-      }
-    )
+  context "when the checkin omniauth discovery config resolves a different token endpoint" do
+    let(:token_endpoint) { "https://example.com/token" }
 
-    stub_request(:post, "https://core-proxy.sandbox.eosc-beyond.eu/token").to_return(
-      status: 200,
-      body: { access_token: "received-token" }.to_json
-    )
+    before do
+      stub_request(:post, token_endpoint).to_return(status: 200, body: { access_token: "received-token" }.to_json)
+    end
 
-    expect(token_importer.receive_token).to eq("received-token")
+    it "requests the token from the discovered endpoint" do
+      expect(token_importer.receive_token).to eq("received-token")
+    end
   end
 
-  it "raises a key error when IMPORT_CLIENT_ID is missing" do
-    ENV.delete("IMPORT_CLIENT_ID")
+  context "when IMPORT_CLIENT_ID is missing" do
+    before { allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_ID").and_raise(KeyError) }
 
-    expect { token_importer.receive_token }.to raise_error(KeyError)
+    it "raises a key error" do
+      expect { token_importer.receive_token }.to raise_error(KeyError)
+    end
   end
 
-  it "raises a key error when IMPORT_CLIENT_SECRET is missing" do
-    ENV.delete("IMPORT_CLIENT_SECRET")
+  context "when IMPORT_CLIENT_SECRET is missing" do
+    before { allow(ENV).to receive(:fetch).with("IMPORT_CLIENT_SECRET").and_raise(KeyError) }
 
-    expect { token_importer.receive_token }.to raise_error(KeyError)
+    it "raises a key error" do
+      expect { token_importer.receive_token }.to raise_error(KeyError)
+    end
   end
 
-  it "raises a request error when the response does not include an access token" do
-    stub_request(:post, token_url).to_return(status: 200, body: { token_type: "Bearer" }.to_json)
+  context "when the response does not include an access token" do
+    before do
+      stub_request(:post, token_endpoint).to_return(status: 200, body: { token_type: "Bearer" }.to_json)
+    end
 
-    expect { token_importer.receive_token }.to raise_error(
-      described_class::RequestError,
-      "Access token response does not include access_token"
-    )
+    it "raises a request error" do
+      expect { token_importer.receive_token }.to raise_error(
+        described_class::RequestError, "Access token response does not include access_token"
+      )
+    end
   end
 
-  it "raises a request error when the response is empty" do
-    stub_request(:post, token_url).to_return(status: 200, body: "")
+  context "when the response is empty" do
+    before { stub_request(:post, token_endpoint).to_return(status: 200, body: "") }
 
-    expect { token_importer.receive_token }.to raise_error(
-      described_class::RequestError,
-      "Access token response is empty"
-    )
+    it "raises a request error" do
+      expect { token_importer.receive_token }.to raise_error(
+        described_class::RequestError, "Access token response is empty"
+      )
+    end
   end
 
-  it "raises a request error when the response is not valid JSON" do
-    stub_request(:post, token_url).to_return(status: 200, body: "not-json")
+  context "when the response is not valid JSON" do
+    before { stub_request(:post, token_endpoint).to_return(status: 200, body: "not-json") }
 
-    expect { token_importer.receive_token }.to raise_error(
-      described_class::RequestError,
-      "Access token response is not valid JSON"
-    )
+    it "raises a request error" do
+      expect { token_importer.receive_token }.to raise_error(
+        described_class::RequestError, "Access token response is not valid JSON"
+      )
+    end
   end
 
-  it "raises a request error when the request fails" do
-    stub_request(:post, token_url).to_raise(Faraday::ConnectionFailed.new("connection reset"))
+  context "when the request fails" do
+    before { stub_request(:post, token_endpoint).to_raise(Faraday::ConnectionFailed.new("connection reset")) }
 
-    expect { token_importer.receive_token }.to raise_error(
-      described_class::RequestError,
-      "Access token request failed: connection reset"
-    )
-  end
-
-  def preserve_env(*keys)
-    original = keys.index_with { |key| ENV.key?(key) ? ENV[key] : nil }
-    yield
-  ensure
-    keys.each { |key| original[key].nil? ? ENV.delete(key) : ENV[key] = original[key] }
+    it "raises a request error" do
+      expect { token_importer.receive_token }.to raise_error(
+        described_class::RequestError, "Access token request failed: connection reset"
+      )
+    end
   end
 end
