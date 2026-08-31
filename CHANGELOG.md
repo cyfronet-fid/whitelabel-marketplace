@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.63.1](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.63.0...v3.63.1) (2026-08-31)
+
+
+### Bug Fixes
+
+* [[#266](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/266)] honor CHECKIN_DISCOVERY=false for import token fetch ([985a8f2](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/985a8f233f15811f413f4d3aadbcb1b0dc977eb0))
+* [[#266](https://github.com/cyfronet-fid/whitelabel-marketplace/issues/266)] provide dummy Checkin/AAI env vars for docker asset precompile ([4791dad](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/4791dad68fb568b44928b0e8d8bc348907f1b828))
+
 ## [3.63.0](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.62.0...v3.63.0) (2026-07-09)
 
 
