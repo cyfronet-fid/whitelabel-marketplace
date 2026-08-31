@@ -3,43 +3,18 @@
 require "uri"
 
 class Importers::ClientCredentialsToken
-  class ConfigurationError < StandardError
-  end
-
   class RequestError < StandardError
   end
 
-  REQUIRED_ENV = %w[IMPORT_CLIENT_ID IMPORT_CLIENT_SECRET].freeze
-  CONFIGURATION_ERROR_MESSAGE =
-    "Missing CHECKIN_TOKEN_ENDPOINT or CHECKIN_HOST for import client credentials authentication"
-
-  def self.configured?
-    REQUIRED_ENV.all? { |key| ENV[key].present? }
-  end
-
-  def self.partially_configured?
-    REQUIRED_ENV.any? { |key| ENV[key].present? } && !configured?
-  end
+  attr_reader :faraday
 
   def initialize(faraday: Faraday)
     @faraday = faraday
   end
 
   def receive_token
-    validate_configuration!
-
-    response =
-      @faraday.post(
-        token_endpoint,
-        URI.encode_www_form(
-          grant_type: "client_credentials",
-          client_id: ENV.fetch("IMPORT_CLIENT_ID"),
-          client_secret: ENV.fetch("IMPORT_CLIENT_SECRET")
-        ),
-        "Content-Type" => "application/x-www-form-urlencoded"
-      )
-
-    raise RequestError, "Access token response is empty" if response.blank? || response.body.blank?
+    response = faraday.post(token_endpoint, token_query_params, request_headers)
+    raise RequestError, "Access token response is empty" if response&.body.blank?
 
     token = JSON.parse(response.body)["access_token"]
     return token if token.present?
@@ -53,28 +28,38 @@ class Importers::ClientCredentialsToken
 
   private
 
-  def validate_configuration!
-    if self.class.partially_configured?
-      missing = REQUIRED_ENV.select { |key| ENV[key].blank? }.join(", ")
-      raise ConfigurationError, "Missing import client credentials: #{missing}"
-    end
+  def request_headers
+    { "Content-Type" => "application/x-www-form-urlencoded" }
+  end
 
-    return if ENV["CHECKIN_TOKEN_ENDPOINT"].present? && (absolute_token_endpoint? || ENV["CHECKIN_HOST"].present?)
-
-    raise ConfigurationError, CONFIGURATION_ERROR_MESSAGE
+  def token_query_params
+    URI.encode_www_form(
+      grant_type: "client_credentials",
+      client_id: ENV.fetch("IMPORT_CLIENT_ID"),
+      client_secret: ENV.fetch("IMPORT_CLIENT_SECRET")
+    )
   end
 
   def token_endpoint
-    endpoint = ENV.fetch("CHECKIN_TOKEN_ENDPOINT")
-    return endpoint if absolute_token_endpoint?
+    return oidc_config.token_endpoint if provider.options[:discovery]
 
-    endpoint = endpoint.delete_prefix("/")
-    endpoint = "auth/#{endpoint}" unless endpoint.start_with?("auth/")
-
-    "https://#{ENV.fetch("CHECKIN_HOST")}/#{endpoint}"
+    URI::Generic.build(
+      scheme: client_options[:scheme],
+      host: client_options[:host],
+      port: client_options[:port],
+      path: client_options[:token_endpoint]
+    ).to_s
   end
 
-  def absolute_token_endpoint?
-    ENV.fetch("CHECKIN_TOKEN_ENDPOINT", "").start_with?("http://", "https://")
+  def oidc_config
+    @oidc_config ||= OmniAuth::Strategies::OpenIDConnect.new(nil, provider.options).config
+  end
+
+  def client_options
+    provider.options[:client_options]
+  end
+
+  def provider
+    Devise.omniauth_configs[:checkin]
   end
 end

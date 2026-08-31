@@ -80,11 +80,7 @@ describe "import:resources", type: :task, backend: true do
 end
 
 describe "import:authorize", type: :task, backend: true do
-  around do |example|
-    preserve_env("MP_IMPORT_TOKEN", "IMPORT_CLIENT_ID", "IMPORT_CLIENT_SECRET", "CHECKIN_TOKEN_ENDPOINT") do
-      example.run
-    end
-  end
+  around { |example| preserve_env("MP_IMPORT_TOKEN") { example.run } }
 
   after { task.reenable }
 
@@ -92,11 +88,19 @@ describe "import:authorize", type: :task, backend: true do
     expect(task.prerequisites).to include "environment"
   end
 
-  it "sets MP_IMPORT_TOKEN from import client credentials" do
+  it "sets MP_IMPORT_TOKEN from import client credentials when it is missing" do
     ENV.delete("MP_IMPORT_TOKEN")
-    ENV["IMPORT_CLIENT_ID"] = "import-client"
-    ENV["IMPORT_CLIENT_SECRET"] = "import-secret"
-    ENV["CHECKIN_TOKEN_ENDPOINT"] = "https://checkin.example/token"
+
+    token_importer = instance_double(Importers::ClientCredentialsToken, receive_token: "received-token")
+    allow(Importers::ClientCredentialsToken).to receive(:new).and_return(token_importer)
+
+    task.invoke
+
+    expect(ENV.fetch("MP_IMPORT_TOKEN", nil)).to eq("received-token")
+  end
+
+  it "sets MP_IMPORT_TOKEN from import client credentials when it is blank" do
+    ENV["MP_IMPORT_TOKEN"] = ""
 
     token_importer = instance_double(Importers::ClientCredentialsToken, receive_token: "received-token")
     allow(Importers::ClientCredentialsToken).to receive(:new).and_return(token_importer)
@@ -108,8 +112,6 @@ describe "import:authorize", type: :task, backend: true do
 
   it "keeps an existing MP_IMPORT_TOKEN" do
     ENV["MP_IMPORT_TOKEN"] = "manual-token"
-    ENV["IMPORT_CLIENT_ID"] = "import-client"
-    ENV["IMPORT_CLIENT_SECRET"] = "import-secret"
 
     expect(Importers::ClientCredentialsToken).not_to receive(:new)
 
@@ -118,12 +120,21 @@ describe "import:authorize", type: :task, backend: true do
     expect(ENV.fetch("MP_IMPORT_TOKEN", nil)).to eq("manual-token")
   end
 
-  it "raises a configuration error for partial import client credentials" do
+  it "propagates errors raised while fetching import client credentials" do
     ENV.delete("MP_IMPORT_TOKEN")
-    ENV["IMPORT_CLIENT_ID"] = "import-client"
-    ENV.delete("IMPORT_CLIENT_SECRET")
 
-    expect { task.invoke }.to raise_error(Importers::ClientCredentialsToken::ConfigurationError)
+    token_importer = instance_double(Importers::ClientCredentialsToken)
+    allow(Importers::ClientCredentialsToken).to receive(:new).and_return(token_importer)
+
+    allow(token_importer).to receive(:receive_token).and_raise(
+      Importers::ClientCredentialsToken::RequestError,
+      "Access token request failed: boom"
+    )
+
+    expect { task.invoke }.to raise_error(
+      Importers::ClientCredentialsToken::RequestError,
+      "Access token request failed: boom"
+    )
   end
 
   def preserve_env(*keys)

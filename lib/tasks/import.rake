@@ -6,13 +6,7 @@ namespace :import do
   desc "Imports services data from external providers"
 
   task authorize: :environment do
-    if ENV["MP_IMPORT_TOKEN"].present?
-      next
-    elsif Importers::ClientCredentialsToken.partially_configured?
-      Importers::ClientCredentialsToken.new.receive_token
-    elsif Importers::ClientCredentialsToken.configured?
-      ENV["MP_IMPORT_TOKEN"] = Importers::ClientCredentialsToken.new.receive_token
-    end
+    ENV["MP_IMPORT_TOKEN"] = Importers::ClientCredentialsToken.new.receive_token if ENV["MP_IMPORT_TOKEN"].blank?
   end
 
   task all: %i[environment authorize] do
