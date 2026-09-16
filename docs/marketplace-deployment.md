@@ -126,19 +126,42 @@ volumes:
 
 #### Service Catalogue Data Import
 
-If a node should import data from a Service Catalogue, configure the import credentials in `marketplace.env` before running the import task. `IMPORT_CLIENT_ID` and `IMPORT_CLIENT_SECRET` are used to obtain an access token automatically, so operators no longer need to export `MP_IMPORT_TOKEN` manually. The values should be obtained according to the instructions from Nicolas.
+If a node should import data from a Service Catalogue, configure the relevant variables in `marketplace.env` before running an import.
 
-`MP_IMPORT_EOSC_REGISTRY_URL` must point to the Service Catalogue API base URL. Include the `/api` suffix, for example:
+##### Environment Variables
 
-```env
-MP_IMPORT_EOSC_REGISTRY_URL=https://providers.sandbox.eosc-beyond.eu/api
-```
+| Variable                                    | Description                                                                                                                                                                                          | Default               |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas. Required only if `MP_IMPORT_TOKEN` is not set.  | — (required unless `MP_IMPORT_TOKEN` is set) |
+| `MP_IMPORT_TOKEN`                           | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead. | derived automatically |
+| `MP_IMPORT_EOSC_REGISTRY_URL`               | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                 | — (required)          |
+| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                     | `false`               |
+| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports.                                                                                                    | `*/3 * * * *`         |
 
-After the variables are configured, the import can be run inside the application container:
+##### Manual Import
+
+Once the variables above are configured, an import can be run on demand inside the application container:
 
 ```bash
 docker compose exec web bundle exec rake import:all
 ```
+
+`import:all` runs the full set of importers in order (`vocabularies`, `catalogues`, `providers`, `resources`, `datasources`, `guidelines`). A single collection can be imported instead by running its task directly, e.g.:
+
+```bash
+docker compose exec web bundle exec rake import:providers
+```
+
+##### Auto Import
+
+Imports can also run automatically on a schedule via Sidekiq Cron, inside the `worker` container. Set the following in `marketplace.env` and restart the `worker` service:
+
+```env
+AUTO_IMPORT_ALL_ENABLED=true
+AUTO_IMPORT_ALL_CRON="*/3 * * * *"
+```
+
+Scheduled runs execute the same `import:all` task as the manual command above, and their status can be viewed in the Sidekiq Web UI (mounted at `/admin/sidekiq`).
 
 ### Reverse Proxy Configuration
 

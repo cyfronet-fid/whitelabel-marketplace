@@ -107,6 +107,8 @@ You can download only specific providers/resources
 by setting an `IDS` environment variable.
 You can omit images downloading by set variable `MP_IMPORT_RESCUE_MODE` to `true`
 
+These tasks can also be run automatically on a schedule instead of manually — see `AUTO_IMPORT_ALL_ENABLED`/`AUTO_IMPORT_ALL_CRON` in the Provider importer section under [Environmental variables](#environmental-variables).
+
 ## Run
 
 To start web application in development mode (with auto refresh capability when
@@ -328,8 +330,12 @@ We are currently using the following ENV variables:
 * `IMPORTER_AAI_CLIENT_ID` (Optional) - The client id for the generated refresh token (default `ENV["CHECKIN_IDENTIFIER"]` or `Rails.application.credentials.checkin[:identifier]`)
 * `IMPORT_CLIENT_ID` (Optional) - Client id used by import rake tasks to automatically obtain an access token from `CHECKIN_TOKEN_ENDPOINT` with the client credentials flow. Set it together with `IMPORT_CLIENT_SECRET` when importing data from the Service Catalogue without manually exporting `MP_IMPORT_TOKEN`.
 * `IMPORT_CLIENT_SECRET` (Optional) - Client secret used by import rake tasks to automatically obtain an access token from `CHECKIN_TOKEN_ENDPOINT` with the client credentials flow. Set it together with `IMPORT_CLIENT_ID` when importing data from the Service Catalogue without manually exporting `MP_IMPORT_TOKEN`.
+* `AUTO_IMPORT_ALL_ENABLED` (Optional) - set to `true` to enable automatically running `import:all` on a schedule via Sidekiq Cron (default `false`)
+* `AUTO_IMPORT_ALL_CRON` (Optional) - cron expression controlling how often the scheduled import runs (default `*/3 * * * *`, i.e. every 3 minutes)
 
 Import rake tasks automatically obtain `MP_IMPORT_TOKEN` when `IMPORT_CLIENT_ID` and `IMPORT_CLIENT_SECRET` are set and no `MP_IMPORT_TOKEN` is already present. For Service Catalogue imports, configure `CHECKIN_HOST`, `CHECKIN_TOKEN_ENDPOINT`, `IMPORT_CLIENT_ID`, `IMPORT_CLIENT_SECRET`, and `MP_IMPORT_EOSC_REGISTRY_URL`, then run `bundle exec rake import:all`. `CHECKIN_TOKEN_ENDPOINT` can be either a full URL or a path relative to `CHECKIN_HOST`; paths without the `auth/` prefix are expanded to `https://CHECKIN_HOST/auth/CHECKIN_TOKEN_ENDPOINT`.
+
+Instead of running `import:all` manually, it can be scheduled to run automatically via Sidekiq Cron by setting `AUTO_IMPORT_ALL_ENABLED=true` (and optionally `AUTO_IMPORT_ALL_CRON`). The schedule is defined in `config/schedule.yml` and runs `Tasks::ImportAllJob`, which invokes the same `import:all` rake task on the `imports` queue. Sidekiq must be running (the `jobs` process in `Procfile.dev`, started automatically by `./bin/server`) for scheduled imports to execute.
 
 
 ## Commits
