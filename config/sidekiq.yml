@@ -9,6 +9,7 @@ staging:
   concurrency: 5
 
 queues:
+  - imports
   - active_storage_analysis
   - active_storage_purge
   - pc_subscriber
@@ -20,7 +21,6 @@ queues:
   - default
   - pc_publisher
   - ess_update
-  - imports
 
 limits:
   pc_subscriber: 1

@@ -8,6 +8,7 @@ module Tasks
     sidekiq_options retry: 2
 
     def perform
+      Rake::Task.clear
       Rails.application.load_tasks
       Rake::Task["import:all"].invoke
     end
