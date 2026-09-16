@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe ImportAllJob, backend: true do
+RSpec.describe Tasks::ImportAllJob, backend: true do
   let(:import_all_task) { instance_double(Rake::Task, invoke: true) }
 
   before do

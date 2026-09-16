@@ -1,5 +1,5 @@
-auto_import_all:
+tasks_auto_import_all:
   cron: "<%= ENV.fetch('AUTO_IMPORT_ALL_CRON', '*/3 * * * *') %>"
   status: "<%= ENV.fetch('AUTO_IMPORT_ALL_ENABLED', 'false') == 'true' ? 'enabled' : 'disabled' %>"
-  class: ImportAllJob
+  class: Tasks::ImportAllJob
   queue: imports

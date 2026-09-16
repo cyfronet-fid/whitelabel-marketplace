@@ -335,7 +335,7 @@ We are currently using the following ENV variables:
 
 Import rake tasks automatically obtain `MP_IMPORT_TOKEN` when `IMPORT_CLIENT_ID` and `IMPORT_CLIENT_SECRET` are set and no `MP_IMPORT_TOKEN` is already present. For Service Catalogue imports, configure `CHECKIN_HOST`, `CHECKIN_TOKEN_ENDPOINT`, `IMPORT_CLIENT_ID`, `IMPORT_CLIENT_SECRET`, and `MP_IMPORT_EOSC_REGISTRY_URL`, then run `bundle exec rake import:all`. `CHECKIN_TOKEN_ENDPOINT` can be either a full URL or a path relative to `CHECKIN_HOST`; paths without the `auth/` prefix are expanded to `https://CHECKIN_HOST/auth/CHECKIN_TOKEN_ENDPOINT`.
 
-Instead of running `import:all` manually, it can be scheduled to run automatically via Sidekiq Cron by setting `AUTO_IMPORT_ALL_ENABLED=true` (and optionally `AUTO_IMPORT_ALL_CRON`). The schedule is defined in `config/schedule.yml` and runs `ImportAllJob`, which invokes the same `import:all` rake task on the `imports` queue. Sidekiq must be running (the `jobs` process in `Procfile.dev`, started automatically by `./bin/server`) for scheduled imports to execute.
+Instead of running `import:all` manually, it can be scheduled to run automatically via Sidekiq Cron by setting `AUTO_IMPORT_ALL_ENABLED=true` (and optionally `AUTO_IMPORT_ALL_CRON`). The schedule is defined in `config/schedule.yml` and runs `Tasks::ImportAllJob`, which invokes the same `import:all` rake task on the `imports` queue. Sidekiq must be running (the `jobs` process in `Procfile.dev`, started automatically by `./bin/server`) for scheduled imports to execute.
 
 
 ## Commits

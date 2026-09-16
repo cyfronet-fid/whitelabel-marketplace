@@ -24,8 +24,8 @@ queues:
 
 limits:
   pc_subscriber: 1
-  importer: 1
+  imports: 1
 
 process_limits:
   pc_subscriber: 1
-  importer: 1
+  imports: 1

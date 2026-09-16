@@ -130,13 +130,13 @@ If a node should import data from a Service Catalogue, configure the relevant va
 
 ##### Environment Variables
 
-| Variable | Description | Default |
-| --- | --- | --- |
-| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas. | — (required) |
-| `MP_IMPORT_TOKEN` | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead. | derived automatically |
-| `MP_IMPORT_EOSC_REGISTRY_URL` | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`. | — (required) |
-| `AUTO_IMPORT_ALL_ENABLED` | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports. | `false` |
-| `AUTO_IMPORT_ALL_CRON` | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports. | `*/3 * * * *` |
+| Variable                                    | Description                                                                                                                                                                                          | Default               |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas.                      | — (required)          |
+| `MP_IMPORT_TOKEN`                           | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead. | derived automatically |
+| `MP_IMPORT_EOSC_REGISTRY_URL`               | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                 | — (required)          |
+| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                     | `false`               |
+| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports.                                                                                                    | `*/3 * * * *`         |
 
 ##### Manual Import
 
