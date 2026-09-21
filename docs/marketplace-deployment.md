@@ -126,7 +126,14 @@ volumes:
 
 #### Service Catalogue Data Import
 
-If a node should import data from a Service Catalogue, configure the relevant variables in `marketplace.env` before running an import.
+The Marketplace Whitelabel does not hold its own copy of the provider and resource data: a node that is connected to a Service Catalogue (Resource Catalogue) imports it from there. Whatever is onboarded in the Service Catalogue (providers, resources, datasources, guidelines, etc.) shows up in the Marketplace only after the next import has run.
+
+There are two ways to run the import:
+
+* **Automatically (recommended)** - a scheduled job synchronises the Marketplace with the Service Catalogue every 3 minutes by default. After onboarding or changing anything in the Service Catalogue, wait around 3 minutes to see the result in the Marketplace, no manual action is needed. See [Auto Import](#auto-import).
+* **Manually** - run the import on demand, e.g. for the initial data load or for troubleshooting. See [Manual Import](#manual-import).
+
+In both cases, configure the relevant variables in `marketplace.env` first (see [Environment Variables](#environment-variables)).
 
 ##### Environment Variables
 
@@ -154,14 +161,24 @@ docker compose exec web bundle exec rake import:providers
 
 ##### Auto Import
 
-Imports can also run automatically on a schedule via Sidekiq Cron, inside the `worker` container. Set the following in `marketplace.env` and restart the `worker` service:
+The Marketplace can keep itself in sync with the Service Catalogue automatically. A scheduled job (Sidekiq Cron, running inside the `worker` container) runs the full `import:all` synchronisation **every 3 minutes** by default.
+
+> **Note:** the schedule is off until `AUTO_IMPORT_ALL_ENABLED=true` is set. Once it is enabled, anything onboarded or updated in the Service Catalogue becomes visible in the Marketplace within about 3 minutes (plus the time the import itself takes), so if you have just onboarded something and do not see it yet, wait a few minutes before troubleshooting.
+
+To enable it, set the following in `marketplace.env` and restart the `worker` service:
 
 ```env
 AUTO_IMPORT_ALL_ENABLED=true
+# Optional - how often the import runs (default: every 3 minutes)
 AUTO_IMPORT_ALL_CRON="*/3 * * * *"
 ```
 
-Scheduled runs execute the same `import:all` task as the manual command above, and their status can be viewed in the Sidekiq Web UI (mounted at `/admin/sidekiq`).
+Details:
+
+* Scheduled runs execute the same `import:all` task as the [manual import](#manual-import), so the result is identical.
+* Runs never overlap: the job uses a dedicated `imports` queue processed by a single worker, so a run that takes longer than the interval simply delays the next one.
+* Each run's status can be checked in the Sidekiq Web UI (mounted at `/admin/sidekiq`, the schedule itself under its **Cron** tab).
+* A longer interval (e.g. `*/15 * * * *` for every 15 minutes) can be set through `AUTO_IMPORT_ALL_CRON` if the Service Catalogue should be queried less often; the waiting time after onboarding grows accordingly.
 
 ### Reverse Proxy Configuration
 
