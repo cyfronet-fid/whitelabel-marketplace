@@ -130,20 +130,20 @@ The Marketplace Whitelabel does not hold its own copy of the provider and resour
 
 There are two ways to run the import:
 
-* **Automatically (recommended)** - a scheduled job synchronises the Marketplace with the Service Catalogue every 3 minutes by default. After onboarding or changing anything in the Service Catalogue, wait around 3 minutes to see the result in the Marketplace, no manual action is needed. See [Auto Import](#auto-import).
-* **Manually** - run the import on demand, e.g. for the initial data load or for troubleshooting. See [Manual Import](#manual-import).
+- **Automatically (recommended)** - a scheduled job synchronises the Marketplace with the Service Catalogue every 3 minutes by default. After onboarding or changing anything in the Service Catalogue, wait around 3 minutes to see the result in the Marketplace, no manual action is needed. See [Auto Import](#auto-import).
+- **Manually** - run the import on demand, e.g. for the initial data load or for troubleshooting. See [Manual Import](#manual-import).
 
 In both cases, configure the relevant variables in `marketplace.env` first (see [Environment Variables](#environment-variables)).
 
 ##### Environment Variables
 
-| Variable                                    | Description                                                                                                                                                                                          | Default               |
-| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
-| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas. Required only if `MP_IMPORT_TOKEN` is not set.  | — (required unless `MP_IMPORT_TOKEN` is set) |
-| `MP_IMPORT_TOKEN`                           | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead. | derived automatically |
-| `MP_IMPORT_EOSC_REGISTRY_URL`               | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                 | — (required)          |
-| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                     | `false`               |
-| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports.                                                                                                    | `*/3 * * * *`         |
+| Variable                                    | Description                                                                                                                                                                                                                    | Default                                      |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas. Required only if `MP_IMPORT_TOKEN` is not set. | — (required unless `MP_IMPORT_TOKEN` is set) |
+| `MP_IMPORT_TOKEN`                           | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead.                           | derived automatically                        |
+| `MP_IMPORT_EOSC_REGISTRY_URL`               | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                                           | — (required)                                 |
+| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                                               | `false`                                      |
+| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports.                                                                                                                              | `*/3 * * * *`                                |
 
 ##### Manual Import
 
@@ -175,10 +175,10 @@ AUTO_IMPORT_ALL_CRON="*/3 * * * *"
 
 Details:
 
-* Scheduled runs execute the same `import:all` task as the [manual import](#manual-import), so the result is identical.
-* Runs never overlap: the job uses a dedicated `imports` queue processed by a single worker, so a run that takes longer than the interval simply delays the next one.
-* Each run's status can be checked in the Sidekiq Web UI (mounted at `/admin/sidekiq`, the schedule itself under its **Cron** tab).
-* A longer interval (e.g. `*/15 * * * *` for every 15 minutes) can be set through `AUTO_IMPORT_ALL_CRON` if the Service Catalogue should be queried less often; the waiting time after onboarding grows accordingly.
+- Scheduled runs execute the same `import:all` task as the [manual import](#manual-import), so the result is identical.
+- Runs never overlap: the job uses a dedicated `imports` queue processed by a single worker, so a run that takes longer than the interval simply delays the next one.
+- Each run's status can be checked in the Sidekiq Web UI (mounted at `/admin/sidekiq`, the schedule itself under its **Cron** tab).
+- A longer interval (e.g. `*/15 * * * *` for every 15 minutes) can be set through `AUTO_IMPORT_ALL_CRON` if the Service Catalogue should be queried less often; the waiting time after onboarding grows accordingly.
 
 ### Reverse Proxy Configuration
 

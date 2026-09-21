@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "rake"
+
 module Tasks
   class ImportAllJob < ApplicationJob
     queue_as :imports
