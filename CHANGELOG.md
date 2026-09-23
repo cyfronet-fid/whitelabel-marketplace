@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 Please view this file on the master branch, on stable branches it's out of date.
 
+## [3.63.2](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.63.1...v3.63.2) (2026-08-31)
+
+
+### Bug Fixes
+
+* point release-please at master instead of default branch ([4c77416](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/4c774160bc3313869c141ef2b9bf70e70d20ef1c))
+
+
+### Reverts
+
+* drop release-please target-branch: master ([26b9264](https://github.com/cyfronet-fid/whitelabel-marketplace/commit/26b9264f8ce103c9e922e3ae8789ca29ef05232b))
+
 ## [3.63.1](https://github.com/cyfronet-fid/whitelabel-marketplace/compare/v3.63.0...v3.63.1) (2026-08-31)
 
 
