@@ -124,46 +124,43 @@ volumes:
 1. In the app root directory, create the `marketplace.env` file based on the example: `cp .env.example marketplace.env`
 2. Edit the `marketplace.env` file and fill in MANDATORY values with <YOUR\_...> placeholders
 
-#### Service Catalogue Data Import
+### Resource Catalogue Data Import
 
-The Marketplace Whitelabel does not hold its own copy of the provider and resource data: a node that is connected to a Service Catalogue (Resource Catalogue) imports it from there. Whatever is onboarded in the Service Catalogue (providers, resources, datasources, guidelines, etc.) shows up in the Marketplace only after the next import has run.
+The Marketplace Whitelabel supports importing provider and resource data from a Resource Catalogue, so a node instance does not need to be populated by hand.
 
-There are two ways to run the import:
+First step is to configure the relevant variables in `marketplace.env` (see [Environment Variables](#environment-variables)).
 
-- **Automatically (recommended)** - a scheduled job synchronises the Marketplace with the Service Catalogue every 3 minutes by default. After onboarding or changing anything in the Service Catalogue, wait around 3 minutes to see the result in the Marketplace, no manual action is needed. See [Auto Import](#auto-import).
-- **Manually** - run the import on demand, e.g. for the initial data load or for troubleshooting. See [Manual Import](#manual-import).
+The following types of data are set for synchronization:
 
-In both cases, configure the relevant variables in `marketplace.env` first (see [Environment Variables](#environment-variables)).
+- Catalogues
+- Organisations (formerly Providers)
+- Services
+- Data Sources
+- Interoperability Guidelines
+- Vocabularies
 
-##### Environment Variables
+There are 2 ways to perform the synchronization.
 
-| Variable                                    | Description                                                                                                                                                                                                                    | Default                                      |
-| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Service Catalogue API. The values should be obtained according to the instructions from Nicolas. Required only if `MP_IMPORT_TOKEN` is not set. | — (required unless `MP_IMPORT_TOKEN` is set) |
-| `MP_IMPORT_TOKEN`                           | Access token for the Service Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead.                           | derived automatically                        |
-| `MP_IMPORT_EOSC_REGISTRY_URL`               | Service Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                                           | — (required)                                 |
-| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                                               | `false`                                      |
-| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs. Has no effect on manual imports.                                                                                                                              | `*/3 * * * *`                                |
+#### Manual Import
 
-##### Manual Import
-
-Once the variables above are configured, an import can be run on demand inside the application container:
+Run the import on demand, for example, for the initial data load or when troubleshooting synchronization issues.
+Use commands below to run on demand import inside the application container:
 
 ```bash
 docker compose exec web bundle exec rake import:all
 ```
 
-`import:all` runs the full set of importers in order (`vocabularies`, `catalogues`, `providers`, `resources`, `datasources`, `guidelines`). A single collection can be imported instead by running its task directly, e.g.:
+`import:all` runs the full set of importers in order (`vocabularies`, `catalogues`, `providers`, `services`, `datasources`, `guidelines`). A single collection can be imported instead by running its task directly, e.g.:
 
 ```bash
 docker compose exec web bundle exec rake import:providers
 ```
 
-##### Auto Import
+#### Auto Import
 
-The Marketplace can keep itself in sync with the Service Catalogue automatically. A scheduled job (Sidekiq Cron, running inside the `worker` container) runs the full `import:all` synchronisation **every 3 minutes** by default.
+The Marketplace can keep itself in sync with the Resource Catalogue automatically. A scheduled job (Sidekiq Cron, running inside the `worker` container) runs the full `import:all` synchronisation **every 3 minutes** by default.
 
-> **Note:** the schedule is off until `AUTO_IMPORT_ALL_ENABLED=true` is set. Once it is enabled, anything onboarded or updated in the Service Catalogue becomes visible in the Marketplace within about 3 minutes (plus the time the import itself takes), so if you have just onboarded something and do not see it yet, wait a few minutes before troubleshooting.
+> **Note:** the schedule is off until `AUTO_IMPORT_ALL_ENABLED=true` is set. Once it is enabled, anything onboarded or updated in the Resource Catalogue becomes visible in the Marketplace within about 3 minutes (plus the time the import itself takes), so if you have just onboarded something and do not see it yet, wait a few minutes before troubleshooting.
 
 To enable it, set the following in `marketplace.env` and restart the `worker` service:
 
@@ -178,7 +175,18 @@ Details:
 - Scheduled runs execute the same `import:all` task as the [manual import](#manual-import), so the result is identical.
 - Runs never overlap: the job uses a dedicated `imports` queue processed by a single worker, so a run that takes longer than the interval simply delays the next one.
 - Each run's status can be checked in the Sidekiq Web UI (mounted at `/admin/sidekiq`, the schedule itself under its **Cron** tab).
-- A longer interval (e.g. `*/15 * * * *` for every 15 minutes) can be set through `AUTO_IMPORT_ALL_CRON` if the Service Catalogue should be queried less often; the waiting time after onboarding grows accordingly.
+- A longer interval (e.g. `*/15 * * * *` for every 15 minutes) can be set through `AUTO_IMPORT_ALL_CRON` if the Resource Catalogue should be queried less often; the waiting time after onboarding grows accordingly.
+
+
+#### Environment Variables
+
+| Variable |  Description | Default |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `IMPORT_CLIENT_ID` / `IMPORT_CLIENT_SECRET` | OAuth2 client credentials used to automatically obtain an access token for the Resource Catalogue API. The values should be obtained according to the instructions from Nicolas. Required only if `MP_IMPORT_TOKEN` is not set. | — (required unless `MP_IMPORT_TOKEN` is set) |
+| `MP_IMPORT_TOKEN`                           | Access token for the Resource Catalogue API. Derived automatically from `IMPORT_CLIENT_ID`/`IMPORT_CLIENT_SECRET`; only needs to be exported manually if a pre-obtained token should be used instead.                           | derived automatically                        |
+| `MP_IMPORT_EOSC_REGISTRY_URL`               | Resource Catalogue API base URL. Must include the `/api` suffix, e.g. `https://providers.sandbox.eosc-beyond.eu/api`.                                                                                                           | — (required)                                 |
+| `AUTO_IMPORT_ALL_ENABLED`                   | Enables the scheduled automatic import (see [Auto Import](#auto-import) below). Has no effect on manual imports.                                                                                                               | `false`                                      |
+| `AUTO_IMPORT_ALL_CRON`                      | Cron expression controlling how often the scheduled import runs (At every 3rd minute by default). Has no effect on manual imports. See [crontab guru](https://crontab.guru/#*/3_*_*_*_*) for other options and tips.                                                                                                                          | `*/3 * * * *`                                |
 
 ### Reverse Proxy Configuration
 
