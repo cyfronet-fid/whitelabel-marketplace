@@ -79,13 +79,13 @@
           .activity-subtitle
             Store, backup, archive your data, publications, software.
 
-      .activity-wrapper
-        .text-wrapper
-          Browse
-          %span all resources
-          in one place:
-        .text-wrapper
-          %a.btn{ href: "#" } Browse All Resources
+    .activity-wrapper
+      .text-wrapper
+        Browse
+        %span all resources
+        in one place:
+      .text-wrapper
+        %a.btn{ href: "#" } Browse All Resources
 
 %section.support
   .container
@@ -145,6 +145,115 @@
                 ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
                 eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
                 deserunt mollit anim id est laborum.
+
+%section.federated
+  .container
+    .federated-intro
+      %h3
+        Federated Catalogue
+      %p.description
+        The Federated Catalogue does not store services itself. Nodes keep their own catalogues and stay responsible for
+        their own services. The catalogue collects information about them, so you can search everything in one place.
+      %a.btn.btn-primary.mt-2{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services"
+      } Discover Federated Catalogue
+
+    .federated-media
+      = image_tag "landing_page/federated-schema.jpg", alt: "", class: "img-fluid mt-5"
+
+%section.nodes
+  .container
+    %h3 Connected Nodes
+
+    .node-list
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-eoscbeyond.png", alt: "", class: "node-item__icon"
+        %span.node-item__name EOSC-Beyond
+
+      %a.node-item.is-link{
+        href: "https://marketplace-staging.cessda.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-cessda.png", alt: "", class: "node-item__icon"
+        %span.node-item__name CESSDA
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-nfdi.png", alt: "", class: "node-item__icon"
+        %span.node-item__name NFDI
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-metrofood.png", alt: "", class: "node-item__icon"
+        %span.node-item__name METROFOOD
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-instruct.png", alt: "", class: "node-item__icon"
+        %span.node-item__name Instruct-ERIC
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-lifewatch.svg", alt: "", class: "node-item__icon"
+        %span.node-item__name LifeWatch-ERIC
+
+      %a.node-item.is-link{
+        href: "https://enes-discovery-hub.pilot.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-enes.png", alt: "", class: "node-item__icon"
+        %span.node-item__name ENES
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-cnb.png", alt: "", class: "node-item__icon"
+        %span.node-item__name CNB-CSIC
+
+      %a.node-item.is-link{
+        href: "https://frontoffice.ni4os.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-ni4os.jpg", alt: "", class: "node-item__icon"
+        %span.node-item__name NI4OS-EUROPE
+
+      %a.node-item.is-link{
+        href: "https://userspace.sandbox.eosc-beyond.eu/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-egi.png", alt: "", class: "node-item__icon"
+        %span.node-item__name EGI Pilot Node
+
+      %a.node-item.is-link{
+        href: "https://marketplace.cloud.cesnet.cz/federation/services",
+        target: "_blank",
+        rel: "noopener"
+      }
+        = image_tag "landing_page/logo-einfra.svg", alt: "", class: "node-item__icon"
+        %span.node-item__name e-INFRA_CZ
+
 %section.learn
   .container
     %h3 Learn more
