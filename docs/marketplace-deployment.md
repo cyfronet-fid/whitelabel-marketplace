@@ -126,7 +126,7 @@ volumes:
 
 ### Resource Catalogue Data Import
 
-The Marketplace Whitelabel supports importing provider and resource data from a Resource Catalogue, so a node instance does not need to be populated by hand.
+Services are onboarded through the Resource Catalogue and therefore need to be synchronised with the Marketplace Whitelabel, where they can then be indexed and made available for search.
 
 First step is to configure the relevant variables in `marketplace.env` (see [Environment Variables](#environment-variables)).
 
