@@ -8,9 +8,9 @@ For the full list of changes, see [CHANGELOG.md](../../CHANGELOG.md).
 
 ## Releases
 
-| Version             | Action required | Summary                                        |
-| ------------------- | --------------- | ---------------------------------------------- |
-| [3.64.0](3.64.0.md) | Optional        | Automatic import from the Resource Catalogue   |
+| Version             | Action required | Summary                                      |
+| ------------------- | --------------- | -------------------------------------------- |
+| [3.64.0](3.64.0.md) | Optional        | Automatic import from the Resource Catalogue |
 
 ## Adding a new release note
 
