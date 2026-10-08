@@ -129,6 +129,14 @@ RSpec.describe "Federation services" do
     end
   end
 
+  context "when the federation API returns invalid JSON" do
+    before { stub_request(:get, /federation\.example\.org/).to_return(status: 200, body: "<html>oops</html>") }
+
+    it "responds with 502" do
+      expect(federation_response).to have_http_status(:bad_gateway)
+    end
+  end
+
   context "when the federation API times out" do
     before { stub_request(:get, /federation\.example\.org/).to_raise(Net::ReadTimeout) }
 

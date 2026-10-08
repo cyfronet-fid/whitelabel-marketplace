@@ -54,14 +54,14 @@ class Federation::ServicesController < ApplicationController
           @available_nodes = extract_available_nodes
           load_filter_options
         elsif @aggregator_type == "pc"
+          json_response = JSON.parse(response.body)
+          unless json_response.is_a?(Hash)
+            Rails.logger.error "Federation API returned unexpected format. Expected Hash, got #{json_response.class}"
+            @json_data = { error: "Unexpected response format" }
+            @status = :bad_gateway
+            return respond_to_format
+          end
           begin
-            json_response = JSON.parse(response.body)
-            unless json_response.is_a?(Hash)
-              Rails.logger.error "Federation API returned unexpected format. Expected Hash, got #{json_response.class}"
-              @json_data = { error: "Unexpected response format" }
-              @status = :bad_gateway
-              return respond_to_format
-            end
             @json_data = map_federation_response(json_response)
             # Extract highlights from JSON response
             @highlights = @json_data["highlights"] || {}
