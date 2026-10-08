@@ -68,6 +68,18 @@ RSpec.describe "Federation services" do
       it "returns the service" do
         expect(returned_results.pluck("pid")).to eq(["service/S1Ux8C"])
       end
+
+      it "returns no webpage" do
+        expect(returned_results.pluck("webpage")).to eq([nil])
+      end
+    end
+
+    context "with a service with an empty webpage and a nested service webpage" do
+      let(:service_overrides) { { "webpage" => "", "service" => { "webpage" => "https://nested.example.org" } } }
+
+      it "returns the nested service webpage" do
+        expect(returned_results.pluck("webpage")).to eq(["https://nested.example.org"])
+      end
     end
 
     context "with a result without a service object" do

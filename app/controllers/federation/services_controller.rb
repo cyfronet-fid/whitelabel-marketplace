@@ -172,7 +172,9 @@ class Federation::ServicesController < ApplicationController
         "pid" => item["resourceOrganisation"]
       },
       "providers" => providers.map { |provider| { "name" => service_providers_map.fetch(provider, provider) } },
-      "webpage" => service["webpage"] || item["userManual"] || item["order"] || nested["webpage"],
+      "webpage" =>
+        service["webpage"].presence || item["userManual"].presence || item["order"].presence ||
+          nested["webpage"].presence,
       "nodePID" => pid_to_name[node_pid] || node_pid || nested["nodePID"]
     }
   end
